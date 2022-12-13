@@ -7,7 +7,7 @@ import useGeoLocation from '../hooks/useGeoLocation';
 
 export default function Map(props) {
   const [shows, setShows] = useState({});
-  const [currCity, setCurrCity] = useState({});
+  const [currCity, setCurrCity] = useState(null);
   const geolocation = useGeoLocation();
   console.log("geolocation ~~~~~~~~~~~~; ", geolocation);
 
@@ -36,20 +36,23 @@ export default function Map(props) {
   //     });
   // }, [geolocation, hqURL]);
 
-  const nyc =
-    [40.7492045258231, -73.98581460369992];
+  const egypt =
+    [31.403292642948028, 30.853644619611597];
 
 
   function CurrentLocation() {
     const map = useMap();
-
+    console.log("~~~~~~~~~~~~~~~map.flyTo(): ", map.flyTo)
     useEffect(() => {
       if (geolocation.loaded) map.flyTo(geolocation.coords, 12);
+      //use setView() if page refresh
       // map.setView(geolocation.coords, map.getZoom());
-      const radius = geolocation.accuracy;
-      const circle = L.circle(geolocation.coords, radius);
-      circle.addTo(map);
-
+      map.on('zoomend', () => {
+        // load position marker after animation
+        const radius = geolocation.accuracy;
+        const circle = L.circle(geolocation.coords, radius);
+        circle.addTo(map);
+      })
     }, [map]);
     return null;
   }
@@ -58,12 +61,14 @@ export default function Map(props) {
     const xhr = new XMLHttpRequest();
 
     const token = 'pk.32218541d692e0df20b0912ebadf68bf';
-    xhr.open('GET',
-      `https://us1.locationiq.com/v1/reverse.php?key=${token}&lat=`
-      + lat + "&lon=" + lng + "&format=json", true);
-    xhr.send();
-    xhr.onreadystatechange = processRequest;
-    xhr.addEventListener("readystatechange", processRequest, false);
+    if (geolocation.loaded) {
+      xhr.open('GET',
+        `https://us1.locationiq.com/v1/reverse.php?key=${token}&lat=`
+        + lat + "&lon=" + lng + "&format=json", true);
+      xhr.send();
+      xhr.onreadystatechange = processRequest;
+      xhr.addEventListener("readystatechange", processRequest, false);
+    }
 
     function processRequest(e) {
       if (xhr.readyState == 4 && xhr.status == 200) {
@@ -72,7 +77,7 @@ export default function Map(props) {
         setCurrCity(city);
       }
     }
-  }, [lat, lng]);
+  }, [lat, lng, geolocation.loaded]);
 
 
   useEffect(() => {
@@ -121,13 +126,13 @@ export default function Map(props) {
 
   return (
     <div>
-      <h1> {geolocation.loaded ? "Shows in " +
+      <h1> {currCity ? "Shows in " +
         currCity : "grabbing your location..."}
       </h1>
 
       <MapContainer
-        center={nyc}
-        zoom={8} scrollWheelZoom={true}
+        center={egypt}
+        zoom={1} scrollWheelZoom={true}
       >
         {showMarkers}
 
