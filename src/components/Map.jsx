@@ -132,7 +132,7 @@ export default function Map(props) {
 
       <MapContainer
         center={egypt}
-        zoom={1} scrollWheelZoom={true}
+        zoom={2} scrollWheelZoom={true}
       >
         {showMarkers}
 
