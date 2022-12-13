@@ -11,7 +11,8 @@ export default function Map(props) {
   const geolocation = useGeoLocation();
   console.log("geolocation ~~~~~~~~~~~~; ", geolocation);
 
-  const auth = 'MIUlzyESU3Uvf_ZUQxzFzM0C3vae40bPOYJSMPsN';
+  const hqToken = 'MIUlzyESU3Uvf_ZUQxzFzM0C3vae40bPOYJSMPsN';
+  const iqToken = 'pk.32218541d692e0df20b0912ebadf68bf';
 
   const current = new Date();
   const date = `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`;
@@ -58,20 +59,18 @@ export default function Map(props) {
   }
 
   useEffect(() => {
+    
     const xhr = new XMLHttpRequest();
-
-    const token = 'pk.32218541d692e0df20b0912ebadf68bf';
     if (geolocation.loaded) {
       xhr.open('GET',
-        `https://us1.locationiq.com/v1/reverse.php?key=${token}&lat=`
+        `https://us1.locationiq.com/v1/reverse.php?key=${iqToken}&lat=`
         + lat + "&lon=" + lng + "&format=json", true);
       xhr.send();
       xhr.onreadystatechange = processRequest;
       xhr.addEventListener("readystatechange", processRequest, false);
     }
-
     function processRequest(e) {
-      if (xhr.readyState == 4 && xhr.status == 200) {
+      if (xhr.readyState === 4 && xhr.status === 200) {
         const response = JSON.parse(xhr.responseText);
         const city = response.address.city;
         setCurrCity(city);
@@ -94,7 +93,7 @@ export default function Map(props) {
         'category': 'concerts'
       },
       headers: {
-        authorization: `Bearer ${auth}`
+        authorization: `Bearer ${hqToken}`
       }
     };
     if (geolocation.loaded) axios.request(options)
