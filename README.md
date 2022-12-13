@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# ShowFinder
+
+Simple SPA to find local shows surrounding the user. Immediately populates nearby concert and gives complete information regarding artist, venue and showtime, focusing on ease-of-use and a clean interface. 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
