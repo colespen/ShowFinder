@@ -4,9 +4,12 @@ import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
 import L from "leaflet";
 import useGeoLocation from '../hooks/useGeoLocation';
 
+import './map.scss'
+import testShows from '../data/test-show-rapid.json';
 
 export default function Map(props) {
-  const [shows, setShows] = useState({});
+  // const [shows, setShows] = useState({});
+  // const [newShows, setNewShows] = useState({});
   const [currCity, setCurrCity] = useState(null);
   const geolocation = useGeoLocation();
   console.log("geolocation ~~~~~~~~~~~~; ", geolocation);
@@ -14,28 +17,11 @@ export default function Map(props) {
   const hqToken = 'MIUlzyESU3Uvf_ZUQxzFzM0C3vae40bPOYJSMPsN';
   const iqToken = 'pk.32218541d692e0df20b0912ebadf68bf';
 
-  const current = new Date();
-  const date = `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`;
+  const currDate = new Date();
+  const date = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
 
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
-
-  // const hqURL = `https://api.predicthq.com/v1/events/?relevance=rank,start_around,location_around&start_around.origin=2022-12-12&location_around.origin=${geolocation.coords.lat},${geolocation.coords.lng}&location_around.offset=1km&location_around.scale=10km&within=50km@${geolocation.coords.lat},${geolocation.coords.lng}&active.gte=2022-12-12&category=concerts&Authorization=MIUlzyESU3Uvf_ZUQxzFzM0C3vae40bPOYJSMPsN`;
-
-  // useEffect(() => {
-  //   if (geolocation.loaded) axios.get(hqURL, {
-  //     headers: {
-  //       authorization: `Bearer ${auth}`
-  //     }
-  //   })
-  //     .then(res => {
-  //       setShows(res.data);
-  //       console.log("res.data~~~~~~~~~: ", res.data);
-  //     })
-  //     .catch(err => {
-  //       console.error(err.message);
-  //     });
-  // }, [geolocation, hqURL]);
 
   const egypt =
     [31.403292642948028, 30.853644619611597];
@@ -43,10 +29,9 @@ export default function Map(props) {
 
   function CurrentLocation() {
     const map = useMap();
-    console.log("~~~~~~~~~~~~~~~map.flyTo(): ", map.flyTo)
     useEffect(() => {
       if (geolocation.loaded) map.flyTo(geolocation.coords, 12);
-      //use setView() if page refresh
+      //use setView instead of flyTo on page refresh
       // map.setView(geolocation.coords, map.getZoom());
       map.on('zoomend', () => {
         // load position marker after animation
@@ -58,8 +43,8 @@ export default function Map(props) {
     return null;
   }
 
+  // fetch city name using coords
   useEffect(() => {
-    
     const xhr = new XMLHttpRequest();
     if (geolocation.loaded) {
       xhr.open('GET',
@@ -78,62 +63,108 @@ export default function Map(props) {
     }
   }, [lat, lng, geolocation.loaded]);
 
-
-  useEffect(() => {
-    const options = {
-      method: 'GET',
-      baseURL: 'https://api.predicthq.com/v1/events/',
-      params: {
-        'relevance': 'rank,start_around,location_around',
-        'start_around.origin': date,
-        'location_around.origin': lat + "," + lng,
-        'location_around.offset': '5km',
-        'location_around.scale': '10km',
-        'active.gte': date,
-        'category': 'concerts'
-      },
-      headers: {
-        authorization: `Bearer ${hqToken}`
-      }
-    };
-    if (geolocation.loaded) axios.request(options)
-      .then(res => {
-        setShows(res.data);
-        console.log("res.data~~~~~~~~~: ", res.data);
-      })
-      .catch(err => {
-        console.error(err.message);
-      });
-  }, [geolocation, date, lat, lng]);
-
+  // fetch show data with params
+  // useEffect(() => {
+  //   const options = {
+  //     method: 'GET',
+  //     baseURL: 'https://api.predicthq.com/v1/events/',
+  //     params: {
+  //       'relevance': 'start_around,location_around',
+  //       'start_around.origin': date,
+  //       'location_around.origin': lat + "," + lng,
+  //       'location_around.offset': '1km',
+  //       // 'location_around.scale': '5km',
+  //       'active.gte': date,
+  //       'category': 'concerts'
+  //     },
+  //     headers: {
+  //       authorization: `Bearer ${hqToken}`
+  //     }
+  //   };
+  //   if (geolocation.loaded) axios.request(options)
+  //     .then(res => {
+  //       setShows(res.data);
+  //       console.log("res.data~~~~~~~~~: ", res.data);
+  //     })
+  //     .catch(err => {
+  //       console.error(err.message);
+  //     });
+  // }, [geolocation, date, lat, lng]);
 
   // results OR empty array seems wrong but need to not map on undefined axios get
-  const showMarkers = (shows.results || []).map(show => (
-    show.entities.map(venue => (
+  // const showMarkers = (shows.results || []).map(show => (
+  //   show.entities.map(venue => (
 
-      <Marker
-        key={show.id}
-        position={[show.location[1], show.location[0]]}>
-        <Popup key={venue.entity_id}>
-          {show.title} <br /> {venue.name}
-        </Popup>
-      </Marker>
-    ))
+  //     <Marker
+  //       key={show.id}
+  //       position={[show.location[1], show.location[0]]}>
+  //       <Popup key={venue.entity_id}>
+  //         {show.title} <br /> {venue.name}
+  //       </Popup>
+  //     </Marker>
+  //   ))
+  // ));
+
+  // useEffect(() => {
+  //   const options = {
+  //     method: 'GET',
+  //     baseURL: 'https://concerts-artists-events-tracker.p.rapidapi.com/location',
+  //     params: {
+  //       'name': currCity,
+  //       'minDate': date,
+  //       'maxDate': date
+  //     },
+  //     headers: {
+  //       'X-RapidAPI-Key': 'daf9809102msh05c5b9a3abacab6p1573f0jsnbdb721a8ca04',
+  //       'X-RapidAPI-Host': 'concerts-artists-events-tracker.p.rapidapi.com'
+  //     }
+  //   };
+  //   if (geolocation.loaded) axios.request(options)
+  //     .then(res => {
+  //       setNewShows(res.data);
+  //       console.log("res.data~~~~~~~~~: ", res.data);
+  //     })
+  //     .catch(err => {
+  //       console.error(err.message);
+  //     });
+  // }, [geolocation, date, currCity]);
+
+
+  const newShowMarkers = (testShows.data || []).map((show, index) => (
+
+    <Marker
+      key={show.description}
+      position={[show.location.geo.latitude, show.location.geo.longitude]}>
+      <Popup key={index}>
+
+        {show.performer.map((artist, i) =>
+        (
+          <ul className="artist-list">
+            <li>{artist.name}</li>
+          </ul>
+        ))}
+
+        <a href={show.location.sameAs}
+          target="_blank">
+          {show.location.name}</a>
+      </Popup>
+    </Marker>
   ));
 
-  console.log("shows~~~~~~~~~: ", shows);
+
+  console.log("testShows~~~~~~~~~: ", testShows);
 
   return (
-    <div>
+    <div className="map-main">
       <h1> {currCity ? "Shows in " +
         currCity : "grabbing your location..."}
       </h1>
 
-      <MapContainer
+      <MapContainer className="map-container"
         center={egypt}
         zoom={2} scrollWheelZoom={true}
       >
-        {showMarkers}
+        {geolocation.loaded && newShowMarkers}
 
         <TileLayer
           attribution=
