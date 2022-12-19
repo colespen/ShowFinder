@@ -14,10 +14,6 @@ export default function Map(props) {
   const geolocation = useGeoLocation();
   console.log("geolocation ~~~~~~~~~~~~; ", geolocation);
 
-  const hqToken = 'MIUlzyESU3Uvf_ZUQxzFzM0C3vae40bPOYJSMPsN';
-  const rapidKey = 'daf9809102msh05c5b9a3abacab6p1573f0jsnbdb721a8ca04';
-  const iqToken = 'pk.32218541d692e0df20b0912ebadf68bf';
-
   const currDate = new Date();
   const date = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
   const lat = geolocation.coords.lat;
