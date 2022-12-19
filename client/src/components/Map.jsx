@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
 import L from "leaflet";
 import useGeoLocation from '../hooks/useGeoLocation';
 
-import './map.scss'
+import './map.scss';
 import testShows from '../data/test-show-rapid.json';
 
 export default function Map(props) {
@@ -20,13 +20,24 @@ export default function Map(props) {
 
   const currDate = new Date();
   const date = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
-
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
 
+  const userData = {
+    date,
+    lat,
+    lng,
+  };
+
+  useEffect(() => {
+    if (geolocation.loaded) axios.post('http://localhost:8001', userData)
+      .then(() => console.log("userData sent from client"))
+      .catch(err => console.log(err.message));
+  });
+
+
   const egypt =
     [31.403292642948028, 30.853644619611597];
-
 
   function CurrentLocation() {
     const map = useMap();
@@ -39,32 +50,32 @@ export default function Map(props) {
         const radius = geolocation.accuracy;
         const circle = L.circle(geolocation.coords, radius);
         circle.addTo(map);
-      })
+      });
     }, [map]);
     return null;
   }
 
   // fetch city name using coords
-  useEffect(() => {
-    const xhr = new XMLHttpRequest();
-    if (geolocation.loaded) {
-      xhr.open('GET',
-        `https://us1.locationiq.com/v1/reverse.php?key=${iqToken}&lat=`
-        + lat + "&lon=" + lng + "&format=json", true);
-      xhr.send();
-      xhr.onreadystatechange = processRequest;
-      xhr.addEventListener("readystatechange", processRequest, false);
-    }
-    function processRequest(e) {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        const response = JSON.parse(xhr.responseText);
-        const city = response.address.city;
-        setCurrCity(city);
-      }
-    }
-  }, [lat, lng, geolocation.loaded]);
+  // useEffect(() => {
+  //   const xhr = new XMLHttpRequest();
+  //   if (geolocation.loaded) {
+  //     xhr.open('GET',
+  //       `https://us1.locationiq.com/v1/reverse.php?key=${iqToken}&lat=`
+  //       + lat + "&lon=" + lng + "&format=json", true);
+  //     xhr.send();
+  //     xhr.onreadystatechange = processRequest;
+  //     xhr.addEventListener("readystatechange", processRequest, false);
+  //   }
+  //   function processRequest(e) {
+  //     if (xhr.readyState === 4 && xhr.status === 200) {
+  //       const response = JSON.parse(xhr.responseText);
+  //       const city = response.address.city;
+  //       setCurrCity(city);
+  //     }
+  //   }
+  // }, [lat, lng, geolocation.loaded]);
 
-  // fetch show data with params
+  // fetch HQ show data with params
   // useEffect(() => {
   //   const options = {
   //     method: 'GET',
@@ -106,6 +117,7 @@ export default function Map(props) {
   //   ))
   // ));
 
+  // fetch Rapid show
   // useEffect(() => {
   //   const options = {
   //     method: 'GET',
@@ -132,7 +144,6 @@ export default function Map(props) {
 
 
   const newShowMarkers = (testShows.data || []).map((show, index) => (
-
     <Marker
       key={show.description}
       position={[show.location.geo.latitude, show.location.geo.longitude]}>
@@ -141,7 +152,7 @@ export default function Map(props) {
         {show.performer.map((artist, i) =>
         (
           <ul className="artist-list">
-            <li>{artist.name}</li>
+            <li key={artist + i}>{artist.name}</li>
           </ul>
         ))}
 
@@ -163,7 +174,7 @@ export default function Map(props) {
 
       <MapContainer className="map-container"
         center={egypt}
-        zoom={2} scrollWheelZoom={true}
+        zoom={2.5} scrollWheelZoom={true}
       >
         {geolocation.loaded && newShowMarkers}
 

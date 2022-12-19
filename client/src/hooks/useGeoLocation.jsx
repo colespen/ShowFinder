@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-
 export default function useGeoLocation() {
   const [location, setLocation] = useState({
     loaded: false,
