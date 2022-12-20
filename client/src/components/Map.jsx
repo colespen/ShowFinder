@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
 import L from "leaflet";
 import useGeoLocation from '../hooks/useGeoLocation';
 
-import './map.scss';
+import './styles.scss';
 // import testShows from '../data/test-show-rapid.json';
 
 export default function Map(props) {
@@ -75,7 +75,9 @@ export default function Map(props) {
         {show.performer.map((artist, i) =>
         (
           <ul className="artist-list">
-            <li key={artist + i}>{artist.name}</li>
+            <a href="">
+              <li className="artist" key={artist + i}>{artist.name}</li>
+            </a>
           </ul>
         ))}
 
