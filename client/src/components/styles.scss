@@ -8,24 +8,16 @@
   align-items: flex-start;
   width: 100%;
 
-  &:first-child button {
+  li:first-child button {
     background-color: rgb(240, 240, 240);
     border-radius: 10px;
     color: rgb(0, 0, 0);
   }
 
   button {
-    background-color: rgba(255, 255, 255, 0);
+    background-color: white;
     border: none;
-    padding: 6px;
+    padding: 6px 10px;
     margin-top: 5px
-  }
-
-  li {
-    color: rgb(78, 78, 78);
-  }
-
-  &:first-child li {
-    color: inherit;
   }
 }

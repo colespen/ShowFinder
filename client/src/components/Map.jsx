@@ -13,6 +13,7 @@ export default function Map(props) {
   const [artist, setArtist] = useState("");
   const geolocation = useGeoLocation();
 
+  ////    Set Current Date and maxDate
   const currDate = new Date();
   const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
   const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 4}`;
@@ -27,6 +28,8 @@ export default function Map(props) {
   };
 
   console.log("shows~~~~~~~~~~~~~: ", shows);
+
+  ////    POST to server for two API calls
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
       axios.post('http://localhost:8001', userData)
@@ -39,26 +42,27 @@ export default function Map(props) {
     }
   }, [geolocation.loaded, userData, currCity, shows]);
 
-  
-  //save to localStorage
+
+  ////    Save to localStorage
   useEffect(() => {
     localStorage.setItem('shows', JSON.stringify(shows));
   }, [shows]);
-  //get from localStorage and put state
+  ////    Get from localStorage and set state
   useEffect(() => {
     const data = localStorage.getItem('shows');
     if (data) setShows(JSON.parse(data));
   }, []);
 
-
+  ////    Default position
   const egypt =
     [31.403292642948028, 30.853644619611597];
 
+  ////    Use Current Location for map Position and circle
   function CurrentLocation() {
     const map = useMap();
     useEffect(() => {
       if (geolocation.loaded) map.flyTo(geolocation.coords, 12);
-      //use setView instead of flyTo on page refresh
+      ////    use setView instead of flyTo on page refresh
       // map.setView(geolocation.coords, map.getZoom());
       map.on('zoomend', () => {
         // load position marker after animation
@@ -73,21 +77,24 @@ export default function Map(props) {
     }, [map]);
     return null;
   }
-
+  ////    Set artist name onClick
   function handleArtistName(e) {
+    // e.preventDefault();
     setArtist((e.target.innerText).split(' ').join('+'));
   }
 
+  ////    Link to artist info
   useEffect(() => {
     const button = document.getElementById("artist-button");
-    const handleButtonClick = () => {
+    const handleButtonClick = (e) => {
+      // e.preventDefault();
       console.log("artist in handleButton", artist);
-      window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'rel=noreferrer');
+      window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'noreferrer');
     };
     if (button) {
       button.addEventListener('click', handleButtonClick);
     }
-  }, [artist, setArtist]);
+  }, [artist]);
 
 
 
