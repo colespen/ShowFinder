@@ -77,23 +77,21 @@ export default function Map(props) {
     }, [map]);
     return null;
   }
+  
   ////    Set artist name onClick
-  function handleArtistName(e) {
+  const handleArtistName = e => {
     // e.preventDefault();
     setArtist((e.target.innerText).split(' ').join('+'));
-  }
-
+  };
   ////    Link to artist info
+  const handleButtonClick = e => {
+    // e.preventDefault();
+    console.log("artist in handleButton", artist);
+    window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'noreferrer');
+  };
+  ////    Wait until artist state set to trigger
   useEffect(() => {
-    const button = document.getElementById("artist-button");
-    const handleButtonClick = (e) => {
-      // e.preventDefault();
-      console.log("artist in handleButton", artist);
-      window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'noreferrer');
-    };
-    if (button) {
-      button.addEventListener('click', handleButtonClick);
-    }
+    handleButtonClick();
   }, [artist]);
 
 

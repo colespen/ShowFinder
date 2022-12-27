@@ -10,14 +10,22 @@
 
   li:first-child button {
     background-color: rgb(240, 240, 240);
-    border-radius: 10px;
+    border-radius: 5px;
     color: rgb(0, 0, 0);
+
+    &:hover {
+      background-color: #83bfff56;
+    }
   }
 
   button {
     background-color: white;
     border: none;
     padding: 6px 10px;
-    margin-top: 5px
+    margin-top: 5px;
+    
+    &:hover {
+      background-color: #72b6ff1f;
+    }
   }
 }
