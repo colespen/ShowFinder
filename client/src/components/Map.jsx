@@ -8,16 +8,14 @@ import './styles.scss';
 // import testShows from '../data/test-show-rapid.json';
 
 export default function Map(props) {
-  // const [shows, setShows] = useState({});
-  const [newShows, setNewShows] = useState({});
+  const [shows, setShows] = useState({});
   const [currCity, setCurrCity] = useState(null);
+  const [artist, setArtist] = useState("");
   const geolocation = useGeoLocation();
-  console.log("geolocation ~~~~~~~~~~~~; ", geolocation);
 
   const currDate = new Date();
   const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
   const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 4}`;
-
 
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
@@ -28,22 +26,29 @@ export default function Map(props) {
     lng,
   };
 
-  console.log(userData.dateRange);
-
+  console.log("shows~~~~~~~~~~~~~: ", shows);
   useEffect(() => {
-    if (geolocation.loaded) {
+    if (geolocation.loaded && (Object.keys(shows).length === 0)) {
       axios.post('http://localhost:8001', userData)
         .then((res) => {
-          setNewShows(res.data);
+          setShows(res.data);
           setCurrCity(res.data.currAddress.address.city);
-          console.log("~~~~~~~~~~~~~~POST in client: ", res.data)
-
+          console.log("~~~~~~~~~~~~~~POST", res.data);
         })
         .catch(err => console.log(err.message));
     }
-  }, [geolocation.loaded, userData, currCity]);
+  }, [geolocation.loaded, userData, currCity, shows]);
 
-  console.log(newShows, ": ~~~~~~~~~~newShows");
+  
+  //save to localStorage
+  useEffect(() => {
+    localStorage.setItem('shows', JSON.stringify(shows));
+  }, [shows]);
+  //get from localStorage and put state
+  useEffect(() => {
+    const data = localStorage.getItem('shows');
+    if (data) setShows(JSON.parse(data));
+  }, []);
 
 
   const egypt =
@@ -57,29 +62,51 @@ export default function Map(props) {
       // map.setView(geolocation.coords, map.getZoom());
       map.on('zoomend', () => {
         // load position marker after animation
-        const radius = geolocation.accuracy;
-        const circle = L.circle(geolocation.coords, radius);
-        circle.addTo(map);
+        const circle = L.circle(geolocation.coords, geolocation.accuracy);
+        const fixCircle = L.circle(geolocation.coords, { radius: 150, color: 'blue', weight: 1, opacity: 0.55, fillColor: '#0000ff38', fillOpacity: 0.15 });
+        if (geolocation.accuracy > 25) {
+          fixCircle.addTo(map);
+        } else {
+          circle.addTo(map);
+        }
       });
     }, [map]);
     return null;
   }
 
+  function handleArtistName(e) {
+    setArtist((e.target.innerText).split(' ').join('+'));
+  }
 
-  const newShowMarkers = (newShows.data || []).map((show, index) => (
+  useEffect(() => {
+    const button = document.getElementById("artist-button");
+    const handleButtonClick = () => {
+      console.log("artist in handleButton", artist);
+      window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'rel=noreferrer');
+    };
+    if (button) {
+      button.addEventListener('click', handleButtonClick);
+    }
+  }, [artist, setArtist]);
+
+
+
+  const newShowMarkers = (shows.data || []).map((show, index) => (
     <Marker
       key={show.description}
       position={[show.location.geo.latitude, show.location.geo.longitude]}>
       <Popup key={index}>
 
-        {show.performer.map((artist, i) =>
-        (
-          <ul className="artist-list">
-            <a href="">
-              <li className="artist" key={artist + i}>{artist.name}</li>
-            </a>
-          </ul>
-        ))}
+        <ul className="artist-list" href="">
+          {show.performer.map((artist, i) =>
+          (
+            <li className="artist" key={artist + i}>
+              <button onClick={handleArtistName} id="artist-button">
+                {artist.name}
+              </button>
+            </li>
+          ))}
+        </ul>
 
         <a href={show.location.sameAs}
           target="_blank"
@@ -88,8 +115,6 @@ export default function Map(props) {
       </Popup>
     </Marker>
   ));
-
-  // console.log("testShows~~~~~~~~~: ", testShows);
 
   return (
     <div className="map-main">

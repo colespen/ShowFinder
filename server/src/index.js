@@ -25,7 +25,6 @@ const rapidKey = process.env.RAPID_KEY;
 
 
 app.post('/', (req, res) => {
-  let currCity;
   let userData = {
     dateRange: {
       minDate: req.body.dateRange.minDate, 
@@ -41,9 +40,8 @@ app.post('/', (req, res) => {
       + userData.lat + "&lon=" + userData.lng + "&format=json"
     )
       .then(response => {
-        // currCity = response.data.address.city;
-        // return response.data
-        console.log("response.data in server~~~: ", response.data);
+        console.log("response.data in getCity~~~: ", response.data);
+        //response.data is current city
         getShows(response.data);
       })
       .catch(err => {
@@ -76,8 +74,7 @@ app.post('/', (req, res) => {
       });
   };
 
-
-  console.log("userData in Server~~~~~: ", userData);
+  console.log("userData~~~~~: ", userData);
 });
 
 
