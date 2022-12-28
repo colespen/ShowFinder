@@ -26,8 +26,10 @@ export default function Map() {
   ////    Set Current Date and maxDate
   const currDate = new Date();
   const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
-  const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 4}`;
+  const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 2}`;
 
+  // const lat = 52.520008;
+  // const lng = 13.404954;
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
 
@@ -52,19 +54,21 @@ export default function Map() {
     }
   }, [geolocation.loaded, userData, currCity, shows]);
 
-  // useEffect(() => {
-  //   if (newCity) {
-  //     axios.put('http://localhost:8001', userData)
-  //       .then((res) => {
-  //         setShows(res.data);
-  //         setCurrCity(newCity);
-  //         userData.lat = res.data.latLng;
-  //         console.log("~~~~~~~~~~~~~~PUT", res.data);
-  //       })
-  //       .catch(err => console.log(err.message));
-  //   }
-  // }, [userData]);
-
+//   const handleCityChange = e => {
+//     setNewCity(e.target.value);
+//   };
+// ////    PUT to server for geo and new shows API calls
+//   const handlePutRequest = () => {
+//       axios.put('http://localhost:8001', userData)
+//         .then((res) => {
+//           setShows(res.data);
+//           setCurrCity(newCity);
+//           userData.lat = res.data.latLng.lat;
+//           userData.lng = res.data.latLng.lon;
+//           console.log("~~~~~~~~~~~~~~PUT", res.data);
+//         })
+//         .catch(err => console.log(err.message));
+//   };
 
   ////    Save state to localStorage
   useEffect(() => {
@@ -74,7 +78,7 @@ export default function Map() {
   }, [shows, artist, currCity]);
 
   ////    Default position
-  const egypt = [31.403292642948028, 30.853644619611597];
+  const budapest = [47.51983881388099, 19.032783326057594]
 
   ////    Use Current Location for map Position and circle
   function CurrentLocation() {
@@ -99,24 +103,6 @@ export default function Map() {
     return null;
   }
 
-  const handleCityChange = e => {
-    setNewCity(e.target.value);
-  };
-
-  const handlePutRequest = () => {
-    if (newCity) {
-      console.log("CLICKKKKKKKKKK");
-      axios.put('http://localhost:8001', userData)
-        .then((res) => {
-          setShows(res.data);
-          setCurrCity(newCity);
-          userData.lat = res.data.latLng.lat;
-          userData.lng = res.data.latLng.lng;
-          console.log("~~~~~~~~~~~~~~PUT", res.data);
-        })
-        .catch(err => console.log(err.message));
-    }
-  };
 
   ////    Set artist name onClick
   const handleArtistName = e => {
@@ -172,16 +158,14 @@ export default function Map() {
       <h1> {currCity ? "Shows in " +
         currCity : "grabbing your location..."}
       </h1>
-
-      <h2>Enter City: </h2>
-      <input type="text"
+      {/* <input type="text"
         name="enter city"
-        placeholder="city name"
+        placeholder="enter city name"
         onChange={handleCityChange} />
-      <button onClick={handlePutRequest}>GO</button>
+      <button onClick={handlePutRequest}>GO</button> */}
 
       <MapContainer className="map-container"
-        center={egypt}
+        center={budapest}
         zoom={2.5} scrollWheelZoom={true}
       >
         {geolocation.loaded && newShowMarkers}

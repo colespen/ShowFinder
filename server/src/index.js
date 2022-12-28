@@ -78,7 +78,6 @@ app.post('/', (req, res) => {
         console.error(err.message);
       });
   };
-
   console.log("userData~~~~~: ", userData);
 });
 
@@ -92,7 +91,7 @@ app.put('/', (req, res) => {
       minDate: req.body.dateRange.minDate,
       maxDate: req.body.dateRange.maxDate
     },
-    newCity: req.body.newCity
+    newCity: req.body.newCity,
   };
 
   const getCoords = () => {
