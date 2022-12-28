@@ -23,31 +23,36 @@ app.get('/', (req, res) => {
 const iqToken = process.env.IQ_TOKEN;
 const rapidKey = process.env.RAPID_KEY;
 
+let userData = {};
+
+////////////////////////////////////////////////////////
+////    POST
+////////////////////////////////////////////////////////
 
 app.post('/', (req, res) => {
-  let userData = {
+  userData = {
     dateRange: {
-      minDate: req.body.dateRange.minDate, 
-      maxDate: req.body.dateRange.maxDate
+      minDate: req.body.dateRange.minDate,
+      maxDate: req.body.dateRange.maxDate,
     },
     lat: req.body.lat,
     lng: req.body.lng,
   };
-  
+
   const getCity = () => {
     if (userData) axios.get(
       `https://us1.locationiq.com/v1/reverse.php?key=${iqToken}&lat=`
       + userData.lat + "&lon=" + userData.lng + "&format=json"
     )
       .then(response => {
-        console.log("response.data in getCity~~~: ", response.data);
+        console.log("response.data in getCity~~~~~~~: ", response.data);
         //response.data is current city
         getShows(response.data);
       })
       .catch(err => {
         console.error(err.message);
       });
-  }
+  };
   getCity();
 
   const getShows = (currAddress) => {
@@ -61,13 +66,13 @@ app.post('/', (req, res) => {
       },
       headers: {
         'X-RapidAPI-Key': rapidKey,
-        'X-RapidAPI-Host': 'concerts-artists-events-tracker.p.rapidapi.com'
+        'X-RapidAPI-Host': 'concerts-artists-events-tracker.p.rapidapi.com',
       }
     };
     axios.request(options)
       .then(response => {
-        console.log("response.data in getShows~~: ", response.data);
-        res.send({...response.data, currAddress});
+        console.log("response.data in getShows~~~~~~: ", response.data);
+        res.send({ ...response.data, currAddress });
       })
       .catch(err => {
         console.error(err.message);
@@ -77,6 +82,59 @@ app.post('/', (req, res) => {
   console.log("userData~~~~~: ", userData);
 });
 
+////////////////////////////////////////////////////////
+////    PUT
+////////////////////////////////////////////////////////
+
+app.put('/', (req, res) => {
+  userData = {
+    dateRange: {
+      minDate: req.body.dateRange.minDate,
+      maxDate: req.body.dateRange.maxDate
+    },
+    newCity: req.body.newCity
+  };
+
+  const getCoords = () => {
+    if (userData) axios.get(
+      `https://us1.locationiq.com/v1/search?key=${iqToken}&city=${userData.newCity}&format=json`
+    )
+      .then(response => {
+        console.log("response.data in getCoords~~~~~~: ", response.data);
+        //response.data is coordinates
+        getNewShows(response.data);
+      })
+      .catch(err => {
+        console.error(err.message);
+      });
+  };
+  getCoords();
+
+  const getNewShows = (latLng) => {
+    const options = {
+      method: 'GET',
+      baseURL: 'https://concerts-artists-events-tracker.p.rapidapi.com/location',
+      params: {
+        'name': userData.newCity,
+        'minDate': userData.dateRange.minDate,
+        'maxDate': userData.dateRange.maxDate,
+      },
+      headers: {
+        'X-RapidAPI-Key': rapidKey,
+        'X-RapidAPI-Host': 'concerts-artists-events-tracker.p.rapidapi.com',
+      }
+    };
+    axios.request(options)
+      .then(response => {
+        console.log("response.data in getNewShows~~~~~: ", response.data);
+        res.send({ ...response.data, latLng });
+      })
+      .catch(err => {
+        console.error(err.message);
+      });
+  };
+
+});
 
 let port = process.env.PORT || 8001;
 app.listen(port, () => {
