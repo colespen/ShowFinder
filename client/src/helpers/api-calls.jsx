@@ -1,3 +1,13 @@
+////    Calgary
+  // const lat = 51.05784383103367;
+  // const lng = -114.06311576264878;
+////    Berlin
+  // const lat = 52.52522953495915;
+  // const lng = 13.393146057828984;
+////    Seattle
+  // const lat = 47.63385441384689;
+  // const lng = -122.34824430933783;
+
 // fetch city name using coords
   // useEffect(() => {
   //   const xhr = new XMLHttpRequest();

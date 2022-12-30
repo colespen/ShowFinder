@@ -126,7 +126,7 @@ app.put('/', (req, res) => {
     axios.request(options)
       .then(response => {
         console.log("response.data in getNewShows~~~~~: ", response.data);
-        res.send({ ...response.data, latLng });
+        res.json({ ...response.data, latLng });
       })
       .catch(err => {
         console.error(err.message);
