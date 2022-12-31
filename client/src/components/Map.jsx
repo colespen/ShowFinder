@@ -18,6 +18,7 @@ export default function Map() {
     JSON.parse(sessionStorage.getItem('currCity')) || null
   );
   const [userData, setUserData] = useState(
+    JSON.parse(sessionStorage.getItem('userData')) ||
     {
       dateRange: {},
       lat: 0,
@@ -90,6 +91,7 @@ export default function Map() {
     sessionStorage.setItem('shows', JSON.stringify(shows));
     sessionStorage.setItem('currCity', JSON.stringify(currCity));
     sessionStorage.setItem('artist', JSON.stringify(artist));
+    sessionStorage.setItem('userData', JSON.stringify(userData));
   }, [shows, artist, currCity]);
 
 
