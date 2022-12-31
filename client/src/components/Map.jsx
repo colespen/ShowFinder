@@ -9,13 +9,13 @@ import './styles.scss';
 
 export default function Map() {
   const [shows, setShows] = useState(
-    JSON.parse(localStorage.getItem('shows')) || {}
+    JSON.parse(sessionStorage.getItem('shows')) || {}
   );
   const [artist, setArtist] = useState(
-    JSON.parse(localStorage.getItem('artist')) || ""
+    JSON.parse(sessionStorage.getItem('artist')) || ""
   );
   const [currCity, setCurrCity] = useState(
-    JSON.parse(localStorage.getItem('currCity')) || null
+    JSON.parse(sessionStorage.getItem('currCity')) || null
   );
   const [userData, setUserData] = useState(
     {
@@ -26,14 +26,15 @@ export default function Map() {
     });
   const isFirstRender = useRef(true);
 
+  ////    Save user's current coords
   const geolocation = useGeoLocation();
-  ////    Save Current Date and maxDate
-  const currDate = new Date();
-  const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
-  const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 1}`;
-
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
+
+  ////    Save Current Date and maxDate
+  const currDate = new Date();
+  const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() - 10}`;
+  const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
 
   ////    Set All User Data
   useEffect(() => {
@@ -47,6 +48,8 @@ export default function Map() {
 
   // console.log("window location: ", window.location);
 
+
+
   ////    POST to server for geo and shows API calls
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
@@ -59,6 +62,7 @@ export default function Map() {
         .catch(err => console.log(err.message));
     }
   }, [geolocation.loaded, userData, currCity, shows]);
+
 
 
   ////    Set City Name Input
@@ -76,16 +80,16 @@ export default function Map() {
           lat: res.data.latLng[0].lat,
           lng: res.data.latLng[0].lon,
         }));
-        console.log("~~~~~~~~~~~~~~PUT", res.data);
+        console.log("~~~~~~~~~~~~~~~PUT", res.data);
       })
       .catch(err => console.log(err.message));
   };
 
-  ////    Save state to localStorage
+  ////    Save state to sessionStorage
   useEffect(() => {
-    localStorage.setItem('shows', JSON.stringify(shows));
-    localStorage.setItem('currCity', JSON.stringify(currCity));
-    localStorage.setItem('artist', JSON.stringify(artist));
+    sessionStorage.setItem('shows', JSON.stringify(shows));
+    sessionStorage.setItem('currCity', JSON.stringify(currCity));
+    sessionStorage.setItem('artist', JSON.stringify(artist));
   }, [shows, artist, currCity]);
 
 
@@ -98,10 +102,11 @@ export default function Map() {
     const map = useMap();
     useEffect(() => {
       if (geolocation.loaded && currCity) map.flyTo({ lat: userData.lat, lng: userData.lng }, 12);
+      console.log("userData in CurrentLocation effect~~~~~~: ", userData)
       ////    use setView instead of flyTo on page refresh
       // map.setView(geolocation.coords, map.getZoom());
       map.on('zoomend', () => {
-      //// load position marker after animation
+        //// load position marker after animation
         const circle = L.circle(geolocation.coords, geolocation.accuracy);
         const fixCircle = L.circle(geolocation.coords, { radius: 150, color: 'blue', weight: 1, opacity: 0.55, fillColor: '#0000ff38', fillOpacity: 0.15 });
 
@@ -116,28 +121,45 @@ export default function Map() {
     return null;
   }
 
+
+
+const getArtist = (e) => {
+  return new Promise (resolve => {
+    setTimeout(resolve, 0);
+  }).then(() => {
+    return handleArtistName(e);
+  }).then((artist) => {
+    handleArtistLink(artist)
+  })
+  .catch(err => console.error(err.message))
+}
+
   ////    Set artist name onClick
   const handleArtistName = e => {
-    // e.preventDefault();
-    setArtist((e.target.innerText).split(' ').join('+'));
+      // e.preventDefault();
+      setArtist((e.target.innerText).split(' ').join('+'));
+      console.log("artist in handleArtistName", artist);
+      return (e.target.innerText).split(' ').join('+')
   };
 
+  const handleArtistLink = (artist) => {
+    console.log("artist in handleArtistClick", artist);
+    window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'noreferrer');
+  };
+  
   useEffect(() => {
-    const handleArtistClick = () => {
-      console.log("artist in handleButton", artist);
-      window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'noreferrer');
-    };
     if (isFirstRender.current && !(Object.keys(shows).length === 0 && shows.constructor === Object)) {
       isFirstRender.current = false;
       return;
     }
-    if (!isFirstRender.current) {
-      handleArtistClick();
-      return;
-    }
+    // if (!isFirstRender.current) {
+    //   handleArtistClick();
+    //   return;
+    // }
   }, [artist, shows]);
-  
-  console.log("isFirstRender", isFirstRender.current)
+  console.log("shows~~~~~~~~~: ", shows);
+  console.log("artist~~~~~~~~: ", artist);
+  console.log("isFirstRender", isFirstRender.current);
 
 
   const newShowMarkers = (shows.data || []).map((show, index) =>
@@ -154,7 +176,7 @@ export default function Map() {
             {show.performer.map((artist, i) =>
             (
               <li className="artist" key={artist + i}>
-                <button onClick={handleArtistName}>
+                <button onClick={getArtist}>
                   {artist.name}
                 </button>
               </li>
@@ -179,11 +201,11 @@ export default function Map() {
         currCity : "grabbing your location..."}
       </h1>
       <div className="city-input">
-      <input type="text"
-        name="enter city"
-        placeholder="enter city name"
-        onChange={handleCityChange} />
-      <button onClick={handlePutRequest}>GO</button>
+        <input type="text"
+          name="enter city"
+          placeholder="coming soon..."
+          onChange={handleCityChange} />
+        <button onClick={handlePutRequest}>GO</button>
       </div>
 
       <MapContainer className="map-container"
