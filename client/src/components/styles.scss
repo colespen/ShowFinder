@@ -10,6 +10,7 @@
   margin: 5% 0 2% 0;
   color: whitesmoke;
 }
+
 .artist-list {
   width: 100%;
   padding-left: 0;
@@ -33,20 +34,40 @@
     border: none;
     padding: 6px 10px;
     margin-top: 5px;
-    
+
     &:hover {
       background-color: #72b6ff1f;
     }
   }
 }
 
-.city-input {
-  input, button {
-    height: 30px;
-    padding-top: 3px;
-  } 
+.controls {
+  display: flex;
+  flex-direction: row;
   width: 85%;
   height: 30px;
+  margin-bottom: 20px;
+
+  #current-location {
+    height: 30px;
+    padding-top: 3px;
+    background-color: #d6e5f1;
+    border: 3px solid rgba(27, 27, 32, 0.344);
+  }
+}
+
+.city-input {
+  width: 100%;
+  height: 100%;
   background-color: #003768;
   margin-bottom: 20px;
+
+  input,
+  button {
+    height: 30px;
+    padding-top: 3px;
+    background-color: #d6e5f1;
+    border: 3px solid rgba(27, 27, 32, 0.344);
+  }
+
 }

@@ -21,37 +21,57 @@ export default function Map() {
     JSON.parse(sessionStorage.getItem('userData')) ||
     {
       dateRange: {},
-      lat: 0,
-      lng: 0,
+      lat: null,
+      lng: null,
       newCity: "",
     });
-  const isFirstRender = useRef(true);
 
-  ////    Save user's current coords
+  //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
+  ////// Toronto
+  // const lat = 43.66362651471936;
+  // const lng = -79.3924776050637;
+  ////// Montreal
+  // const lat = 45.52557764805207;
+  // const lng = -73.59029896192136;
 
-  ////    Save Current Date and maxDate
+  console.log("geolocation~~~~~~~~~: ", geolocation);
+
+
+  const isFirstRender = useRef(true);
+  console.log("userData~~~~~~~: ", userData);
+
+  //////    Set Geo Coords on First Render
+  useEffect(() => {
+    if (geolocation.loaded && isFirstRender.current
+      && userData.lat === null) {
+      setUserData(prev => ({
+        ...prev, lat, lng,
+      }));
+      isFirstRender.current = false;
+      return;
+    }
+  }, [isFirstRender, geolocation.coords.lat, geolocation.coords.lng, geolocation.loaded, userData.lat, lat, lng]);
+
+  //////    Assign Current Date and maxDate
   const currDate = new Date();
-  const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() - 10}`;
+  const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
   const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
 
-  ////    Set All User Data
+  //////    Set Date Range (temp fixed to current date)
   useEffect(() => {
-    setUserData(
+    setUserData(prev => (
       {
+        ...prev,
         dateRange: { minDate, maxDate },
-        lat, lng,
-        newCity: "",
-      });
-  }, [minDate, maxDate, lat, lng]);
+      }
+    ));
+  }, [minDate, maxDate]);
 
-  // console.log("window location: ", window.location);
-
-
-
-  ////    POST to server for geo and shows API calls
+  //////////////////////////////////////////////////////////////////
+  //////    POST to server for geo and shows API calls - initial
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
       axios.post('http://localhost:8001', userData)
@@ -62,15 +82,31 @@ export default function Map() {
         })
         .catch(err => console.log(err.message));
     }
-  }, [geolocation.loaded, userData, currCity, shows]);
+  }, [geolocation.loaded, userData, shows]);
 
+  //////    POST Current Location Shows and Geo - onClick
+  const handleCurrLocationClick = () => {
+    if (geolocation.loaded) {
+      setUserData(prev => ({
+        ...prev, lat, lng,
+      }));
+    }
+    if (userData.lat === lat && userData.lng === lng) {
+      axios.post('http://localhost:8001', userData)
+        .then((res) => {
+          setShows(res.data);
+          setCurrCity(res.data.currAddress.address.city);
+          console.log("~~~~~~~~~~~~~~POST", res.data);
+        })
+        .catch(err => console.log(err.message));
+    }
+  };
 
-
-  ////    Set City Name Input
+  //////    Set City Name Input
   const handleCityChange = e => {
     setUserData((prev) => ({ ...prev, newCity: e.target.value }));
   };
-  ////    PUT to server for geo and new shows API calls
+  //////    PUT to server for geo and new shows API calls
   const handlePutRequest = () => {
     axios.put('http://localhost:8001', userData)
       .then((res) => {
@@ -85,26 +121,27 @@ export default function Map() {
       })
       .catch(err => console.log(err.message));
   };
+  //////
+  ///////////////////////////////////////////////////////////////////
 
-  ////    Save state to sessionStorage
+  //////    Save state to sessionStorage
   useEffect(() => {
     sessionStorage.setItem('shows', JSON.stringify(shows));
     sessionStorage.setItem('currCity', JSON.stringify(currCity));
     sessionStorage.setItem('artist', JSON.stringify(artist));
     sessionStorage.setItem('userData', JSON.stringify(userData));
-  }, [shows, artist, currCity]);
+  }, [shows, artist, currCity, userData]);
 
 
-  ////    Default position
+  //////    Default position
   const budapest = [47.51983881388099, 19.032783326057594];
 
 
-  ////    Use Current Location for map Position and circle
+  //////    Use Current Location for map Position and circle
   function CurrentLocation() {
     const map = useMap();
     useEffect(() => {
       if (geolocation.loaded && currCity) map.flyTo({ lat: userData.lat, lng: userData.lng }, 12);
-      console.log("userData in CurrentLocation effect~~~~~~: ", userData)
       ////    use setView instead of flyTo on page refresh
       // map.setView(geolocation.coords, map.getZoom());
       map.on('zoomend', () => {
@@ -123,45 +160,29 @@ export default function Map() {
     return null;
   }
 
-
-
-const getArtist = (e) => {
-  return new Promise (resolve => {
-    setTimeout(resolve, 0);
-  }).then(() => {
-    return handleArtistName(e);
-  }).then((artist) => {
-    handleArtistLink(artist)
-  })
-  .catch(err => console.error(err.message))
-}
-
-  ////    Set artist name onClick
-  const handleArtistName = e => {
-      // e.preventDefault();
-      setArtist((e.target.innerText).split(' ').join('+'));
-      console.log("artist in handleArtistName", artist);
-      return (e.target.innerText).split(' ').join('+')
+  //////    Artist Link promise chain
+  const getArtist = (e) => {
+    return new Promise(resolve => {
+      setTimeout(resolve, 0);
+    }).then(() => {
+      return handleArtistName(e);
+    }).then((artist) => {
+      handleArtistLink(artist);
+    })
+      .catch(err => console.error(err.message));
   };
-
+  //////    Set artist name onClick
+  const handleArtistName = e => {
+    setArtist((e.target.innerText).split(' ').join('+'));
+    return (e.target.innerText).split(' ').join('+');
+  };
+  //////    Open artist name onClick
   const handleArtistLink = (artist) => {
     console.log("artist in handleArtistClick", artist);
     window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'noreferrer');
   };
-  
-  useEffect(() => {
-    if (isFirstRender.current && !(Object.keys(shows).length === 0 && shows.constructor === Object)) {
-      isFirstRender.current = false;
-      return;
-    }
-    // if (!isFirstRender.current) {
-    //   handleArtistClick();
-    //   return;
-    // }
-  }, [artist, shows]);
+
   console.log("shows~~~~~~~~~: ", shows);
-  console.log("artist~~~~~~~~: ", artist);
-  console.log("isFirstRender", isFirstRender.current);
 
 
   const newShowMarkers = (shows.data || []).map((show, index) =>
@@ -202,12 +223,17 @@ const getArtist = (e) => {
       <h1 className="title"> {currCity ? "Shows in " +
         currCity : "grabbing your location..."}
       </h1>
-      <div className="city-input">
-        <input type="text"
-          name="enter city"
-          placeholder="coming soon..."
-          onChange={handleCityChange} />
-        <button onClick={handlePutRequest}>GO</button>
+      <div className="controls">
+        <div className="city-input">
+          <input type="text"
+            name="enter city"
+            placeholder="coming soon..."
+            onChange={handleCityChange} />
+          <button onClick={handlePutRequest}>GO</button>
+        </div>
+        <button id="current-location"
+          onClick={handleCurrLocationClick}
+        >++</button>
       </div>
 
       <MapContainer className="map-container"
