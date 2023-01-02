@@ -32,14 +32,14 @@ export default function Map() {
 
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
-  // const lat = geolocation.coords.lat;
-  // const lng = geolocation.coords.lng;
+  const lat = geolocation.coords.lat;
+  const lng = geolocation.coords.lng;
   ////// Toronto
   // const lat = 43.66362651471936;
   // const lng = -79.3924776050637;
   ////// Montreal
-  const lat = 45.52557764805207;
-  const lng = -73.59029896192136;
+  // const lat = 45.52557764805207;
+  // const lng = -73.59029896192136;
   // console.log("geolocation~~~~~~~~~: ", geolocation);
 
   const isFirstRender = useRef(true);
@@ -160,7 +160,7 @@ export default function Map() {
     useEffect(() => {
       if (geolocation.loaded && currCity) map.flyTo({ lat: userData.lat, lng: userData.lng }, 12);
       ////    use setView instead of flyTo on page refresh
-      // map.setView(geolocation.coords, map.getZoom());
+      // map.setView({ lat: userData.lat, lng: userData.lng }, 12);
       map.on('zoomend', () => {
         //// load position marker after animation
         const circle = L.circle(geolocation.coords, geolocation.accuracy);
@@ -208,7 +208,6 @@ export default function Map() {
         dateRange,
       }
     ));
-    console.log("event in handleDateSelect~~~~: ", { minDate, maxDate });
   };
 
 
