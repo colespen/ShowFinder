@@ -40,7 +40,7 @@ export default function Map() {
   ////// Montreal
   // const lat = 45.52557764805207;
   // const lng = -73.59029896192136;
-  console.log("geolocation~~~~~~~~~: ", geolocation);
+  // console.log("geolocation~~~~~~~~~: ", geolocation);
 
   const isFirstRender = useRef(true);
   console.log("userData~~~~~~~: ", userData);
@@ -77,38 +77,44 @@ export default function Map() {
 
 
   ////////////////////////////////////////////////////////////////////
-  //////    POST to server for geo and shows API calls - First Render
+  //////    Calls to Server for Geo and Shows API - First Render
   ////////////////////////////////////////////////////////////////////
-  useEffect(() => {
-    if (geolocation.loaded && (Object.keys(shows).length === 0)) {
-      axios.post('http://localhost:8001', userData)
+  
+  const getShowsCurrCity = () => {
+    axios.post('http://localhost:8001', userData)
         .then((res) => {
           setShows(res.data);
           setCurrCity(res.data.currAddress.address.city);
           console.log("~~~~~~~~~~~~~~POST", res.data);
         })
         .catch(err => console.log(err.message));
+  }
+  
+  useEffect(() => {
+    if (geolocation.loaded && (Object.keys(shows).length === 0)) {
+      getShowsCurrCity();
     }
-  }, [geolocation.loaded, userData, shows]);
+  }, [geolocation.loaded, shows, userData]);
 
 
   //////    POST Current Location Shows and Geo - onClick
   const handleCurrLocationClick = () => {
     if (geolocation.loaded) {
+      // setCurrCity("");
       setUserData(prev => ({
         ...prev, lat, lng,
       }));
-    }
-    if (userData.lat === lat && userData.lng === lng) {
-      axios.post('http://localhost:8001', userData)
-        .then((res) => {
-          setShows(res.data);
-          setCurrCity(res.data.currAddress.address.city);
-          console.log("~~~~~~~~~~~~~~POST", res.data);
-        })
-        .catch(err => console.log(err.message));
+      getShowsCurrCity();
     }
   };
+
+  //////    POST Date Range Shows and Geo - onClick
+  const handleDateRangeClick = () => {
+    if (geolocation.loaded && userData.dateRange.minDate 
+      && userData.dateRange.maxDate) {
+        getShowsCurrCity();
+    }
+  }
 
 
   //////    Set City Name Input
@@ -193,17 +199,17 @@ export default function Map() {
     console.log("artist in handleArtistClick", artist);
     window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'noreferrer');
   };
- 
+
   //////    Set Date Range to State
-const handleDateSelect = (dateRange) => {
-  setUserData(prev => (
-    {
-      ...prev,
-      dateRange,
-    }
-  ));
-  console.log("event in handleDateSelect~~~~: ", {minDate, maxDate})
-}
+  const handleDateSelect = (dateRange) => {
+    setUserData(prev => (
+      {
+        ...prev,
+        dateRange,
+      }
+    ));
+    console.log("event in handleDateSelect~~~~: ", { minDate, maxDate });
+  };
 
 
   const newShowMarkers = (shows.data || []).map((show, index) =>
@@ -256,7 +262,9 @@ const handleDateSelect = (dateRange) => {
         </div>
 
         <div className="date-location">
-          <DateRange handleDateSelect={handleDateSelect} />
+          <DateRange handleDateSelect={handleDateSelect}
+          />
+          <button onClick={handleDateRangeClick}>GO</button>
           <button id="current-location"
             onClick={handleCurrLocationClick}
           >++</button>

@@ -8,11 +8,14 @@ export default function DateRange(props) {
     const [range, setRange] = useState([null, null]);
     const [startDate, endDate] = range;
 
+    const options = { year: 'numeric', month: 'short', day: '2-digit' };
+    const currDate = new Date().toLocaleDateString(undefined, options);
+
     const handleDateChange = e => {
         let dateRange = {};
         setRange(e);
 
-        if (e[0] && e[1]) e.map((date, i) => {
+        if (e[0] && e[1]) e.forEach((date, i) => {
             const yyyy1 = date.toString().split(' ')[3];
             const mmStr1 = date.toString().split(' ')[1];
             const mm1 = new Date(Date.parse(mmStr1 + "1,2023")).getMonth() + 1;
@@ -20,7 +23,7 @@ export default function DateRange(props) {
             if (i === 0) dateRange.minDate = `${yyyy1}-${mm1}-${dd1}`;
             if (i === 1) dateRange.maxDate = `${yyyy1}-${mm1}-${dd1}`;
         });
-        props.handleDateSelect(dateRange)
+        props.handleDateSelect(dateRange);
     };
 
 
@@ -29,7 +32,7 @@ export default function DateRange(props) {
             onClick={onClick}
             ref={ref}
         >
-            {value ? value : "enter date range"}
+            {value ? value : currDate + ' - set range'}
         </button>
     ));
     return (
@@ -46,5 +49,3 @@ export default function DateRange(props) {
         />
     );
 }
-
-
