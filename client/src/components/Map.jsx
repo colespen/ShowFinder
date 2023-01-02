@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 
 import './styles.scss';
@@ -32,14 +32,14 @@ export default function Map() {
 
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
-  const lat = geolocation.coords.lat;
-  const lng = geolocation.coords.lng;
+  // const lat = geolocation.coords.lat;
+  // const lng = geolocation.coords.lng;
   ////// Toronto
   // const lat = 43.66362651471936;
   // const lng = -79.3924776050637;
   ////// Montreal
-  // const lat = 45.52557764805207;
-  // const lng = -73.59029896192136;
+  const lat = 45.52557764805207;
+  const lng = -73.59029896192136;
   // console.log("geolocation~~~~~~~~~: ", geolocation);
 
   const isFirstRender = useRef(true);
@@ -80,7 +80,7 @@ export default function Map() {
   //////    Calls to Server for Geo and Shows API - First Render
   ////////////////////////////////////////////////////////////////////
   
-  const getShowsCurrCity = () => {
+  const getShowsCurrCity = useCallback(() => {
     axios.post('http://localhost:8001', userData)
         .then((res) => {
           setShows(res.data);
@@ -88,19 +88,19 @@ export default function Map() {
           console.log("~~~~~~~~~~~~~~POST", res.data);
         })
         .catch(err => console.log(err.message));
-  }
-  
+  }, [userData])
+
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
       getShowsCurrCity();
     }
-  }, [geolocation.loaded, shows, userData]);
+  }, [geolocation.loaded, shows, userData, getShowsCurrCity]);
 
 
   //////    POST Current Location Shows and Geo - onClick
   const handleCurrLocationClick = () => {
     if (geolocation.loaded) {
-      // setCurrCity("");
+      setCurrCity("");
       setUserData(prev => ({
         ...prev, lat, lng,
       }));
@@ -251,7 +251,7 @@ export default function Map() {
       <h1 className="title"> {currCity ? "Shows in " +
         currCity : "grabbing your location..."}
       </h1>
-      <div className="controls">
+      <div className="controls-top">
 
         <div className="city-input">
           <input type="text"
@@ -261,7 +261,7 @@ export default function Map() {
           <button onClick={handlePutRequest}>GO</button>
         </div>
 
-        <div className="date-location">
+        <div className="date-location" id="date-top">
           <DateRange handleDateSelect={handleDateSelect}
           />
           <button onClick={handleDateRangeClick}>GO</button>
@@ -285,6 +285,18 @@ export default function Map() {
         />
         <CurrentLocation />
       </MapContainer>
+
+      <div className="controls-bottom">
+      <div className="date-location" id="date-bottom">
+          <DateRange handleDateSelect={handleDateSelect}
+          />
+          <button onClick={handleDateRangeClick}>GO</button>
+          <button id="current-location"
+            onClick={handleCurrLocationClick}
+          >++</button>
+        </div>
+
+      </div>
     </div>
   );
 }
