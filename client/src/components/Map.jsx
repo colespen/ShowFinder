@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+
+import './styles.scss';
+
 import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
 import L from "leaflet";
 import useGeoLocation from '../hooks/useGeoLocation';
 
-import './styles.scss';
+import DateRange from './DateRange';
+
 // import testShows from '../data/test-show-rapid.json';
 
 export default function Map() {
@@ -36,14 +40,13 @@ export default function Map() {
   ////// Montreal
   // const lat = 45.52557764805207;
   // const lng = -73.59029896192136;
-
   console.log("geolocation~~~~~~~~~: ", geolocation);
-
 
   const isFirstRender = useRef(true);
   console.log("userData~~~~~~~: ", userData);
 
-  //////    Set Geo Coords on First Render
+
+  //////    Set Geo Coords State - First Render
   useEffect(() => {
     if (geolocation.loaded && isFirstRender.current
       && userData.lat === null) {
@@ -55,12 +58,14 @@ export default function Map() {
     }
   }, [isFirstRender, geolocation.coords.lat, geolocation.coords.lng, geolocation.loaded, userData.lat, lat, lng]);
 
+
   //////    Assign Current Date and maxDate
   const currDate = new Date();
   const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
   const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
 
-  //////    Set Date Range (temp fixed to current date)
+
+  //////    Set Default Date Range State
   useEffect(() => {
     setUserData(prev => (
       {
@@ -70,8 +75,10 @@ export default function Map() {
     ));
   }, [minDate, maxDate]);
 
-  //////////////////////////////////////////////////////////////////
-  //////    POST to server for geo and shows API calls - initial
+
+  ////////////////////////////////////////////////////////////////////
+  //////    POST to server for geo and shows API calls - First Render
+  ////////////////////////////////////////////////////////////////////
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
       axios.post('http://localhost:8001', userData)
@@ -83,6 +90,7 @@ export default function Map() {
         .catch(err => console.log(err.message));
     }
   }, [geolocation.loaded, userData, shows]);
+
 
   //////    POST Current Location Shows and Geo - onClick
   const handleCurrLocationClick = () => {
@@ -101,6 +109,7 @@ export default function Map() {
         .catch(err => console.log(err.message));
     }
   };
+
 
   //////    Set City Name Input
   const handleCityChange = e => {
@@ -121,8 +130,10 @@ export default function Map() {
       })
       .catch(err => console.log(err.message));
   };
+  ////////////////////////////////////////////////////////////////////
   //////
-  ///////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+
 
   //////    Save state to sessionStorage
   useEffect(() => {
@@ -160,6 +171,7 @@ export default function Map() {
     return null;
   }
 
+
   //////    Artist Link promise chain
   const getArtist = (e) => {
     return new Promise(resolve => {
@@ -181,8 +193,17 @@ export default function Map() {
     console.log("artist in handleArtistClick", artist);
     window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'noreferrer');
   };
-
-  console.log("shows~~~~~~~~~: ", shows);
+ 
+  //////    Set Date Range to State
+const handleDateSelect = (dateRange) => {
+  setUserData(prev => (
+    {
+      ...prev,
+      dateRange,
+    }
+  ));
+  console.log("event in handleDateSelect~~~~: ", {minDate, maxDate})
+}
 
 
   const newShowMarkers = (shows.data || []).map((show, index) =>
@@ -220,20 +241,27 @@ export default function Map() {
 
   return (
     <div className="map-main">
+
       <h1 className="title"> {currCity ? "Shows in " +
         currCity : "grabbing your location..."}
       </h1>
       <div className="controls">
+
         <div className="city-input">
           <input type="text"
             name="enter city"
-            placeholder="coming soon..."
+            placeholder="enter a city"
             onChange={handleCityChange} />
           <button onClick={handlePutRequest}>GO</button>
         </div>
-        <button id="current-location"
-          onClick={handleCurrLocationClick}
-        >++</button>
+
+        <div className="date-location">
+          <DateRange handleDateSelect={handleDateSelect} />
+          <button id="current-location"
+            onClick={handleCurrLocationClick}
+          >++</button>
+        </div>
+
       </div>
 
       <MapContainer className="map-container"
