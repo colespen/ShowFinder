@@ -253,10 +253,14 @@ export default function Map() {
 
   return (
     <div className="map-main">
-
-      <h1 className="title"> {currCity ? "Shows in " +
-        currCity : "grabbing your location..."}
-      </h1>
+      {currCity ?
+        <h1 className="title"> {"shows in " + currCity}
+        </h1>
+        :
+        <h1 className="title" style={{fontWeight: "100", fontStyle: "italic"}}>
+          grabbing your location...
+        </h1>
+      }
       <div className="controls-top">
 
         <div className="city-input">
@@ -306,7 +310,7 @@ export default function Map() {
           <DateRange handleDateSelect={handleDateSelect}
           />
           <button id="go-button"
-          onClick={handleDateRangeClick}>GO</button>
+            onClick={handleDateRangeClick}>GO</button>
         </div>
 
       </div>

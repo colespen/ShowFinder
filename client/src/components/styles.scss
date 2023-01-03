@@ -10,7 +10,9 @@
   margin: 4% 0 3.5% 0;
   color: whitesmoke;
   text-align: center;
+  // letter-spacing: 0.25px;
   font-size: clamp(30px, 4.5vw, 55px);
+  font-weight: 200;
 }
 
 .artist-list {
@@ -20,8 +22,10 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
+  
   li:first-child button {
+    font-family: 'Montserrat', sans-serif, 'Courier New', Courier, monospace;
+    font-weight: 400;
     background-color: rgb(240, 240, 240);
     border-radius: 5px;
     color: rgb(0, 0, 0);
