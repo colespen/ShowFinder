@@ -49,7 +49,8 @@
   width: 90%;
   height: 30px;
   margin-bottom: 20px;
-  background-color: #003768;
+  background: #003768;
+  background: linear-gradient(90deg, rgb(0, 50, 93) 15%, rgba(27, 66, 101, 1) 46%, rgba(87, 114, 138, 1) 96%);
 }
 
 .controls-bottom {
@@ -58,7 +59,8 @@
   width: 90%;
   height: 30px;
   margin-top: 20px;
-  background-color: #003768;
+  background: #003768;
+  background: linear-gradient(90deg, rgba(87, 114, 138, 1) 7%, rgba(37, 73, 106, 1) 38%, rgb(0, 50, 93) 68%);
   display: flex;
   justify-content: flex-end;
 }
@@ -119,7 +121,8 @@
       width: 100%;
       height: 24px;
       color: rgba(245, 245, 245, 0.969);
-      background-color: #d6e5f100;
+      background: #003768;
+      background: linear-gradient(90deg, rgba(0, 55, 104, 0.327) 0%, rgba(0, 55, 104, 1) 75%);
       display: flex;
       align-items: center;
       border: none;
@@ -136,7 +139,7 @@
     width: 39px;
     font-weight: 600;
     color: rgba(245, 245, 245, 0.969);
-    background-color: #d6e5f100;
+    background-color: #003768;
     border: 3px solid #57728a;
     border-left: none;
     border-right: none;
@@ -154,7 +157,7 @@
 
 #current-location {
   height: 30px;
-  background-color: #d6e5f100;
+  background-color: #003768;
   border: 3px solid #57728a;
   width: 39px;
   padding: 4px 3px 3px 3px;
@@ -188,6 +191,22 @@
     border-right: 3px solid #57728a;
   }
 }
+
+.react-datepicker-popper {
+  opacity: 75%;
+  
+  .react-datepicker {
+    border-color: rgb(103, 103, 123);
+  }
+  .react-datepicker__month-container {
+    background-color: rgb(211, 211, 236);
+  }
+  .react-datepicker__header  {
+    background-color: rgb(186, 186, 210);
+    border-color: rgb(103, 103, 123);
+  }
+}
+
 
 @media only screen and (max-width: 805px) {
   #date-top {
