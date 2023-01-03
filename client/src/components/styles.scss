@@ -6,14 +6,33 @@
   align-items: center;
 }
 
-.title {
-  margin: 4% 0 3.5% 0;
-  color: whitesmoke;
-  text-align: center;
-  // letter-spacing: 0.25px;
-  font-size: clamp(30px, 4.5vw, 55px);
+.title-show {
   font-weight: 200;
+  animation: fadeIn 2000ms ease-out 350ms;
+  -webkit-animation: fadeIn 2000ms ease-out 350ms;
+  -moz-animation: fadeIn 2000ms ease-out 350ms;
+  -o-animation: fadeIn 2000ms ease-out 350ms;
+  -ms-animation: fadeIn 2000ms ease-out 350ms;
 }
+
+.wait-container {
+  display: flex;
+  justify-content: center;
+  transition: opacity 400ms ease-out;
+  
+  .title-wait,
+  .loading-dots {
+    font-style: italic;
+    font-weight: 100;
+    width: 100%;
+  }
+}
+
+#loading-dots {
+  letter-spacing: 3px;
+  padding-left: 3px;
+}
+
 
 .artist-list {
   width: 100%;
@@ -22,10 +41,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  
+
   li:first-child button {
-    font-family: 'Montserrat', sans-serif, 'Courier New', Courier, monospace;
-    font-weight: 400;
     background-color: rgb(240, 240, 240);
     border-radius: 5px;
     color: rgb(0, 0, 0);
@@ -130,7 +147,7 @@
     &:focus-within {
       transform: translate(-3px);
       border-right-color: #0037685a;
-      
+
       box-shadow: -3px 0px 0.25px #1d3447;
     }
 
@@ -149,7 +166,7 @@
       &:hover {
         background-color: #001b32;
       }
-     
+
     }
   }
 
@@ -189,6 +206,7 @@
       opacity: 100%;
     }
   }
+
   &:active {
     background-color: #006ecf;
   }
@@ -216,14 +234,16 @@
   &:hover {
     opacity: 85%;
   }
-  
+
   .react-datepicker {
     border-color: rgb(103, 103, 123);
   }
+
   .react-datepicker__month-container {
     background-color: rgb(222, 222, 247);
   }
-  .react-datepicker__header  {
+
+  .react-datepicker__header {
     background-color: rgb(200, 200, 227);
     border-color: rgb(103, 103, 123);
   }
@@ -237,5 +257,59 @@
 
   #date-bottom {
     display: flex;
+  }
+}
+
+////////////////////////////
+/// 
+/////////////////////////
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }

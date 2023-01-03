@@ -45,7 +45,6 @@ export default function DateRange(props) {
             onChange={handleDateChange}
             // onSelect={props.handleDateSelect}
             customInput={<DateButtonInput />}
-
         />
     );
 }

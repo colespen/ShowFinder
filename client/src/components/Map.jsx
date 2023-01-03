@@ -7,9 +7,9 @@ import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
 import L from "leaflet";
 import useGeoLocation from '../hooks/useGeoLocation';
 
+import Title from './Title';
 import DateRange from './DateRange';
 
-// import testShows from '../data/test-show-rapid.json';
 
 export default function Map() {
   const [shows, setShows] = useState(
@@ -253,14 +253,9 @@ export default function Map() {
 
   return (
     <div className="map-main">
-      {currCity ?
-        <h1 className="title"> {"shows in " + currCity}
-        </h1>
-        :
-        <h1 className="title" style={{fontWeight: "100", fontStyle: "italic"}}>
-          grabbing your location...
-        </h1>
-      }
+      <Title className="title"
+        currCity={currCity} newCity={userData.newCity}
+      />
       <div className="controls-top">
 
         <div className="city-input">
