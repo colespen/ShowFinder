@@ -10,6 +10,7 @@
   margin: 4% 0 3.5% 0;
   color: whitesmoke;
   text-align: center;
+  font-size: clamp(30px, 4.5vw, 55px);
 }
 
 .artist-list {
@@ -45,7 +46,6 @@
 .controls-top {
   display: flex;
   flex-direction: row;
-  // width: 85%;
   width: 90%;
   height: 30px;
   margin-bottom: 20px;
@@ -55,7 +55,6 @@
 .controls-bottom {
   display: flex;
   flex-direction: row;
-  // width: 85%;
   width: 90%;
   height: 30px;
   margin-top: 20px;
@@ -71,54 +70,126 @@
   input,
   button {
     height: 100%;
-    background-color: #d6e5f1;
-    border: 3px solid rgba(27, 27, 32, 0.344);
+    color: rgba(245, 245, 245, 0.969);
+    font-weight: 600;
+    background-color: #d6e5f100;
+    border: 3px solid #57728a;
+    padding-left: 6px;
+    transition: background-color 300ms ease;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover {
+      background-color: #001b32;
+    }
+  }
+
+  ::placeholder {
+    color: rgba(245, 245, 245, 0.699);
+  }
+
+  button {
+    width: 39px;
+    font-weight: 600;
+    border-left: none;
+    border-top-right-radius: 10px;
+
+    &:active {
+      background-color: #00539c;
+    }
   }
 }
 
 .date-location {
   z-index: 1000;
-  width: 100%;
+  width: 280px;
   height: 100%;
   display: flex;
   justify-content: flex-end;
 
   .react-datepicker-wrapper {
-    background-color: #d6e5f1;
-    border: 3px solid rgba(27, 27, 32, 0.344);
+    border: 3px solid #57728a;
+    border-top-left-radius: 10px;
     overflow: hidden;
-    width: fit-content;
+    width: 168px;
 
     .date-button-input {
       width: 100%;
       height: 24px;
-      background-color: #d6e5f1;
+      color: rgba(245, 245, 245, 0.969);
+      background-color: #d6e5f100;
       display: flex;
       align-items: center;
       border: none;
+      transition: background-color 200ms ease;
+
+      &:hover {
+        background-color: #001b32;
+      }
     }
   }
 
   button {
     height: 30px;
-    background-color: #d6e5f1;
-    border: 3px solid rgba(27, 27, 32, 0.344);
-    // text-align: center;
+    width: 39px;
+    font-weight: 600;
+    color: rgba(245, 245, 245, 0.969);
+    background-color: #d6e5f100;
+    border: 3px solid #57728a;
+    border-left: none;
+    border-right: none;
+    transition: background-color 200ms ease;
+
+    &:hover {
+      background-color: #001b32;
+    }
+
+    &:active {
+      background-color: #00539c;
+    }
+  }
+}
+
+#current-location {
+  height: 30px;
+  background-color: #d6e5f100;
+  border: 3px solid #57728a;
+  width: 39px;
+  padding: 4px 3px 3px 3px;
+  transition: background-color 300ms ease;
+
+  &:hover {
+    background-color: #001b32;
+
+    #location-icon {
+      transition: opacity 1700ms ease;
+      opacity: 100%;
+    }
   }
 
-  #current-location {
-    height: 30px;
-    padding-top: 3px;
-    background-color: #d6e5f1;
-    border: 3px solid rgba(27, 27, 32, 0.344);
+  &:active {
+    background-color: #00539c;
+  }
+
+  #location-icon {
+    filter: invert(90%);
+    opacity: 50%;
+    width: 16px;
+    height: 16px;
   }
 }
 
 #date-bottom {
   display: none;
+
+  #go-button {
+    border-right: 3px solid #57728a;
+  }
 }
 
-@media only screen and (max-width: 983px) {
+@media only screen and (max-width: 805px) {
   #date-top {
     display: none;
   }

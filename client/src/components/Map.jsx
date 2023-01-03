@@ -59,7 +59,7 @@ export default function Map() {
   }, [isFirstRender, geolocation.coords.lat, geolocation.coords.lng, geolocation.loaded, userData.lat, lat, lng]);
 
 
-  //////    Assign Current Date and maxDate
+  //////    Assign Current Date and maxDate Default
   const currDate = new Date();
   const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
   const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
@@ -79,16 +79,16 @@ export default function Map() {
   ////////////////////////////////////////////////////////////////////
   //////    Calls to Server for Geo and Shows API - First Render
   ////////////////////////////////////////////////////////////////////
-  
+
   const getShowsCurrCity = useCallback(() => {
     axios.post('http://localhost:8001', userData)
-        .then((res) => {
-          setShows(res.data);
-          setCurrCity(res.data.currAddress.address.city);
-          console.log("~~~~~~~~~~~~~~POST", res.data);
-        })
-        .catch(err => console.log(err.message));
-  }, [userData])
+      .then((res) => {
+        setShows(res.data);
+        setCurrCity(res.data.currAddress.address.city);
+        console.log("~~~~~~~~~~~~~~POST", res.data);
+      })
+      .catch(err => console.log(err.message));
+  }, [userData]);
 
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
@@ -100,7 +100,7 @@ export default function Map() {
   //////    POST Current Location Shows and Geo - onClick
   const handleCurrLocationClick = () => {
     if (geolocation.loaded) {
-      setCurrCity("");
+      // setCurrCity("");
       setUserData(prev => ({
         ...prev, lat, lng,
       }));
@@ -110,11 +110,11 @@ export default function Map() {
 
   //////    POST Date Range Shows and Geo - onClick
   const handleDateRangeClick = () => {
-    if (geolocation.loaded && userData.dateRange.minDate 
+    if (geolocation.loaded && userData.dateRange.minDate
       && userData.dateRange.maxDate) {
-        getShowsCurrCity();
+      getShowsCurrCity();
     }
-  }
+  };
 
 
   //////    Set City Name Input
@@ -123,7 +123,7 @@ export default function Map() {
   };
   //////    PUT to server for geo and new shows API calls
   const handlePutRequest = () => {
-    axios.put('http://localhost:8001', userData)
+    if (userData.newCity) axios.put('http://localhost:8001', userData)
       .then((res) => {
         setShows(res.data);
         setCurrCity(userData.newCity);
@@ -135,6 +135,10 @@ export default function Map() {
         console.log("~~~~~~~~~~~~~~~PUT", res.data);
       })
       .catch(err => console.log(err.message));
+  };
+  //////    Submit City on Enter NOT WORKING!
+  const handleEnter = e => {
+    if (e.key === "Enter") handlePutRequest();
   };
   ////////////////////////////////////////////////////////////////////
   //////
@@ -210,6 +214,9 @@ export default function Map() {
     ));
   };
 
+  //////    Auto Focus Text in Input
+  const handleInputTextSelect = e => e.target.select();
+
 
   const newShowMarkers = (shows.data || []).map((show, index) =>
   (
@@ -256,18 +263,27 @@ export default function Map() {
           <input type="text"
             name="enter city"
             placeholder="enter a city"
-            onChange={handleCityChange} />
-          <button onClick={handlePutRequest}>GO</button>
+            autocomplete="off"
+            onChange={handleCityChange}
+            onFocus={handleInputTextSelect}
+          />
+          <button onClick={handlePutRequest}
+            onKeyDownDown={handleEnter}
+          >GO</button>
         </div>
 
         <div className="date-location" id="date-top">
           <DateRange handleDateSelect={handleDateSelect}
           />
           <button onClick={handleDateRangeClick}>GO</button>
-          <button id="current-location"
-            onClick={handleCurrLocationClick}
-          >++</button>
         </div>
+        <button id="current-location"
+          onClick={handleCurrLocationClick}
+        >
+          <img id="location-icon"
+            src="./target.png"
+            alt="current-location-icon" />
+        </button>
 
       </div>
 
@@ -286,13 +302,11 @@ export default function Map() {
       </MapContainer>
 
       <div className="controls-bottom">
-      <div className="date-location" id="date-bottom">
+        <div className="date-location" id="date-bottom">
           <DateRange handleDateSelect={handleDateSelect}
           />
-          <button onClick={handleDateRangeClick}>GO</button>
-          <button id="current-location"
-            onClick={handleCurrLocationClick}
-          >++</button>
+          <button id="go-button"
+          onClick={handleDateRangeClick}>GO</button>
         </div>
 
       </div>
