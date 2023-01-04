@@ -215,14 +215,15 @@
 
   #location-icon {
     filter: invert(90%);
-    // opacity: 0%;
     width: 16px;
     height: 16px;
-    // animation: fadeIn 2500ms ease-out;
-    // -webkit-animation: fadeIn 2500ms ease-out;
-    // -moz-animation: fadeIn 2500ms ease-out;
-    // -o-animation: fadeIn 2500ms ease-out;
-    // -ms-animation: fadeIn 2500ms ease-out;
+    animation: 300ms ease 0s normal forwards 1 iconFadeIn;
+    // animation-iteration-count: 1;
+    // animation-fill-mode: forwards;
+    -webkit-animation: 300ms ease 0s normal forwards 1 iconFadeIn;
+    -moz-animation: 300ms ease 0s normal forwards 1 iconFadeIn;
+    -o-animation: 300ms ease 0s normal forwards 1 iconFadeIn;
+    -ms-animation: 300ms ease 0s normal forwards 1 iconFadeIn;
   }
 }
 
@@ -322,6 +323,75 @@
 
 @-ms-keyframes fadeIn {
   0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+////////////////////////////////
+/////  Icon Fade
+/////////////////////////////
+
+@keyframes iconFadeIn {
+  0% {
+    opacity: 0;
+  }
+  66% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes iconFadeIn {
+  0% {
+    opacity: 0;
+  }
+  66% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes iconFadeIn {
+  0% {
+    opacity: 0;
+  }
+  66% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes iconFadeIn {
+  0% {
+    opacity: 0;
+  }
+  66% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes iconFadeIn {
+  0% {
+    opacity: 0;
+  }
+  66% {
     opacity: 0;
   }
 
