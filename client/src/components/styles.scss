@@ -8,18 +8,20 @@
 
 .title-show {
   font-weight: 200;
-  animation: fadeIn 2000ms ease-out 350ms;
-  -webkit-animation: fadeIn 2000ms ease-out 350ms;
-  -moz-animation: fadeIn 2000ms ease-out 350ms;
-  -o-animation: fadeIn 2000ms ease-out 350ms;
-  -ms-animation: fadeIn 2000ms ease-out 350ms;
+  // transition: opacity 1800ms ease;
+  //////    First Render
+  animation: fadeIn 2500ms ease-out;
+  -webkit-animation: fadeIn 2500ms ease-out;
+  -moz-animation: fadeIn 2500ms ease-out;
+  -o-animation: fadeIn 2500ms ease-out;
+  -ms-animation: fadeIn 2500ms ease-out;
 }
 
 .wait-container {
   display: flex;
   justify-content: center;
-  transition: opacity 400ms ease-out;
-  
+  transition: opacity 1500ms ease-out;
+
   .title-wait,
   .loading-dots {
     font-style: italic;
@@ -141,14 +143,14 @@
     width: 168px;
     border: 3px solid #57728a;
     border-top-left-radius: 10px;
-    box-shadow: -6px 0px 0.7px #243f57b6;
-    transition: all 60ms ease;
+    box-shadow: -7px 0px 1px #1c3d5abe;
+    transition: all 170ms ease;
 
     &:focus-within {
-      transform: translate(-3px);
-      border-right-color: #0037685a;
+      transform: translate(-4px);
+      border-right-color: #122c43b8;
 
-      box-shadow: -3px 0px 0.25px #1d3447;
+      box-shadow: -3px 0px 0.25px #1c3345;
     }
 
     .date-button-input {
@@ -213,9 +215,14 @@
 
   #location-icon {
     filter: invert(90%);
-    opacity: 50%;
+    // opacity: 0%;
     width: 16px;
     height: 16px;
+    // animation: fadeIn 2500ms ease-out;
+    // -webkit-animation: fadeIn 2500ms ease-out;
+    // -moz-animation: fadeIn 2500ms ease-out;
+    // -o-animation: fadeIn 2500ms ease-out;
+    // -ms-animation: fadeIn 2500ms ease-out;
   }
 }
 
@@ -250,6 +257,9 @@
 }
 
 
+
+
+
 @media only screen and (max-width: 805px) {
   #date-top {
     display: none;
@@ -260,9 +270,15 @@
   }
 }
 
-////////////////////////////
-/// 
-/////////////////////////
+
+
+
+
+
+
+////////////////////////////////
+/////  Title Fade
+/////////////////////////////
 
 @keyframes fadeIn {
   0% {

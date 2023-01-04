@@ -27,13 +27,20 @@ export default function Map() {
       dateRange: {},
       lat: null,
       lng: null,
+      currAddress: {},
       newCity: "",
     });
+  const [transition, setTransition] = useState({
+    opacity: 1,
+    type: "initial",
+  });
 
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
+
+  // console.log(geolocation);
   ////// Toronto
   // const lat = 43.66362651471936;
   // const lng = -79.3924776050637;
@@ -43,7 +50,7 @@ export default function Map() {
   // console.log("geolocation~~~~~~~~~: ", geolocation);
 
   const isFirstRender = useRef(true);
-  console.log("userData~~~~~~~: ", userData);
+  // console.log("userData~~~~~~~: ", userData);
 
 
   //////    Set Geo Coords State - First Render
@@ -77,14 +84,17 @@ export default function Map() {
 
 
   ////////////////////////////////////////////////////////////////////
-  //////    Calls to Server for Geo and Shows API - First Render
-  ////////////////////////////////////////////////////////////////////
+  //////    Calls to Server for Geo and Shows API 
+  //////////////////////////////////////////////////////////////////
 
+  /////   POST Current Location Shows and Geo - First Render
   const getShowsCurrCity = useCallback(() => {
+
     axios.post('http://localhost:8001', userData)
       .then((res) => {
         setShows(res.data);
         setCurrCity(res.data.currAddress.address.city);
+        setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
         console.log("~~~~~~~~~~~~~~POST", res.data);
       })
       .catch(err => console.log(err.message));
@@ -99,19 +109,30 @@ export default function Map() {
 
   //////    POST Current Location Shows and Geo - onClick
   const handleCurrLocationClick = () => {
+    setCurrCity("");
+    setTransition({ opacity: 1, type: "location" });
+    setUserData(prev => ({
+      ...prev, lat, lng,
+    }));
+
     if (geolocation.loaded) {
-      // setCurrCity("");
-      setUserData(prev => ({
-        ...prev, lat, lng,
-      }));
-      getShowsCurrCity();
+      
+      axios.post('http://localhost:8001', { ...userData, lat, lng })
+        .then((res) => {
+          setShows(res.data);
+          setCurrCity(res.data.currAddress.address.city);
+          setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
+          console.log("~~~~~~~~~~~~~~POST", res.data);
+        })
+        .catch(err => console.log(err.message));
     }
   };
 
   //////    POST Date Range Shows and Geo - onClick
   const handleDateRangeClick = () => {
-    if (geolocation.loaded && userData.dateRange.minDate
-      && userData.dateRange.maxDate) {
+    if ((Object.keys(userData.dateRange).length === 2)) {
+      setCurrCity("");
+      setTransition({ opacity: 1, type: "dates" });
       getShowsCurrCity();
     }
   };
@@ -123,24 +144,32 @@ export default function Map() {
   };
   //////    PUT to server for geo and new shows API calls
   const handlePutRequest = () => {
-    if (userData.newCity) axios.put('http://localhost:8001', userData)
-      .then((res) => {
-        setShows(res.data);
-        setCurrCity(userData.newCity);
-        setUserData((prev) => ({
-          ...prev,
-          lat: res.data.latLng[0].lat,
-          lng: res.data.latLng[0].lon,
-        }));
-        console.log("~~~~~~~~~~~~~~~PUT", res.data);
-      })
-      .catch(err => console.log(err.message));
+
+    if (userData.newCity) {
+      setCurrCity("");
+      setTransition({ opacity: 1, type: "shows" });
+
+      axios.put('http://localhost:8001', userData)
+        .then((res) => {
+          setShows(res.data);
+          setCurrCity(userData.newCity);
+          setUserData((prev) => ({
+            ...prev,
+            lat: res.data.latLng[0].lat,
+            lng: res.data.latLng[0].lon,
+          }));
+          console.log("~~~~~~~~~~~~~~~PUT", res.data);
+        })
+        .catch(err => console.log(err.message));
+    };
   };
+
   //////    Submit City on Enter NOT WORKING!
-  const handleEnter = e => {
-    if (e.key === "Enter") handlePutRequest();
-  };
-  ////////////////////////////////////////////////////////////////////
+  // const handleEnter = e => {
+  //   if (e.key === "Enter") handlePutRequest();
+  // };
+
+  //////////////////////////////////////////////////////////////////
   //////
   ////////////////////////////////////////////////////////////////////
 
@@ -254,7 +283,7 @@ export default function Map() {
   return (
     <div className="map-main">
       <Title className="title"
-        currCity={currCity} newCity={userData.newCity}
+        currCity={currCity} isFirstRender={isFirstRender.current} transition={transition}
       />
       <div className="controls-top">
 
@@ -262,12 +291,12 @@ export default function Map() {
           <input type="text"
             name="enter city"
             placeholder="enter a city"
-            autocomplete="off"
+            autoComplete="off"
             onChange={handleCityChange}
             onFocus={handleInputTextSelect}
           />
           <button onClick={handlePutRequest}
-            onKeyDownDown={handleEnter}
+          // onKeyDownDown={handleEnter}
           >GO</button>
         </div>
 
