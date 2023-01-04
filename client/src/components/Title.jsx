@@ -4,14 +4,14 @@ import './styles.scss';
 
 
 export default function Title(props) {
-  const { currCity, transition } = props;
+  const { currCity, transition, isFirstRender } = props;
   const [wait, setWait] = useState(0);
   const [show, setShow] = useState(0);
   const [text, setText] = useState("locating shows near you");
 
   useEffect(() => {
     if (transition.type === "shows") setText("grabbing shows")
-    if (transition.type === "dates") setText("grabbing more dates");
+    if (transition.type === "dates") setText("grabbing show dates");
     if (transition.type === "location") setText("grabbing your location");
 
   }, [transition.type]);
@@ -22,20 +22,33 @@ export default function Title(props) {
   }, [transition.opacity, transition.isTrue]);
 
   useEffect(() => {
-    if (currCity) setWait(0);
-    const delayWait = setTimeout(() => {
-      if (!currCity) setWait(0.55);
-    }, 200);
+    if (isFirstRender) {
+      setWait(0);
+      if (currCity) setWait(0);
+      const delayWait = setTimeout(() => {
+        if (!currCity) setWait(0.55);
+      }, 350);
+      return () => { clearTimeout(delayWait); };
+    }
+  }, [currCity]);
 
-    return () => { clearTimeout(delayWait); };
-  }, [currCity, transition.isTrue]);
+  useEffect(() => {
+    if (!isFirstRender) {
+      if (currCity) setWait(0);
+      const delayWait = setTimeout(() => {
+        if (!currCity) setWait(0.55);
+      }, 60);
+  
+      return () => { clearTimeout(delayWait); };
+    }
+  }, [currCity]);
 
 
   useEffect(() => {
     if (currCity) setShow(0);
     const delayShow = setTimeout(() => {
       if (currCity) setShow(1);
-    }, 500);
+    }, 550);
 
     return () => { clearTimeout(delayShow); };
   }, [currCity]);

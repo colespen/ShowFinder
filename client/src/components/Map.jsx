@@ -255,7 +255,7 @@ export default function Map() {
         key={show.description}
         position={[show.location.geo.latitude, show.location.geo.longitude]}
       >
-        <Popup key={index}>
+        <Popup key={index} id="show-popup">
 
           <ul className="artist-list" href="">
             {show.performer.map((artist, i) =>

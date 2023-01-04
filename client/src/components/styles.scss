@@ -20,7 +20,7 @@
 .wait-container {
   display: flex;
   justify-content: center;
-  transition: opacity 1500ms ease-out;
+  transition: opacity 1100ms ease-out;
 
   .title-wait,
   .loading-dots {
@@ -124,6 +124,7 @@
     font-weight: 600;
     border-left: none;
     border-top-right-radius: 10px;
+    cursor: pointer;
 
     &:active {
       background-color: #006ecf;
@@ -143,14 +144,13 @@
     width: 168px;
     border: 3px solid #57728a;
     border-top-left-radius: 10px;
-    box-shadow: -7px 0px 1px #1c3d5abe;
+    box-shadow: -7px 0px 1.25px #113a5d95;
     transition: all 170ms ease;
 
     &:focus-within {
       transform: translate(-4px);
       border-right-color: #122c43b8;
-
-      box-shadow: -3px 0px 0.25px #1c3345;
+      box-shadow: -3px 0px 0.25px #113a5d;
     }
 
     .date-button-input {
@@ -182,6 +182,7 @@
     padding-top: 2px;
     border-left: none;
     border-right: none;
+    cursor: pointer;
 
     &:hover {
       background-color: #001b32;
@@ -199,13 +200,14 @@
   border: 3px solid #57728a;
   width: 39px;
   padding: 4px 3px 3px 3px;
+  cursor: pointer;
 
   &:hover {
-    background-color: #001b32;
+    background-color: #0732e0;
+    transition: all 2500ms ease;
 
     #location-icon {
-      transition: opacity 1700ms ease;
-      opacity: 100%;
+      filter: invert(100%);
     }
   }
 
@@ -217,13 +219,11 @@
     filter: invert(90%);
     width: 16px;
     height: 16px;
-    animation: 300ms ease 0s normal forwards 1 iconFadeIn;
-    // animation-iteration-count: 1;
-    // animation-fill-mode: forwards;
-    -webkit-animation: 300ms ease 0s normal forwards 1 iconFadeIn;
-    -moz-animation: 300ms ease 0s normal forwards 1 iconFadeIn;
-    -o-animation: 300ms ease 0s normal forwards 1 iconFadeIn;
-    -ms-animation: 300ms ease 0s normal forwards 1 iconFadeIn;
+    animation: 3s ease 0s normal forwards 1 iconFadeIn;
+    -webkit-animation: 3s ease 0s normal forwards 1 iconFadeIn;
+    -moz-animation: 3s ease 0s normal forwards 1 iconFadeIn;
+    -o-animation: 3s ease 0s normal forwards 1 iconFadeIn;
+    -ms-animation: 3s ease 0s normal forwards 1 iconFadeIn;
   }
 }
 
@@ -240,20 +240,31 @@
   transition: opacity 150ms ease;
 
   &:hover {
-    opacity: 85%;
+    opacity: 90%;
   }
 
   .react-datepicker {
     border-color: rgb(103, 103, 123);
+    right: 18px;
   }
 
   .react-datepicker__month-container {
     background-color: rgb(222, 222, 247);
+    border-radius: 5px;
   }
 
   .react-datepicker__header {
     background-color: rgb(200, 200, 227);
     border-color: rgb(103, 103, 123);
+  }
+}
+
+.leaflet-popup-content-wrapper {
+  opacity: 85%;
+  transition: opacity 100ms ease;
+
+  &:hover {
+    opacity: 95%;
   }
 }
 
@@ -268,6 +279,22 @@
 
   #date-bottom {
     display: flex;
+
+    .react-datepicker-wrapper {
+      box-shadow: -7px 0px 1.25px #0a203595;
+      transition: none;
+
+      &:focus-within {
+        transform: none;
+        box-shadow: -7px 0px 1.25px #0a203595;
+        border-right: 3px solid #57728a;
+      
+      }
+    }
+    
+    .react-datepicker-popper .react-datepicker {
+      right: 50px;
+    }
   }
 }
 
@@ -339,12 +366,13 @@
   0% {
     opacity: 0;
   }
+
   66% {
     opacity: 0;
   }
 
   100% {
-    opacity: 1;
+    opacity: 55%;
   }
 }
 
@@ -352,12 +380,13 @@
   0% {
     opacity: 0;
   }
+
   66% {
     opacity: 0;
   }
 
   100% {
-    opacity: 1;
+    opacity: 55%;
   }
 }
 
@@ -365,12 +394,13 @@
   0% {
     opacity: 0;
   }
+
   66% {
     opacity: 0;
   }
 
   100% {
-    opacity: 1;
+    opacity: 55%;
   }
 }
 
@@ -378,12 +408,13 @@
   0% {
     opacity: 0;
   }
+
   66% {
     opacity: 0;
   }
 
   100% {
-    opacity: 1;
+    opacity: 55%;
   }
 }
 
@@ -391,11 +422,12 @@
   0% {
     opacity: 0;
   }
+
   66% {
     opacity: 0;
   }
 
   100% {
-    opacity: 1;
+    opacity: 55%;
   }
 }
