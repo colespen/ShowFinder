@@ -35,12 +35,14 @@ export default function Map() {
     type: "initial",
   });
 
+  const isFirstRender = useRef(true);
+  
   //////    Assign User's Current Coords
+
   const geolocation = useGeoLocation();
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
 
-  // console.log(geolocation);
   ////// Toronto
   // const lat = 43.66362651471936;
   // const lng = -79.3924776050637;
@@ -48,9 +50,6 @@ export default function Map() {
   // const lat = 45.52557764805207;
   // const lng = -73.59029896192136;
   // console.log("geolocation~~~~~~~~~: ", geolocation);
-
-  const isFirstRender = useRef(true);
-  // console.log("userData~~~~~~~: ", userData);
 
 
   //////    Set Geo Coords State - First Render
@@ -69,7 +68,8 @@ export default function Map() {
   //////    Assign Current Date and maxDate Default
   const currDate = new Date();
   const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
-  const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
+  const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 7}`;
+  // ***temp hardcode +1 week maxDate
 
 
   //////    Set Default Date Range State

@@ -39,11 +39,9 @@ export default function DateRange(props) {
         <DatePicker
             dateFormat="yyyy-MM-dd"
             selectsRange={true}
-            // selected={new Date()}
             startDate={startDate}
             endDate={endDate}
             onChange={handleDateChange}
-            // onSelect={props.handleDateSelect}
             customInput={<DateButtonInput />}
         />
     );
