@@ -30,7 +30,7 @@ export default function Title(props) {
       }, 350);
       return () => { clearTimeout(delayWait); };
     }
-  }, [currCity]);
+  }, [currCity, isFirstRender]);
 
   useEffect(() => {
     if (!isFirstRender) {
@@ -41,7 +41,7 @@ export default function Title(props) {
   
       return () => { clearTimeout(delayWait); };
     }
-  }, [currCity]);
+  }, [currCity, isFirstRender]);
 
 
   useEffect(() => {

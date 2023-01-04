@@ -95,6 +95,7 @@ app.put('/', (req, res) => {
   };
 
   const getCoords = () => {
+    console.log("newCity ~~~~~~~: ", userData.newCity)
     if (userData) axios.get(
       `https://us1.locationiq.com/v1/search?key=${iqToken}&city=${userData.newCity}&format=json`
     )
