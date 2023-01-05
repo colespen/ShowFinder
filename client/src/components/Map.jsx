@@ -36,9 +36,8 @@ export default function Map() {
   });
 
   const isFirstRender = useRef(true);
-  
-  //////    Assign User's Current Coords
 
+  //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
@@ -49,7 +48,6 @@ export default function Map() {
   ////// Montreal
   // const lat = 45.52557764805207;
   // const lng = -73.59029896192136;
-  // console.log("geolocation~~~~~~~~~: ", geolocation);
 
 
   //////    Set Geo Coords State - First Render
@@ -87,10 +85,12 @@ export default function Map() {
   //////    Calls to Server for Geo and Shows API 
   //////////////////////////////////////////////////////////////////
 
-  /////   POST Current Location Shows and Geo - First Render
+  /////   GET Current Location Shows and Geo - First Render
   const getShowsCurrCity = useCallback(() => {
 
-    axios.post('http://localhost:8001', userData)
+    axios.get('/api/shows', {
+      params: userData
+    })
       .then((res) => {
         setShows(res.data);
         setCurrCity(res.data.currAddress.address.city);
@@ -104,10 +104,10 @@ export default function Map() {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
       getShowsCurrCity();
     }
-  }, [geolocation.loaded, shows, userData, getShowsCurrCity]);
+  }, [geolocation.loaded, shows, getShowsCurrCity]);
 
 
-  //////    POST Current Location Shows and Geo - onClick
+  //////    GET Current Location Shows and Geo - onClick
   const handleCurrLocationClick = () => {
     setCurrCity("");
     setTransition({ opacity: 1, type: "location" });
@@ -116,8 +116,9 @@ export default function Map() {
     }));
 
     if (geolocation.loaded) {
-      
-      axios.post('http://localhost:8001', { ...userData, lat, lng })
+      axios.get('/api/shows', {
+        params: { ...userData, lat, lng }
+      })
         .then((res) => {
           setShows(res.data);
           setCurrCity(res.data.currAddress.address.city);
@@ -128,7 +129,7 @@ export default function Map() {
     }
   };
 
-  //////    POST Date Range Shows and Geo - onClick
+  //////    GET Date Range Shows and Geo - onClick
   const handleDateRangeClick = () => {
     if ((Object.keys(userData.dateRange).length === 2)) {
       setCurrCity("");
@@ -142,14 +143,14 @@ export default function Map() {
   const handleCityChange = e => {
     setUserData((prev) => ({ ...prev, newCity: e.target.value }));
   };
-  //////    PUT to server for geo and new shows API calls
+  //////    PUT New City to Server for Geo & New Shows API calls
   const handlePutRequest = () => {
 
     if (userData.newCity) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "shows" });
 
-      axios.put('http://localhost:8001', userData)
+      axios.put('/', userData)
         .then((res) => {
           setShows(res.data);
           setCurrCity(userData.newCity);
@@ -190,6 +191,7 @@ export default function Map() {
   //////    Use Current Location for map Position and circle
   function CurrentLocation() {
     const map = useMap();
+
     useEffect(() => {
       if (geolocation.loaded && currCity) map.flyTo({ lat: userData.lat, lng: userData.lng }, 12);
       ////    use setView instead of flyTo on page refresh

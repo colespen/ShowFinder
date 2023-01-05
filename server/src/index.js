@@ -1,84 +1,60 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const cors = require('cors');
+// const cors = require('cors');
 const morgan = require('morgan');
 const axios = require('axios');
+const path = require('path');
+
 
 const app = express();
 dotenv.config();
 
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(express.static(path.resolve(__dirname, "../../client/build")));
 app.use(express.urlencoded({ extended: true }));
-// app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-  res.send('nothing here');
-});
+let port = process.env.PORT || 8001;
 
 const iqToken = process.env.IQ_TOKEN;
 const rapidKey = process.env.RAPID_KEY;
 
-let userData = {};
+// let userData = {};
 
 ////////////////////////////////////////////////////////
-////    POST
+////    GET
 ////////////////////////////////////////////////////////
 
-app.post('/', (req, res) => {
-  userData = {
-    dateRange: {
-      minDate: req.body.dateRange.minDate,
-      maxDate: req.body.dateRange.maxDate,
-    },
-    lat: req.body.lat,
-    lng: req.body.lng,
-  };
+app.get('/api/shows', (req, res) => {
+  const params = new URLSearchParams({
+    key: iqToken,
+    lat: req.query.lat,
+    lon: req.query.lng,
+    format: 'json'
+  });
 
-  const getCity = () => {
-    if (userData) axios.get(
-      `https://us1.locationiq.com/v1/reverse.php?key=${iqToken}&lat=`
-      + userData.lat + "&lon=" + userData.lng + "&format=json"
-    )
-      .then(response => {
-        console.log("response.data in getCity~~~~~~~: ", response.data);
-        //response.data is current city
-        getShows(response.data);
-      })
-      .catch(err => {
-        console.error(err.message);
-      });
-  };
-  getCity();
+  axios.get(
+    `https://us1.locationiq.com/v1/reverse.php?${params.toString()}`
+  ).then((response) => {
+    const currentAddress = response.data;
+    const params = new URLSearchParams({
+      name: currentAddress.address.city,
+      ...req.query.dateRange
+    });
 
-  const getShows = (currAddress) => {
-    const options = {
-      method: 'GET',
-      baseURL: 'https://concerts-artists-events-tracker.p.rapidapi.com/location',
-      params: {
-        'name': currAddress.address.city,
-        'minDate': userData.dateRange.minDate,
-        'maxDate': userData.dateRange.maxDate,
-      },
+    return axios.get('https://concerts-artists-events-tracker.p.rapidapi.com/location?' + params.toString(), {
       headers: {
-        'X-RapidAPI-Key': rapidKey,
-        'X-RapidAPI-Host': 'concerts-artists-events-tracker.p.rapidapi.com',
+        "X-RapidAPI-Key": rapidKey,
+        "X-RapidAPI-Host": 'concerts-artists-events-tracker.p.rapidapi.com'
       }
-    };
-    axios.request(options)
-      .then(response => {
-        console.log("response.data in getShows~~~~~~: ", response.data);
-        res.send({ ...response.data, currAddress });
-      })
-      .catch(err => {
-        console.error(err.message);
-      });
-  };
-  console.log("userData~~~~~: ", userData);
+    })
+      .then((response) => ({ ...response.data, currAddress: currentAddress }));
+  }).then((data) => {
+    res.send(data);
+  })
+    .catch((error) => {
+      res.status(500).send("Error: " + error.message);
+    });
 });
 
 ////////////////////////////////////////////////////////
@@ -95,7 +71,6 @@ app.put('/', (req, res) => {
   };
 
   const getCoords = () => {
-    console.log("newCity ~~~~~~~: ", userData.newCity)
     if (userData) axios.get(
       `https://us1.locationiq.com/v1/search?key=${iqToken}&city=${userData.newCity}&format=json`
     )
@@ -136,7 +111,6 @@ app.put('/', (req, res) => {
 
 });
 
-let port = process.env.PORT || 8001;
 app.listen(port, () => {
   console.log(`Server listening on port ${port} `);
 });
