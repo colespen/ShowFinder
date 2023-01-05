@@ -23,7 +23,8 @@
 
 .leaflet-bar a {
   background-color: rgb(27, 27, 32);
-  color: whitesmoke;
+  border-bottom: 1px solid rgb(178, 178, 178);
+  color: rgb(209, 209, 209);
   &:hover {
     background-color: #0c75d2;
   }

@@ -277,6 +277,9 @@
   padding-left: 6px;
   display: flex;
   align-items: center;
+  img {
+    color: red;
+  }
   span {
     color: whitesmoke;
     font-family: 'Montserrat', sans-serif, 'Courier New', Courier, monospace;
