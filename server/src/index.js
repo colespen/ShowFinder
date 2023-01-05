@@ -1,6 +1,5 @@
 const express = require('express');
 const dotenv = require('dotenv');
-// const cors = require('cors');
 const morgan = require('morgan');
 const axios = require('axios');
 const path = require('path');
@@ -11,7 +10,7 @@ dotenv.config();
 
 app.use(morgan('dev'));
 app.use(express.json());
-/////   server static files for build
+/////   serve static files for build
 app.use(express.static(path.resolve(__dirname, "../../client/build")));
 app.use(express.urlencoded({ extended: true }));
 

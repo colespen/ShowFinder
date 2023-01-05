@@ -85,37 +85,48 @@ export default function Map() {
   //////    Calls to Server for Geo and Shows API 
   //////////////////////////////////////////////////////////////////
 
+  // const getShowsCurrCity = useCallback(() => {
+
+  //   axios.get('/api/shows', {
+  //     params: { ...userData, lat, lng }
+  //   })
+  //     .then((res) => {
+  //       setShows(res.data);
+  //       setCurrCity(res.data.currAddress.address.city);
+  //       setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
+  //       console.log("~~~~~~~~~~~~~~POST", res.data);
+  //     })
+  //     .catch(err => console.log(err.message));
+  // }, [userData]);
+
   /////   GET Current Location Shows and Geo - First Render
-  const getShowsCurrCity = useCallback(() => {
-
-    axios.get('/api/shows', {
-      params: userData
-    })
-      .then((res) => {
-        setShows(res.data);
-        setCurrCity(res.data.currAddress.address.city);
-        setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
-        console.log("~~~~~~~~~~~~~~POST", res.data);
-      })
-      .catch(err => console.log(err.message));
-  }, [userData]);
-
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
-      getShowsCurrCity();
+
+      axios.get('/api/shows', {
+        params: { ...userData, lat, lng }
+      })
+        .then((res) => {
+          setShows(res.data);
+          setCurrCity(res.data.currAddress.address.city);
+          setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
+          console.log("~~~~~~~~~~~~~~POST", res.data);
+        })
+        .catch(err => console.log(err.message));
     }
-  }, [geolocation.loaded, shows, getShowsCurrCity]);
+  }, [geolocation.loaded, shows]);
 
 
   //////    GET Current Location Shows and Geo - onClick
   const handleCurrLocationClick = () => {
+
     setCurrCity("");
     setTransition({ opacity: 1, type: "location" });
     setUserData(prev => ({
       ...prev, lat, lng,
     }));
-
     if (geolocation.loaded) {
+
       axios.get('/api/shows', {
         params: { ...userData, lat, lng }
       })
@@ -131,10 +142,21 @@ export default function Map() {
 
   //////    GET Date Range Shows and Geo - onClick
   const handleDateRangeClick = () => {
+
     if ((Object.keys(userData.dateRange).length === 2)) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "dates" });
-      getShowsCurrCity();
+
+      axios.get('/api/shows', {
+        params: userData
+      })
+        .then((res) => {
+          setShows(res.data);
+          setCurrCity(res.data.currAddress.address.city);
+          setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
+          console.log("~~~~~~~~~~~~~~POST", res.data);
+        })
+        .catch(err => console.log(err.message));
     }
   };
 
@@ -333,9 +355,9 @@ export default function Map() {
 
       <div className="controls-bottom">
         <div className="github">
-          <a href="https://github.com/colespen/ShowFinder" 
-          target="_blank"
-          rel="noreferrer"
+          <a href="https://github.com/colespen/ShowFinder"
+            target="_blank"
+            rel="noreferrer"
           > <img src="./github-mark.svg" width="18" height="18" alt="GitHub-link"></img></a>
           <span>Spencer Cole</span>
         </div>

@@ -19,5 +19,6 @@ Simple SPA to find local shows surrounding the user. Immediately populates nearb
 
 - LocationIQ: forward and reverse geocoding
 - RapidAPI: artists events tracker by location
+- tried: PredictHQ, Songkick, Zyla
 
-tried: PredictHQ, Songkick, Zyla
+Developed and Designed by Spencer Cole
