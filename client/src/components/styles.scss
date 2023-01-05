@@ -1,5 +1,5 @@
 .map-main {
-  height: 100vh;
+  height: 95vh;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -94,7 +94,11 @@
 
   input,
   button {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
     height: 100%;
+    width: 46%;
+    max-width: 221px;
     color: rgba(245, 245, 245, 0.866);
     font-weight: 600;
     background-color: #d6e5f100;
@@ -116,7 +120,7 @@
   }
 
   ::placeholder {
-    color: rgba(245, 245, 245, 0.699);
+    color: rgba(245, 245, 245, 0.546);
   }
 
   button {
@@ -141,7 +145,7 @@
 
   .react-datepicker-wrapper {
     overflow: hidden;
-    width: 168px;
+    width: 181px;
     border: 3px solid #57728a;
     border-top-left-radius: 10px;
     box-shadow: -7px 0px 1.25px #113a5d95;
@@ -149,18 +153,20 @@
 
     &:focus-within {
       transform: translate(-4px);
-      border-right-color: #122c43b8;
+      border-right-color: #122c4395;
       box-shadow: -3px 0px 0.25px #113a5d;
     }
 
     .date-button-input {
+      font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
       width: 100%;
       height: 24px;
       color: rgba(245, 245, 245, 0.866);
       background: #003768;
       border: none;
       background: linear-gradient(90deg, rgba(0, 55, 104, 0.327) 0%, rgba(0, 55, 104, 1) 75%);
-      padding-top: 2px;
+      padding-left: 10px;
       display: flex;
       align-items: center;
       transition: background-color 250ms ease;
@@ -203,7 +209,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: #0732e0;
+    background-color: #0937f1;
     transition: all 2500ms ease;
 
     #location-icon {
@@ -281,17 +287,17 @@
     display: flex;
 
     .react-datepicker-wrapper {
-      box-shadow: -7px 0px 1.25px #0a203595;
+      box-shadow: -7px 0px 1.45px #0a20357a;
       transition: none;
 
       &:focus-within {
         transform: none;
         box-shadow: -7px 0px 1.25px #0a203595;
         border-right: 3px solid #57728a;
-      
+
       }
     }
-    
+
     .react-datepicker-popper .react-datepicker {
       right: 50px;
     }

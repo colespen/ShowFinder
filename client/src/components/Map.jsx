@@ -45,7 +45,7 @@ export default function Map() {
   ////// Toronto
   // const lat = 43.66362651471936;
   // const lng = -79.3924776050637;
-  ////// Montreal
+  //// Montreal
   // const lat = 45.52557764805207;
   // const lng = -73.59029896192136;
 
