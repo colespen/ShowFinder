@@ -11,6 +11,7 @@ Simple SPA to find local shows surrounding the user. Immediately populates nearb
 
 ## Stack:
 
+- React Leaflet
 - React.js
 - Node.js
 - Express

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 import './styles.scss';
@@ -42,13 +42,6 @@ export default function Map() {
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
 
-  ////// Toronto
-  // const lat = 43.66362651471936;
-  // const lng = -79.3924776050637;
-  //// Montreal
-  // const lat = 45.52557764805207;
-  // const lng = -73.59029896192136;
-
 
   //////    Set Geo Coords State - First Render
   useEffect(() => {
@@ -66,7 +59,7 @@ export default function Map() {
   //////    Assign Current Date and maxDate Default
   const currDate = new Date();
   const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
-  const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 7}`;
+  const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 4}`;
   // ***temp hardcode +1 week maxDate
 
 
@@ -85,20 +78,6 @@ export default function Map() {
   //////    Calls to Server for Geo and Shows API 
   //////////////////////////////////////////////////////////////////
 
-  // const getShowsCurrCity = useCallback(() => {
-
-  //   axios.get('/api/shows', {
-  //     params: { ...userData, lat, lng }
-  //   })
-  //     .then((res) => {
-  //       setShows(res.data);
-  //       setCurrCity(res.data.currAddress.address.city);
-  //       setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
-  //       console.log("~~~~~~~~~~~~~~POST", res.data);
-  //     })
-  //     .catch(err => console.log(err.message));
-  // }, [userData]);
-
   /////   GET Current Location Shows and Geo - First Render
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
@@ -114,7 +93,7 @@ export default function Map() {
         })
         .catch(err => console.log(err.message));
     }
-  }, [geolocation.loaded, shows]);
+  }, [geolocation.loaded, shows, lat, lng, userData]);
 
 
   //////    GET Current Location Shows and Geo - onClick
