@@ -333,7 +333,10 @@ export default function Map() {
 
       <div className="controls-bottom">
         <div className="github">
-          <a href="https://github.com/colespen/ShowFinder" style={{ paddingRight: '5px' }}> <img src="./github-mark.svg" width="18" height="18" alt="GitHub-link"></img></a>
+          <a href="https://github.com/colespen/ShowFinder" 
+          target="_blank"
+          rel="noreferrer"
+          > <img src="./github-mark.svg" width="18" height="18" alt="GitHub-link"></img></a>
           <span>Spencer Cole</span>
         </div>
         <div className="date-location" id="date-bottom">
