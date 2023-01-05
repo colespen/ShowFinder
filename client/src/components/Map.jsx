@@ -332,13 +332,16 @@ export default function Map() {
       </MapContainer>
 
       <div className="controls-bottom">
+        <div className="github">
+          <a href="https://github.com/colespen/ShowFinder" style={{ paddingRight: '5px' }}> <img src="./github-mark.svg" width="18" height="18" alt="GitHub-link"></img></a>
+          <span>Spencer Cole</span>
+        </div>
         <div className="date-location" id="date-bottom">
           <DateRange handleDateSelect={handleDateSelect}
           />
           <button id="go-button"
             onClick={handleDateRangeClick}>GO</button>
         </div>
-
       </div>
     </div>
   );
