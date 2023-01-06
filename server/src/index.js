@@ -10,9 +10,17 @@ dotenv.config();
 
 app.use(morgan('dev'));
 app.use(express.json());
-/////   serve static files for build
-app.use(express.static(path.resolve(__dirname, "../../client/build")));
 app.use(express.urlencoded({ extended: true }));
+/////   serve static files for build
+// app.use(express.static(path.resolve(__dirname, '../../client/build')));
+if (process.env.NODE_ENV === 'production') {
+	app.use(express.static('../../client/build'));
+}
+app.get('*', (request, response) => {
+	response.sendFile(path.join(__dirname, '../../client/build', 'index.html'));
+});
+
+
 
 let port = process.env.PORT || 8001;
 
