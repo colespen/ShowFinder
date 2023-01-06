@@ -89,7 +89,7 @@ export default function Map() {
           setShows(res.data);
           setCurrCity(res.data.currAddress.address.city);
           setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
-          console.log("~~~~~~~~~~~~~~POST", res.data);
+          console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
     }
@@ -113,7 +113,7 @@ export default function Map() {
           setShows(res.data);
           setCurrCity(res.data.currAddress.address.city);
           setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
-          console.log("~~~~~~~~~~~~~~POST", res.data);
+          console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
     }
@@ -133,7 +133,7 @@ export default function Map() {
           setShows(res.data);
           setCurrCity(res.data.currAddress.address.city);
           setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
-          console.log("~~~~~~~~~~~~~~POST", res.data);
+          console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
     }
