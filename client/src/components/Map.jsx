@@ -194,7 +194,7 @@ export default function Map() {
     const map = useMap();
 
     useEffect(() => {
-      if (geolocation.loaded && currCity) map.flyTo({ lat: userData.lat, lng: userData.lng }, 12);
+      if (geolocation.loaded && currCity) map.flyTo({ lat: userData.lat, lng: userData.lng }, 13);
       ////    use setView instead of flyTo on page refresh
       // map.setView({ lat: userData.lat, lng: userData.lng }, 12);
       map.on('zoomend', () => {
