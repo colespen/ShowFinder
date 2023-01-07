@@ -12,6 +12,7 @@ import DateRange from './DateRange';
 
 axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
+
 export default function Map() {
   const [shows, setShows] = useState(
     JSON.parse(sessionStorage.getItem('shows')) || {}
@@ -43,13 +44,13 @@ export default function Map() {
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
 
-  
+
   //////    Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
     navigator.geolocation.watchPosition(() => {},
       (function (error) {
-        if (error.code == error.PERMISSION_DENIED) {
-          if (!alert("please allow location permission and refresh.")) {
+        if (error.code === error.PERMISSION_DENIED) {
+          if (!alert("please allow location in settings to continue.")) {
             window.location.reload();
           };
         }
@@ -88,21 +89,21 @@ export default function Map() {
   //////////////////////////////////////////////////////////////////
 
   /////   GET Current Location Shows and Geo - First Render
-  //               *** add && isFirsRender here? ***
+  //               *** add && isFirstRender here? ***
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
-      // isFirstRender.current = false;
-
+      
       axios.get('/api/shows', {
         params: { ...userData, lat, lng }
       })
-        .then((res) => {
-          setShows(res.data);
-          setCurrCity(res.data.currentAddress.address.city);
-          setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
-          console.log("~~~~~~~~~~~~~~GET", res.data);
-        })
-        .catch(err => console.log(err.message));
+      .then((res) => {
+        setShows(res.data);
+        setCurrCity(res.data.currentAddress.address.city);
+        setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
+        console.log("~~~~~~~~~~~~~~GET", res.data);
+      })
+      .catch(err => console.log(err.message));
+
     }
   }, [geolocation.loaded, shows, lat, lng, userData]);
 
