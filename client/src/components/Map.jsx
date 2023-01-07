@@ -11,7 +11,6 @@ import Title from './Title';
 import DateRange from './DateRange';
 
 axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
-axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export default function Map() {
   const [shows, setShows] = useState(
@@ -85,11 +84,11 @@ export default function Map() {
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
       // isFirstRender.current = false;
-      
+
       axios.get('/api/shows', {
         params: { ...userData, lat, lng }
       })
-      .then((res) => {
+        .then((res) => {
           setShows(res.data);
           setCurrCity(res.data.currentAddress.address.city);
           setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
@@ -149,13 +148,13 @@ export default function Map() {
     setUserData((prev) => ({ ...prev, newCity: e.target.value }));
   };
   //////    GET New City to Server for Geo & New Shows API calls
-  const handlePutRequest = () => {
+  const handleNewCityRequest = () => {
 
     if (userData.newCity) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "shows" });
 
-      axios.get('/api/newshows', {params: userData})
+      axios.get('/api/newshows', { params: userData })
         .then((res) => {
           setShows(res.data);
           setCurrCity(userData.newCity);
@@ -169,12 +168,14 @@ export default function Map() {
         .catch(err => console.log(err.message));
     };
   };
-
-  //////    Submit City on Enter NOT WORKING!
+  ////    Submit City on Enter
+  const newCityOnEnter = e => {
+    if (e.key === "Enter") handleNewCityRequest();
+  };
+  ////    Submit City on Enter
   // const handleEnter = e => {
-  //   if (e.key === "Enter") handlePutRequest();
+  //   if (e.key === "Enter") handleNewCityRequest();
   // };
-
   //////////////////////////////////////////////////////////////////
   //////
   ////////////////////////////////////////////////////////////////////
@@ -301,9 +302,9 @@ export default function Map() {
             autoComplete="off"
             onChange={handleCityChange}
             onFocus={handleInputTextSelect}
+            onKeyDown={newCityOnEnter}
           />
-          <button onClick={handlePutRequest}
-          // onKeyDownDown={handleEnter}
+          <button onClick={handleNewCityRequest}
           >GO</button>
         </div>
 

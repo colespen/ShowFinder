@@ -7,7 +7,7 @@
 
 .leaflet-container {
   width: 90%;
-  height: 75vh;
+  height: 100%;
 }
 
 
@@ -18,7 +18,7 @@
   margin: 2.6vh 0 3.3vh 0;
   color: whitesmoke;
   text-align: center;
-  font-size: clamp(26px, 6.3vw, 62px);
+  font-size: clamp(26px, 6.8vw, 62px);
 }
 
 .leaflet-bar a {
