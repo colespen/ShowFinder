@@ -172,10 +172,6 @@ export default function Map() {
   const newCityOnEnter = e => {
     if (e.key === "Enter") handleNewCityRequest();
   };
-  ////    Submit City on Enter
-  // const handleEnter = e => {
-  //   if (e.key === "Enter") handleNewCityRequest();
-  // };
   //////////////////////////////////////////////////////////////////
   //////
   ////////////////////////////////////////////////////////////////////
@@ -294,7 +290,6 @@ export default function Map() {
         currCity={currCity} isFirstRender={isFirstRender.current} transition={transition}
       />
       <div className="controls-top">
-
         <div className="city-input">
           <input type="text"
             name="enter city"
@@ -320,7 +315,6 @@ export default function Map() {
             src="./target.png"
             alt="current-location-icon" />
         </button>
-
       </div>
 
       <MapContainer className="map-container"

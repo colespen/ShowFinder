@@ -6,12 +6,12 @@ const axios = require('axios');
 const path = require('path');
 
 const app = express();
-
+////    cors no config accepts all origins/headers
 app.use(cors());
 
 dotenv.config();
 
-app.use(morgan('dev'));
+app.use(morgan('tiny'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
