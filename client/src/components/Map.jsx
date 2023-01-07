@@ -41,29 +41,32 @@ export default function Map() {
 
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
-  const lat = geolocation.coords.lat;
-  const lng = geolocation.coords.lng;
+  // const lat = geolocation.coords.lat;
+  // const lng = geolocation.coords.lng;
 
+  console.log("userData: ", userData);
 
   //////    Set Geo Coords State After Allow Access - First Render
+  //////
   useEffect(() => {
-    navigator.geolocation.watchPosition(() => {},
-      (function (error) {
+    navigator.geolocation.watchPosition(() => { },
+      function (error) {
         if (error.code === error.PERMISSION_DENIED) {
           if (!alert("please allow location in settings to continue.")) {
             window.location.reload();
           };
         }
-      }));
+      });
     if (geolocation.loaded && isFirstRender.current
       && userData.lat === null) {
       setUserData(prev => ({
-        ...prev, lat, lng,
+        ...prev,
+        ...geolocation.coords
       }));
       isFirstRender.current = false;
       return;
     }
-  }, [isFirstRender, geolocation.coords.lat, geolocation.coords.lng, geolocation.loaded, userData.lat, lat, lng]);
+  }, [isFirstRender, geolocation.coords.lat, geolocation.coords.lng, geolocation.loaded, userData.lat]);
 
 
   //////    Assign Current Date and maxDate Default
@@ -92,20 +95,23 @@ export default function Map() {
   //               *** add && isFirstRender here? ***
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
-      
+
       axios.get('/api/shows', {
-        params: { ...userData, lat, lng }
+        params: {
+          ...userData,
+          ...geolocation.coords
+        }
       })
-      .then((res) => {
-        setShows(res.data);
-        setCurrCity(res.data.currentAddress.address.city);
-        setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
-        console.log("~~~~~~~~~~~~~~GET", res.data);
-      })
-      .catch(err => console.log(err.message));
+        .then((res) => {
+          setShows(res.data);
+          setCurrCity(res.data.currentAddress.address.city);
+          setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
+          console.log("~~~~~~~~~~~~~~GET", res.data);
+        })
+        .catch(err => console.log(err.message));
 
     }
-  }, [geolocation.loaded, shows, lat, lng, userData]);
+  }, [geolocation.loaded, shows, userData]);
 
 
   //////    GET Current Location Shows and Geo - onClick
@@ -114,12 +120,16 @@ export default function Map() {
     setCurrCity("");
     setTransition({ opacity: 1, type: "location" });
     setUserData(prev => ({
-      ...prev, lat, lng,
+      ...prev, 
+      ...geolocation.coords
     }));
     if (geolocation.loaded) {
 
       axios.get('/api/shows', {
-        params: { ...userData, lat, lng }
+        params: {
+          ...userData, 
+          ...geolocation.coords
+        }
       })
         .then((res) => {
           setShows(res.data);
