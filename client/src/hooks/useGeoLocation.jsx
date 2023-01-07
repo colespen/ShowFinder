@@ -21,7 +21,10 @@ export default function useGeoLocation() {
   const onError = err => {
     setLocation({
       loaded: true,
-      err
+      err: {
+        code: err.code,
+        message: err.message,
+      },
     });
   };
 
@@ -29,7 +32,7 @@ export default function useGeoLocation() {
     if (!("geolocation" in navigator)) {
       onError({
         code: 0,
-        message: "Geolocation not found"
+        message: "Geolocation not supported"
       });
     }
 

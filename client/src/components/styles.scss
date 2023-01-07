@@ -202,7 +202,7 @@
   height: 30px;
   background-color: #003768;
   border: 3px solid #57728a;
-  width: 39px;
+  width: 46px;
   padding: 4px 3px 3px 3px;
   cursor: pointer;
 
@@ -301,6 +301,10 @@
 @media only screen and (max-width: 805px) {
   #date-top {
     display: none;
+  }
+
+  #current-location {
+    width: 38px;
   }
 
   #date-bottom {

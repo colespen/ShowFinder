@@ -43,15 +43,23 @@ export default function Map() {
   const lat = geolocation.coords.lat;
   const lng = geolocation.coords.lng;
 
-
-  //////    Set Geo Coords State - First Render
+  
+  //////    Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
+    navigator.geolocation.watchPosition(() => {},
+      (function (error) {
+        if (error.code == error.PERMISSION_DENIED) {
+          if (!alert("please allow location permission and refresh.")) {
+            window.location.reload();
+          };
+        }
+      }));
     if (geolocation.loaded && isFirstRender.current
       && userData.lat === null) {
       setUserData(prev => ({
         ...prev, lat, lng,
       }));
-      // isFirstRender.current = false;
+      isFirstRender.current = false;
       return;
     }
   }, [isFirstRender, geolocation.coords.lat, geolocation.coords.lng, geolocation.loaded, userData.lat, lat, lng]);
@@ -189,7 +197,6 @@ export default function Map() {
   //////    Default position
   const budapest = [47.51983881388099, 19.032783326057594];
 
-
   //////    Use Current Location for map Position and circle
   function CurrentLocation() {
     const map = useMap();
@@ -200,8 +207,9 @@ export default function Map() {
       // map.setView({ lat: userData.lat, lng: userData.lng }, 12);
       map.on('zoomend', () => {
         //// load position marker after animation
-        const circle = L.circle(geolocation.coords, geolocation.accuracy);
-        const fixCircle = L.circle(geolocation.coords, { radius: 150, color: 'blue', weight: 1, opacity: 0.55, fillColor: '#0000ff38', fillOpacity: 0.15 });
+        const circle = L.circle(geolocation.coords, geolocation.accuracy + 7, { color: '#3084c9', weight: 0.25, opacity: 0.8, fillColor: '#0000ff38', fillOpacity: 0.15 });
+
+        const fixCircle = L.circle(geolocation.coords, { radius: 170, color: '#3084c9', weight: 0.25, opacity: 0.8, fillColor: '#0000ff38', fillOpacity: 0.15 });
 
         if (geolocation.accuracy > 25) {
           fixCircle.addTo(map);

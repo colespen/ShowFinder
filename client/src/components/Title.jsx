@@ -26,7 +26,7 @@ export default function Title(props) {
       setWait(0);
       if (currCity) setWait(0);
       const delayWait = setTimeout(() => {
-        if (!currCity) setWait(0.55);
+        if (!currCity) setWait(0.65);
       }, 350);
       return () => { clearTimeout(delayWait); };
     }
@@ -36,7 +36,7 @@ export default function Title(props) {
     if (!isFirstRender) {
       if (currCity) setWait(0);
       const delayWait = setTimeout(() => {
-        if (!currCity) setWait(0.55);
+        if (!currCity) setWait(0.65);
       }, 60);
   
       return () => { clearTimeout(delayWait); };
