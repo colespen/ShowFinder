@@ -6,9 +6,6 @@
     "scripts": {
         "server": "nodemon ./src/index.js",
         "start": "node ./src/index.js",
-        "build:ui": "cd ../react-front && npm install && npm run build",
-        "deploy": "git push heroku master",
-        "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
         "local": "./node_modules/.bin/nodemon -L --ignore public/",
         "test": "NODE_ENV=test jest",
         "db:reset": "NODE_ENV=development node ./src/bin/resetdb.js"

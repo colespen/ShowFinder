@@ -1,11 +1,17 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+// const cors = require('cors');
 const axios = require('axios');
 const path = require('path');
 
-
 const app = express();
+
+// app.use(cors({
+//   origin: 'https://master.d16uo4o9p7b9t0.amplifyapp.com/',
+//   credentials: true,
+// }));
+
 dotenv.config();
 
 app.use(morgan('dev'));
@@ -21,7 +27,7 @@ const iqToken = process.env.IQ_TOKEN;
 const rapidKey = process.env.RAPID_KEY;
 
 //////////////////////////////////////////////////////////
-////    GET
+////    GET - Shows
 ////////////////////////////////////////////////////////
 
 app.get('/api/shows', (req, res) => {
@@ -31,9 +37,9 @@ app.get('/api/shows', (req, res) => {
     lon: req.query.lng,
     format: 'json'
   });
-
+// https://us1.locationiq.com/v1/reverse.php? removed .php ***
   axios.get(
-    `https://us1.locationiq.com/v1/reverse.php?${params.toString()}`
+    `https://us1.locationiq.com/v1/reverse?${params.toString()}`
   ).then((response) => {
     const currentAddress = response.data;
     const params = new URLSearchParams({
@@ -57,21 +63,22 @@ app.get('/api/shows', (req, res) => {
 });
 
 //////////////////////////////////////////////////////////
-////    PUT
+////    GET - New Shows
 ////////////////////////////////////////////////////////
 
-app.put('/', (req, res) => {
-  userData = {
-    dateRange: {
-      minDate: req.body.dateRange.minDate,
-      maxDate: req.body.dateRange.maxDate
-    },
-    newCity: req.body.newCity,
-  };
+app.get('/api/newshows', (req, res) => {
+  const params = new URLSearchParams({
+    key: iqToken,
+    city: req.query.newCity,
+    format: 'json'
+  });
+ ;
+  console.log("newCity~~~~~~: ", req.query.newCity);
 
   const getCoords = () => {
-    if (userData) axios.get(
-      `https://us1.locationiq.com/v1/search?key=${iqToken}&city=${userData.newCity}&format=json`
+    // if (userData) condition REMOVED ***
+    axios.get(
+      `https://us1.locationiq.com/v1/search?${params.toString()}`
     )
       .then(response => {
         console.log("response.data in getCoords~~~~~~: ", response.data);
@@ -79,7 +86,7 @@ app.put('/', (req, res) => {
         getNewShows(response.data);
       })
       .catch(err => {
-        console.error(err.message);
+        console.error("damn.", err.message);
       });
   };
   getCoords();
@@ -89,9 +96,9 @@ app.put('/', (req, res) => {
       method: 'GET',
       baseURL: 'https://concerts-artists-events-tracker.p.rapidapi.com/location',
       params: {
-        'name': userData.newCity,
-        'minDate': userData.dateRange.minDate,
-        'maxDate': userData.dateRange.maxDate,
+        'name': req.query.newCity,
+        'minDate': req.query.dateRange.minDate,
+        'maxDate': req.query.dateRange.minDate,
       },
       headers: {
         'X-RapidAPI-Key': rapidKey,

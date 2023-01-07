@@ -10,6 +10,8 @@ import useGeoLocation from '../hooks/useGeoLocation';
 import Title from './Title';
 import DateRange from './DateRange';
 
+// axios.defaults.baseURL = 'https://showfinder-server.onrender.com';
+
 
 export default function Map() {
   const [shows, setShows] = useState(
@@ -50,7 +52,7 @@ export default function Map() {
       setUserData(prev => ({
         ...prev, lat, lng,
       }));
-      isFirstRender.current = false;
+      // isFirstRender.current = false;
       return;
     }
   }, [isFirstRender, geolocation.coords.lat, geolocation.coords.lng, geolocation.loaded, userData.lat, lat, lng]);
@@ -79,13 +81,15 @@ export default function Map() {
   //////////////////////////////////////////////////////////////////
 
   /////   GET Current Location Shows and Geo - First Render
+  //               *** add && isFirsRender here? ***
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
-
+      // isFirstRender.current = false;
+      
       axios.get('/api/shows', {
         params: { ...userData, lat, lng }
       })
-        .then((res) => {
+      .then((res) => {
           setShows(res.data);
           setCurrCity(res.data.currAddress.address.city);
           setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
@@ -144,14 +148,14 @@ export default function Map() {
   const handleCityChange = e => {
     setUserData((prev) => ({ ...prev, newCity: e.target.value }));
   };
-  //////    PUT New City to Server for Geo & New Shows API calls
+  //////    GET New City to Server for Geo & New Shows API calls
   const handlePutRequest = () => {
 
     if (userData.newCity) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "shows" });
 
-      axios.put('/', userData)
+      axios.get('/api/newshows', {params: userData})
         .then((res) => {
           setShows(res.data);
           setCurrCity(userData.newCity);
@@ -160,7 +164,7 @@ export default function Map() {
             lat: res.data.latLng[0].lat,
             lng: res.data.latLng[0].lon,
           }));
-          console.log("~~~~~~~~~~~~~~~PUT", res.data);
+          console.log("~~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
     };
