@@ -10,8 +10,8 @@ import useGeoLocation from '../hooks/useGeoLocation';
 import Title from './Title';
 import DateRange from './DateRange';
 
-// axios.defaults.baseURL = 'https://showfinder-server.onrender.com';
-
+axios.defaults.baseURL = 'https://showfinder-server.onrender.com';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 export default function Map() {
   const [shows, setShows] = useState(
@@ -29,7 +29,7 @@ export default function Map() {
       dateRange: {},
       lat: null,
       lng: null,
-      currAddress: {},
+      currentAddress: {},
       newCity: "",
     });
   const [transition, setTransition] = useState({
@@ -91,8 +91,8 @@ export default function Map() {
       })
       .then((res) => {
           setShows(res.data);
-          setCurrCity(res.data.currAddress.address.city);
-          setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
+          setCurrCity(res.data.currentAddress.address.city);
+          setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
           console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
@@ -115,8 +115,8 @@ export default function Map() {
       })
         .then((res) => {
           setShows(res.data);
-          setCurrCity(res.data.currAddress.address.city);
-          setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
+          setCurrCity(res.data.currentAddress.address.city);
+          setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
           console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
@@ -135,8 +135,8 @@ export default function Map() {
       })
         .then((res) => {
           setShows(res.data);
-          setCurrCity(res.data.currAddress.address.city);
-          setUserData(prev => ({ ...prev, currAddress: res.data.currAddress }));
+          setCurrCity(res.data.currentAddress.address.city);
+          setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
           console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));

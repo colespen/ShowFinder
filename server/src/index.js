@@ -1,16 +1,16 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
-// const cors = require('cors');
+const cors = require('cors');
 const axios = require('axios');
 const path = require('path');
 
 const app = express();
 
-// app.use(cors({
-//   origin: 'https://master.d16uo4o9p7b9t0.amplifyapp.com/',
-//   credentials: true,
-// }));
+app.use(cors({
+  origin: 'https://master.d16uo4o9p7b9t0.amplifyapp.com/',
+  credentials: true,
+}));
 
 dotenv.config();
 
@@ -37,26 +37,27 @@ app.get('/api/shows', (req, res) => {
     lon: req.query.lng,
     format: 'json'
   });
-// https://us1.locationiq.com/v1/reverse.php? removed .php ***
+  // https://us1.locationiq.com/v1/reverse.php? removed .php ***
   axios.get(
     `https://us1.locationiq.com/v1/reverse?${params.toString()}`
-  ).then((response) => {
-    const currentAddress = response.data;
-    const params = new URLSearchParams({
-      name: currentAddress.address.city,
-      ...req.query.dateRange
-    });
-
-    return axios.get('https://concerts-artists-events-tracker.p.rapidapi.com/location?' + params.toString(), {
-      headers: {
-        "X-RapidAPI-Key": rapidKey,
-        "X-RapidAPI-Host": 'concerts-artists-events-tracker.p.rapidapi.com'
-      }
+  )
+    .then((response) => {
+      const currentAddress = response.data;
+      const params = new URLSearchParams({
+        name: currentAddress.address.city,
+        ...req.query.dateRange
+      });
+      return axios.get('https://concerts-artists-events-tracker.p.rapidapi.com/location?' + params.toString(), {
+        headers: {
+          "X-RapidAPI-Key": rapidKey,
+          "X-RapidAPI-Host": 'concerts-artists-events-tracker.p.rapidapi.com'
+        }
+      })
+        .then((response) => ({ ...response.data, currentAddress }));
     })
-      .then((response) => ({ ...response.data, currAddress: currentAddress }));
-  }).then((data) => {
-    res.send(data);
-  })
+    .then((data) => {
+      res.send(data);
+    })
     .catch((error) => {
       res.status(500).send("Error: " + error.message);
     });
@@ -72,49 +73,33 @@ app.get('/api/newshows', (req, res) => {
     city: req.query.newCity,
     format: 'json'
   });
- ;
-  console.log("newCity~~~~~~: ", req.query.newCity);
 
-  const getCoords = () => {
-    // if (userData) condition REMOVED ***
-    axios.get(
-      `https://us1.locationiq.com/v1/search?${params.toString()}`
-    )
-      .then(response => {
-        console.log("response.data in getCoords~~~~~~: ", response.data);
-        //response.data is coordinates
-        getNewShows(response.data);
-      })
-      .catch(err => {
-        console.error("damn.", err.message);
+  axios.get(
+    `https://us1.locationiq.com/v1/search?${params.toString()}`
+  )
+    .then(response => {
+      console.log("response.data in getCoords~~~~~~: ", response.data);
+      //  this response.data is coordinates
+      const latLng = response.data;
+      const params = new URLSearchParams({
+        name: req.query.newCity,
+        ...req.query.dateRange
       });
-  };
-  getCoords();
-
-  const getNewShows = (latLng) => {
-    const options = {
-      method: 'GET',
-      baseURL: 'https://concerts-artists-events-tracker.p.rapidapi.com/location',
-      params: {
-        'name': req.query.newCity,
-        'minDate': req.query.dateRange.minDate,
-        'maxDate': req.query.dateRange.minDate,
-      },
-      headers: {
-        'X-RapidAPI-Key': rapidKey,
-        'X-RapidAPI-Host': 'concerts-artists-events-tracker.p.rapidapi.com',
-      }
-    };
-    axios.request(options)
-      .then(response => {
-        console.log("response.data in getNewShows~~~~~: ", response.data);
-        res.json({ ...response.data, latLng });
+      return axios.get('https://concerts-artists-events-tracker.p.rapidapi.com/location?' + params.toString(), {
+        headers: {
+          "X-RapidAPI-Key": rapidKey,
+          "X-RapidAPI-Host": 'concerts-artists-events-tracker.p.rapidapi.com'
+        }
       })
-      .catch(err => {
-        console.error(err.message);
-      });
-  };
-
+        .then(response => ({ ...response.data, latLng }));
+    })
+    .then(data => {
+      console.log("data in api/newshows~~~~: ", data);
+      res.send(data);
+    })
+    .catch((error) => {
+      res.status(500).send("Error: " + error.message);
+    });
 });
 
 app.listen(port, () => {
