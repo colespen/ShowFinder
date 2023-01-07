@@ -10,8 +10,8 @@ import useGeoLocation from '../hooks/useGeoLocation';
 import Title from './Title';
 import DateRange from './DateRange';
 
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com';
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export default function Map() {
   const [shows, setShows] = useState(

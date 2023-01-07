@@ -7,10 +7,7 @@ const path = require('path');
 
 const app = express();
 
-app.use(cors({
-  origin: 'https://master.d16uo4o9p7b9t0.amplifyapp.com/',
-  credentials: true,
-}));
+app.use(cors());
 
 dotenv.config();
 

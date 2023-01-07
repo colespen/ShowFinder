@@ -22,4 +22,4 @@ Simple SPA to find local shows surrounding the user. Immediately populates nearb
 - RapidAPI: artists events tracker by location
 - tried: PredictHQ, Songkick, Zyla
 
-Developed and Designed by Spencer Cole
+Developed & Designed by Spencer Cole
