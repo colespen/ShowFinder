@@ -14,17 +14,17 @@ axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 
 export default function Map() {
-  const [shows, setShows] = useState(
-    JSON.parse(sessionStorage.getItem('shows')) || {}
+  const [shows, setShows] = useState({}
+    // JSON.parse(sessionStorage.getItem('shows')) || {}
   );
-  const [artist, setArtist] = useState(
-    JSON.parse(sessionStorage.getItem('artist')) || ""
+  const [artist, setArtist] = useState(""
+    // JSON.parse(sessionStorage.getItem('artist')) || ""
   );
-  const [currCity, setCurrCity] = useState(
-    JSON.parse(sessionStorage.getItem('currCity')) || null
+  const [currCity, setCurrCity] = useState(null
+    // JSON.parse(sessionStorage.getItem('currCity')) || null
   );
   const [userData, setUserData] = useState(
-    JSON.parse(sessionStorage.getItem('userData')) ||
+    // JSON.parse(sessionStorage.getItem('userData')) ||
     {
       dateRange: {},
       lat: null,
@@ -43,8 +43,7 @@ export default function Map() {
   const geolocation = useGeoLocation();
   // const lat = geolocation.coords.lat;
   // const lng = geolocation.coords.lng;
-
-  console.log("userData: ", userData);
+  
 
   //////    Set Geo Coords State After Allow Access - First Render
   //////
@@ -66,7 +65,8 @@ export default function Map() {
       isFirstRender.current = false;
       return;
     }
-  }, [isFirstRender, geolocation.coords.lat, geolocation.coords.lng, geolocation.loaded, userData.lat]);
+  }, [isFirstRender, geolocation.coords, geolocation.loaded, 
+    userData.lat]);
 
 
   //////    Assign Current Date and maxDate Default
@@ -111,7 +111,7 @@ export default function Map() {
         .catch(err => console.log(err.message));
 
     }
-  }, [geolocation.loaded, shows, userData]);
+  }, [geolocation.loaded, geolocation.coords, shows, userData]);
 
 
   //////    GET Current Location Shows and Geo - onClick
@@ -268,6 +268,7 @@ export default function Map() {
 
   //////    Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
+
 
 
   const newShowMarkers = (shows.data || []).map((show, index) =>
