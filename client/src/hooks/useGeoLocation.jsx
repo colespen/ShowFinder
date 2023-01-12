@@ -1,34 +1,54 @@
 import { useState, useEffect } from "react";
 
-export default function useGeoLocation() {
+/**
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError}
+ */
+export const NAVIGTOR_ERROR = {
+  PERMISSION_DENIED: 1,
+  POSITION_UNAVAILABLE: 2,
+  TIMEOUT: 3
+};
+
+/**
+ * React hook returns user's geolocation
+ */
+export default function useGeoLocation(reloadOnError = false) {
   const [location, setLocation] = useState({
     loaded: false,
     coords: { lat: "", lng: "" },
-    accuracy: 0
+    accuracy: 0,
+    error: undefined
   });
 
-  const onSuccess = location => {
-    setLocation({
-      loaded: true,
-      accuracy: location.coords.accuracy,
-      coords: {
-        lat: location.coords.latitude,
-        lng: location.coords.longitude
-      }
-    });
-  };
-
-  const onError = err => {
-    setLocation({
-      loaded: true,
-      err: {
-        code: err.code,
-        message: err.message,
-      },
-    });
-  };
+  // moved onSuccess and onError inside useEffect
 
   useEffect(() => {
+    const onSuccess = location => {
+      setLocation({
+        loaded: true,
+        accuracy: location.coords.accuracy,
+        coords: {
+          lat: location.coords.latitude,
+          lng: location.coords.longitude
+        }
+      });
+    };
+
+    const onError = error => {
+
+      // if (error.code === NAVIGTOR_ERROR.PERMISSION_DENIED) {
+      //   alert("please allow location in settings to continue.");
+      // }
+
+      setLocation({
+        loaded: true,
+        error: {
+          code: error.code,
+          message: error.message,
+        },
+      });
+    };
+
     if (!("geolocation" in navigator)) {
       onError({
         code: 0,
@@ -37,6 +57,7 @@ export default function useGeoLocation() {
     }
 
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
-  }, []);
+  }, [reloadOnError]);
+
   return location;
 }

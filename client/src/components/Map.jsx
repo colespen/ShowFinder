@@ -5,7 +5,7 @@ import './styles.scss';
 
 import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
 import L from "leaflet";
-import useGeoLocation from '../hooks/useGeoLocation';
+import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
 
 import Title from './Title';
 import DateRange from './DateRange';
@@ -41,33 +41,27 @@ export default function Map() {
 
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
-  // const lat = geolocation.coords.lat;
-  // const lng = geolocation.coords.lng;
   
-
-  //////    Set Geo Coords State After Allow Access - First Render
-  //////
+  
+  ////    Set Geo Coords State After Allow Access - First Render
+  ////
   useEffect(() => {
-    navigator.geolocation.watchPosition(() => { },
-      function (error) {
-        if (error.code === error.PERMISSION_DENIED) {
-          if (!alert("please allow location in settings to continue.")) {
-            window.location.reload();
-          };
-        }
-      });
+    if (geolocation.error === NAVIGTOR_ERROR.PERMISSION_DENIED) {
+      return <div>Please allow geolocation first.</div>
+    };
     if (geolocation.loaded && isFirstRender.current
       && userData.lat === null) {
-      setUserData(prev => ({
-        ...prev,
-        ...geolocation.coords
-      }));
-      isFirstRender.current = false;
-      return;
-    }
-  }, [isFirstRender, geolocation.coords, geolocation.loaded, 
-    userData.lat]);
-
+        setUserData(prev => ({
+          ...prev,
+          ...geolocation.coords
+        }));
+        isFirstRender.current = false;
+        return;
+      }
+    }, [isFirstRender, geolocation.coords, geolocation.loaded, 
+      userData.lat, geolocation.error]);
+      
+      
 
   //////    Assign Current Date and maxDate Default
   const currDate = new Date();
@@ -303,6 +297,7 @@ export default function Map() {
       null
   )
   );
+
 
   return (
     <div className="map-main">
