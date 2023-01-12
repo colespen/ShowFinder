@@ -106,7 +106,7 @@ export default function Map() {
           setShows(res.data);
           setCurrCity(res.data.currentAddress.address.city);
           setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
-          console.log("~~~~~~~~~~~~~~GET", res.data);
+          // console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
 
@@ -135,7 +135,7 @@ export default function Map() {
           setShows(res.data);
           setCurrCity(res.data.currentAddress.address.city);
           setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
-          console.log("~~~~~~~~~~~~~~GET", res.data);
+          // console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
     }
@@ -155,7 +155,7 @@ export default function Map() {
           setShows(res.data);
           setCurrCity(res.data.currentAddress.address.city);
           setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
-          console.log("~~~~~~~~~~~~~~GET", res.data);
+          // console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
     }
@@ -182,7 +182,7 @@ export default function Map() {
             lat: res.data.latLng[0].lat,
             lng: res.data.latLng[0].lon,
           }));
-          console.log("~~~~~~~~~~~~~~~GET", res.data);
+          // console.log("~~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
     };
