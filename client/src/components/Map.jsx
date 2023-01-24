@@ -10,7 +10,7 @@ import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
 import Title from './Title';
 import DateRange from './DateRange';
 
-// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 
 export default function Map() {
@@ -59,9 +59,11 @@ export default function Map() {
 
   //////    Assign Current Date and maxDate Default
   const currDate = new Date();
-  const minDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
-  const maxDate = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 4}`;
-  // ***temp hardcode +1 week maxDate
+  const minDate = 
+  `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
+  const maxDate = 
+  `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 3}`;
+  // ***temp hardcode +3 days maxDate
 
 
   //////    Set Default Date Range State
