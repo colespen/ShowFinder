@@ -10,21 +10,15 @@ import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
 import Title from './Title';
 import DateRange from './DateRange';
 
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 
 export default function Map() {
-  const [shows, setShows] = useState({}
-    // JSON.parse(sessionStorage.getItem('shows')) || {}
-  );
-  const [artist, setArtist] = useState(""
-    // JSON.parse(sessionStorage.getItem('artist')) || ""
-  );
-  const [currCity, setCurrCity] = useState(null
-    // JSON.parse(sessionStorage.getItem('currCity')) || null
-  );
+  
+  const [shows, setShows] = useState({});
+  const [artist, setArtist] = useState("");
+  const [currCity, setCurrCity] = useState(null);
   const [userData, setUserData] = useState(
-    // JSON.parse(sessionStorage.getItem('userData')) ||
     {
       dateRange: {},
       lat: null,
@@ -100,7 +94,6 @@ export default function Map() {
           setShows(res.data);
           setCurrCity(res.data.currentAddress.address.city);
           setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
-          // console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
 
@@ -129,7 +122,6 @@ export default function Map() {
           setShows(res.data);
           setCurrCity(res.data.currentAddress.address.city);
           setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
-          // console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
     }
@@ -149,7 +141,6 @@ export default function Map() {
           setShows(res.data);
           setCurrCity(res.data.currentAddress.address.city);
           setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
-          // console.log("~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
     }
@@ -176,7 +167,6 @@ export default function Map() {
             lat: res.data.latLng[0].lat,
             lng: res.data.latLng[0].lon,
           }));
-          // console.log("~~~~~~~~~~~~~~~GET", res.data);
         })
         .catch(err => console.log(err.message));
     };
