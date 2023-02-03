@@ -35,7 +35,6 @@
   padding-left: 3px;
 }
 
-
 .artist-list {
   width: 100%;
   padding-left: 0;
@@ -73,7 +72,12 @@
   height: 30px;
   margin-bottom: 20px;
   background: #003768;
-  background: linear-gradient(90deg, rgb(0, 50, 93) 15%, rgba(27, 66, 101, 1) 46%, rgba(87, 114, 138, 1) 96%);
+  background: linear-gradient(
+    90deg,
+    rgb(0, 50, 93) 15%,
+    rgba(27, 66, 101, 1) 46%,
+    rgba(87, 114, 138, 1) 96%
+  );
 }
 
 .controls-bottom {
@@ -83,7 +87,12 @@
   height: 30px;
   margin-top: 20px;
   background: #003768;
-  background: linear-gradient(90deg, rgba(87, 114, 138, 1) 7%, rgba(37, 73, 106, 1) 38%, rgb(0, 50, 93) 68%);
+  background: linear-gradient(
+    90deg,
+    rgba(87, 114, 138, 1) 7%,
+    rgba(37, 73, 106, 1) 38%,
+    rgb(0, 50, 93) 68%
+  );
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -163,16 +172,22 @@
       color: rgba(245, 245, 245, 0.866);
       background: #003768;
       border: none;
-      background: linear-gradient(90deg, rgba(0, 55, 104, 0.327) 0%, rgba(0, 55, 104, 1) 75%);
+      background: linear-gradient(
+        90deg,
+        rgba(0, 55, 104, 0.327) 0%,
+        rgba(0, 55, 104, 1) 75%
+      );
       padding-left: 10px;
       display: flex;
       align-items: center;
       transition: background-color 250ms ease;
-
       &:hover {
         background-color: #001b32;
       }
+    }
 
+    .react-datepicker__input-container {
+      height: 100%
     }
   }
 
@@ -184,14 +199,10 @@
     background-color: #003768;
     border: 3px solid #57728a;
     padding-top: 2px;
-    border-left: none;
-    border-right: none;
     cursor: pointer;
-
     &:hover {
       background-color: #001b32;
     }
-
     &:active {
       background-color: #006ecf;
     }
@@ -199,13 +210,13 @@
 }
 
 #current-location {
-  height: 30px;
+  // height: 30px;
+  height: 100%;
   background-color: #003768;
   border: 3px solid #57728a;
   width: 46px;
   padding: 4px 3px 3px 3px;
   cursor: pointer;
-
   &:hover {
     background-color: #0937f1;
     transition: all 2500ms ease;
@@ -214,7 +225,6 @@
       filter: invert(100%);
     }
   }
-
   &:active {
     background-color: #006ecf;
   }
@@ -231,10 +241,16 @@
   }
 }
 
+#go-button-top {
+  height: 100%;
+  border-left: none;
+  border-right: none;
+}
+
 #date-bottom {
   display: none;
 
-  #go-button {
+  #go-button-bottom {
     border-right: 3px solid #57728a;
   }
 }
@@ -281,7 +297,7 @@
 
   span {
     color: whitesmoke;
-    font-family: 'Montserrat', sans-serif, 'Courier New', Courier, monospace;
+    font-family: "Montserrat", sans-serif, "Courier New", Courier, monospace;
     font-size: 18px;
     font-weight: 100;
     padding-top: 1px;
@@ -290,13 +306,11 @@
     opacity: 0;
   }
   &:hover span {
-      transition: 3s opacity ease-out, 3s filter ease-out 2.1s;
-      opacity: 100%;
-      filter: blur(100px);
+    transition: 3s opacity ease-out, 3s filter ease-out 2.1s;
+    opacity: 100%;
+    filter: blur(100px);
   }
 }
-
-
 
 @media only screen and (max-width: 805px) {
   #date-top {
@@ -318,7 +332,6 @@
         transform: none;
         box-shadow: -7px 0px 1.25px #0a203595;
         border-right: 3px solid #57728a;
-
       }
     }
 
@@ -333,9 +346,6 @@
     height: 91vh;
   }
 }
-
-
-
 
 ////////////////////////////////
 /////  Title Fade

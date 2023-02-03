@@ -15,7 +15,7 @@ app.use(morgan('tiny'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/////   serve static files for build
+/////   serve static files for build ******
 app.use(express.static(path.resolve(__dirname, '../../client/build')));
 
 let port = process.env.PORT || 8001;
@@ -71,13 +71,20 @@ app.get('/api/newshows', (req, res) => {
     format: 'json'
   });
 
+  console.log("req.query.newCity: ", req.query.newCity)
+  
   axios.get(
     `https://us1.locationiq.com/v1/search?${params.toString()}`
+    // `https://us1.locationiq.com/v1/search?key=
+    // ${iqToken}&city=${req.query.newCity}&format=json`
   )
     .then(response => {
-      console.log("response.data in getCoords~~~~~~: ", response.data);
-      //  this response.data is coordinates
+      console.log("response.data in /api/newshows~~~~~~: ", response.data);
+      //  this response.data is entire obj incl. coords.
       const latLng = response.data;
+
+      console.log("latLng in /api/newshows: ", latLng)
+      
       const params = new URLSearchParams({
         name: req.query.newCity,
         ...req.query.dateRange
@@ -88,7 +95,7 @@ app.get('/api/newshows', (req, res) => {
           "X-RapidAPI-Host": 'concerts-artists-events-tracker.p.rapidapi.com'
         }
       })
-        .then(response => ({ ...response.data, latLng }));
+      .then(response => ({ ...response.data, latLng }));
     })
     .then(data => {
       console.log("data in api/newshows~~~~: ", data);

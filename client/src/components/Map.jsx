@@ -10,11 +10,12 @@ import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
 import Title from './Title';
 import DateRange from './DateRange';
 
+////// use 'Render.com' as server ******
 axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 
 export default function Map() {
-  
+
   const [shows, setShows] = useState({});
   const [artist, setArtist] = useState("");
   const [currCity, setCurrCity] = useState(null);
@@ -35,34 +36,32 @@ export default function Map() {
 
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
-  
-  
+
   ////    Set Geo Coords State After Allow Access - First Render
   ////
   useEffect(() => {
     if (geolocation.error === NAVIGTOR_ERROR.PERMISSION_DENIED) {
-      return <div>Please allow geolocation first.</div>
+      return <div>Please allow geolocation first.</div>;
     };
     if (geolocation.loaded && isFirstRender.current
       && userData.lat === null) {
-        setUserData(prev => ({
-          ...prev,
-          ...geolocation.coords
-        }));
-        isFirstRender.current = false;
-        return;
-      }
-    }, [isFirstRender, geolocation.coords, geolocation.loaded, 
-      userData.lat, geolocation.error]);
-      
-      
+      setUserData(prev => ({
+        ...prev,
+        ...geolocation.coords
+      }));
+      isFirstRender.current = false;
+      return;
+    }
+  }, [isFirstRender, geolocation.coords, geolocation.loaded,
+    userData.lat, geolocation.error]);
+
 
   //////    Assign Current Date and maxDate Default
   const currDate = new Date();
-  const minDate = 
-  `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
-  const maxDate = 
-  `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 3}`;
+  const minDate =
+    `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
+  const maxDate =
+    `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 3}`;
   // ***temp hardcode +3 days maxDate
 
 
@@ -109,14 +108,14 @@ export default function Map() {
     setCurrCity("");
     setTransition({ opacity: 1, type: "location" });
     setUserData(prev => ({
-      ...prev, 
+      ...prev,
       ...geolocation.coords
     }));
     if (geolocation.loaded) {
 
       axios.get('/api/shows', {
         params: {
-          ...userData, 
+          ...userData,
           ...geolocation.coords
         }
       })
@@ -173,6 +172,7 @@ export default function Map() {
         .catch(err => console.log(err.message));
     };
   };
+
   ////    Submit City on Enter
   const newCityOnEnter = e => {
     if (e.key === "Enter") handleNewCityRequest();
@@ -199,14 +199,24 @@ export default function Map() {
     const map = useMap();
 
     useEffect(() => {
-      if (geolocation.loaded && currCity) map.flyTo({ lat: userData.lat, lng: userData.lng }, 13);
+      if (geolocation.loaded && currCity) map.flyTo(
+        { lat: userData.lat, lng: userData.lng }, 13);
       ////    use setView instead of flyTo on page refresh
       // map.setView({ lat: userData.lat, lng: userData.lng }, 12);
       map.on('zoomend', () => {
         //// load position marker after animation
-        const circle = L.circle(geolocation.coords, geolocation.accuracy + 7, { color: '#3084c9', weight: 0.25, opacity: 0.8, fillColor: '#0000ff38', fillOpacity: 0.15 });
-
-        const fixCircle = L.circle(geolocation.coords, { radius: 170, color: '#3084c9', weight: 0.25, opacity: 0.8, fillColor: '#0000ff38', fillOpacity: 0.15 });
+        const circle = L.circle(
+          geolocation.coords, geolocation.accuracy + 7,
+          {
+            color: '#3084c9', weight: 0.25, opacity: 0.8,
+            fillColor: '#0000ff38', fillOpacity: 0.15
+          });
+        const fixCircle = L.circle(
+          geolocation.coords,
+          {
+            radius: 170, color: '#3084c9', weight: 0.25,
+            opacity: 0.8, fillColor: '#0000ff38', fillOpacity: 0.15
+          });
 
         if (geolocation.accuracy > 25) {
           fixCircle.addTo(map);
@@ -239,7 +249,10 @@ export default function Map() {
   //////    Open artist name onClick
   const handleArtistLink = (artist) => {
     console.log("artist in handleArtistClick", artist);
-    window.open(`https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=${artist}&commit=`, '_blank', 'noreferrer');
+    window.open(
+      `https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=
+      ${artist}&commit=`, '_blank', 'noreferrer'
+    );
   };
 
   //////    Set Date Range to State
@@ -254,7 +267,6 @@ export default function Map() {
 
   //////    Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
-
 
 
   const newShowMarkers = (shows.data || []).map((show, index) =>
@@ -294,7 +306,9 @@ export default function Map() {
   return (
     <div className="map-main">
       <Title className="title"
-        currCity={currCity} isFirstRender={isFirstRender.current} transition={transition}
+        currCity={currCity}
+        isFirstRender={isFirstRender.current}
+        transition={transition}
       />
       <div className="controls-top">
         <div className="city-input">
@@ -313,7 +327,8 @@ export default function Map() {
         <div className="date-location" id="date-top">
           <DateRange handleDateSelect={handleDateSelect}
           />
-          <button onClick={handleDateRangeClick}>GO</button>
+          <button id="go-button-top"
+            onClick={handleDateRangeClick}>GO</button>
         </div>
         <button id="current-location"
           onClick={handleCurrLocationClick}
@@ -343,13 +358,16 @@ export default function Map() {
           <a href="https://github.com/colespen/ShowFinder"
             target="_blank"
             rel="noreferrer"
-          > <img src="./github-mark.svg" width="18" height="18" alt="GitHub-link"></img></a>
+          >
+            <img src="./github-mark.svg" width="18" height="18"
+              alt="GitHub-link"></img>
+          </a>
           <span>Spencer Cole</span>
         </div>
         <div className="date-location" id="date-bottom">
           <DateRange handleDateSelect={handleDateSelect}
           />
-          <button id="go-button"
+          <button id="go-button-bottom"
             onClick={handleDateRangeClick}>GO</button>
         </div>
       </div>
