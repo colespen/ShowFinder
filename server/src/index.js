@@ -44,7 +44,9 @@ app.get('/api/shows', (req, res) => {
         name: currentAddress.address.city,
         ...req.query.dateRange
       });
-      return axios.get('https://concerts-artists-events-tracker.p.rapidapi.com/location?' + params.toString(), {
+      return axios.get(
+        'https://concerts-artists-events-tracker.p.rapidapi.com/location?'
+        + params.toString(), {
         headers: {
           "X-RapidAPI-Key": rapidKey,
           "X-RapidAPI-Host": 'concerts-artists-events-tracker.p.rapidapi.com'
@@ -71,8 +73,8 @@ app.get('/api/newshows', (req, res) => {
     format: 'json'
   });
 
-  console.log("req.query.newCity: ", req.query.newCity)
-  
+  console.log("req.query.newCity: ", req.query.newCity);
+
   axios.get(
     `https://us1.locationiq.com/v1/search?${params.toString()}`
     // `https://us1.locationiq.com/v1/search?key=
@@ -82,20 +84,20 @@ app.get('/api/newshows', (req, res) => {
       console.log("response.data in /api/newshows~~~~~~: ", response.data);
       //  this response.data is entire obj incl. coords.
       const latLng = response.data;
-
-      console.log("latLng in /api/newshows: ", latLng)
       
       const params = new URLSearchParams({
         name: req.query.newCity,
         ...req.query.dateRange
       });
-      return axios.get('https://concerts-artists-events-tracker.p.rapidapi.com/location?' + params.toString(), {
+      return axios.get(
+        'https://concerts-artists-events-tracker.p.rapidapi.com/location?'
+        + params.toString(), {
         headers: {
           "X-RapidAPI-Key": rapidKey,
           "X-RapidAPI-Host": 'concerts-artists-events-tracker.p.rapidapi.com'
         }
       })
-      .then(response => ({ ...response.data, latLng }));
+        .then(response => ({ ...response.data, latLng }));
     })
     .then(data => {
       console.log("data in api/newshows~~~~: ", data);

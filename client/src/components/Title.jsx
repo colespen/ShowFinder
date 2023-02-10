@@ -10,7 +10,7 @@ export default function Title(props) {
   const [text, setText] = useState("locating shows near you");
 
   useEffect(() => {
-    if (transition.type === "shows") setText("grabbing shows")
+    if (transition.type === "shows") setText("grabbing shows");
     if (transition.type === "dates") setText("grabbing show dates");
     if (transition.type === "location") setText("grabbing your location");
 
@@ -38,7 +38,7 @@ export default function Title(props) {
       const delayWait = setTimeout(() => {
         if (!currCity) setWait(0.65);
       }, 60);
-  
+
       return () => { clearTimeout(delayWait); };
     }
   }, [currCity, isFirstRender]);

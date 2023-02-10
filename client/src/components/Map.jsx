@@ -10,14 +10,14 @@ import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
 import Title from './Title';
 import DateRange from './DateRange';
 
-////// use 'Render.com' as server ******
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+////// use Render.com server ******
+// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 
 export default function Map() {
 
+  // const [artist, setArtist] = useState("");
   const [shows, setShows] = useState({});
-  const [artist, setArtist] = useState("");
   const [currCity, setCurrCity] = useState(null);
   const [userData, setUserData] = useState(
     {
@@ -37,8 +37,7 @@ export default function Map() {
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
 
-  ////    Set Geo Coords State After Allow Access - First Render
-  ////
+  //////   Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
     if (geolocation.error === NAVIGTOR_ERROR.PERMISSION_DENIED) {
       return <div>Please allow geolocation first.</div>;
@@ -62,7 +61,7 @@ export default function Map() {
     `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
   const maxDate =
     `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 3}`;
-  // ***temp hardcode +3 days maxDate
+      // ***temp hardcode +3 days maxDate
 
 
   //////    Set Default Date Range State
@@ -81,7 +80,6 @@ export default function Map() {
   //////////////////////////////////////////////////////////////////
 
   /////   GET Current Location Shows and Geo - First Render
-  //               *** add && isFirstRender here? ***
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
 
@@ -94,7 +92,9 @@ export default function Map() {
         .then((res) => {
           setShows(res.data);
           setCurrCity(res.data.currentAddress.address.city);
-          setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
+          setUserData(prev => (
+            { ...prev, currentAddress: res.data.currentAddress }
+          ));
         })
         .catch(err => console.log(err.message));
 
@@ -122,7 +122,9 @@ export default function Map() {
         .then((res) => {
           setShows(res.data);
           setCurrCity(res.data.currentAddress.address.city);
-          setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
+          setUserData(prev => (
+            { ...prev, currentAddress: res.data.currentAddress }
+          ));
         })
         .catch(err => console.log(err.message));
     }
@@ -141,7 +143,9 @@ export default function Map() {
         .then((res) => {
           setShows(res.data);
           setCurrCity(res.data.currentAddress.address.city);
-          setUserData(prev => ({ ...prev, currentAddress: res.data.currentAddress }));
+          setUserData(prev => (
+            { ...prev, currentAddress: res.data.currentAddress })
+          );
         })
         .catch(err => console.log(err.message));
     }
@@ -183,12 +187,12 @@ export default function Map() {
 
 
   //////    Save state to sessionStorage
-  useEffect(() => {
-    sessionStorage.setItem('shows', JSON.stringify(shows));
-    sessionStorage.setItem('currCity', JSON.stringify(currCity));
-    sessionStorage.setItem('artist', JSON.stringify(artist));
-    sessionStorage.setItem('userData', JSON.stringify(userData));
-  }, [shows, artist, currCity, userData]);
+  // useEffect(() => {
+  //   sessionStorage.setItem('shows', JSON.stringify(shows));
+  //   sessionStorage.setItem('currCity', JSON.stringify(currCity));
+  //   sessionStorage.setItem('artist', JSON.stringify(artist));
+  //   sessionStorage.setItem('userData', JSON.stringify(userData));
+  // }, [shows, artist, currCity, userData]);
 
 
   //////    Default position
@@ -236,19 +240,18 @@ export default function Map() {
       setTimeout(resolve, 0);
     }).then(() => {
       return handleArtistName(e);
-    }).then((artist) => {
-      handleArtistLink(artist);
+    }).then((a) => {
+      handleArtistLink(a);
     })
       .catch(err => console.error(err.message));
   };
   //////    Set artist name onClick
   const handleArtistName = e => {
-    setArtist((e.target.innerText).split(' ').join('+'));
+    // setArtist((e.target.innerText).split(' ').join('+'));
     return (e.target.innerText).split(' ').join('+');
   };
   //////    Open artist name onClick
   const handleArtistLink = (artist) => {
-    console.log("artist in handleArtistClick", artist);
     window.open(
       `https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=
       ${artist}&commit=`, '_blank', 'noreferrer'
@@ -264,10 +267,8 @@ export default function Map() {
       }
     ));
   };
-
   //////    Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
-
 
   const newShowMarkers = (shows.data || []).map((show, index) =>
   (
@@ -289,12 +290,12 @@ export default function Map() {
               </li>
             ))}
           </ul>
-
           <a id="venue-name"
             href={show.location.sameAs}
             target="_blank"
             rel="noreferrer">
-            {show.location.name}</a>
+            {show.location.name}
+          </a>
         </Popup>
       </Marker>
       :
