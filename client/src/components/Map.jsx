@@ -6,12 +6,13 @@ import './styles.scss';
 import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
 import L from "leaflet";
 import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
+import getArtist from '../helpers/artistActions';
 
 import Title from './Title';
 import DateRange from './DateRange';
 
 ////// use Render.com server ******
-// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 
 export default function Map() {
@@ -61,7 +62,7 @@ export default function Map() {
     `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
   const maxDate =
     `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 3}`;
-      // ***temp hardcode +3 days maxDate
+  // ***temp hardcode +3 days maxDate
 
 
   //////    Set Default Date Range State
@@ -177,15 +178,10 @@ export default function Map() {
     };
   };
 
-  ////    Submit City on Enter
-  const newCityOnEnter = e => {
-    if (e.key === "Enter") handleNewCityRequest();
-  };
   //////////////////////////////////////////////////////////////////
   //////
   ////////////////////////////////////////////////////////////////////
-
-
+  
   //////    Save state to sessionStorage
   // useEffect(() => {
   //   sessionStorage.setItem('shows', JSON.stringify(shows));
@@ -194,6 +190,19 @@ export default function Map() {
   //   sessionStorage.setItem('userData', JSON.stringify(userData));
   // }, [shows, artist, currCity, userData]);
 
+  ////    Submit City on Enter
+  const newCityOnEnter = e => {
+    if (e.key === "Enter") handleNewCityRequest();
+  };
+  //////    Set Date Range to State
+  const handleDateSelect = (dateRange) => {
+    setUserData(prev => (
+      {
+        ...prev,
+        dateRange,
+      }
+    ));
+  };
 
   //////    Default position
   const budapest = [47.51983881388099, 19.032783326057594];
@@ -221,7 +230,6 @@ export default function Map() {
             radius: 170, color: '#3084c9', weight: 0.25,
             opacity: 0.8, fillColor: '#0000ff38', fillOpacity: 0.15
           });
-
         if (geolocation.accuracy > 25) {
           fixCircle.addTo(map);
         } else {
@@ -234,39 +242,6 @@ export default function Map() {
   }
 
 
-  //////    Artist Link promise chain
-  const getArtist = (e) => {
-    return new Promise(resolve => {
-      setTimeout(resolve, 0);
-    }).then(() => {
-      return handleArtistName(e);
-    }).then((a) => {
-      handleArtistLink(a);
-    })
-      .catch(err => console.error(err.message));
-  };
-  //////    Set artist name onClick
-  const handleArtistName = e => {
-    // setArtist((e.target.innerText).split(' ').join('+'));
-    return (e.target.innerText).split(' ').join('+');
-  };
-  //////    Open artist name onClick
-  const handleArtistLink = (artist) => {
-    window.open(
-      `https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=
-      ${artist}&commit=`, '_blank', 'noreferrer'
-    );
-  };
-
-  //////    Set Date Range to State
-  const handleDateSelect = (dateRange) => {
-    setUserData(prev => (
-      {
-        ...prev,
-        dateRange,
-      }
-    ));
-  };
   //////    Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
 

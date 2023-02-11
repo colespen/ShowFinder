@@ -40,6 +40,7 @@ app.get('/api/shows', (req, res) => {
   )
     .then((response) => {
       const currentAddress = response.data;
+
       const params = new URLSearchParams({
         name: currentAddress.address.city,
         ...req.query.dateRange
@@ -84,7 +85,7 @@ app.get('/api/newshows', (req, res) => {
       console.log("response.data in /api/newshows~~~~~~: ", response.data);
       //  this response.data is entire obj incl. coords.
       const latLng = response.data;
-      
+
       const params = new URLSearchParams({
         name: req.query.newCity,
         ...req.query.dateRange
