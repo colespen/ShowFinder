@@ -76,6 +76,14 @@ export default function Map() {
   }, [minDate, maxDate]);
 
 
+  const setShowCityUserData = (data) => {
+    setShows(data);
+    setCurrCity(data.currentAddress.address.city);
+    setUserData(prev => (
+      { ...prev, currentAddress: data.currentAddress })
+    );
+  };
+
   ////////////////////////////////////////////////////////////////////
   //////    Calls to Server for Geo and Shows API 
   //////////////////////////////////////////////////////////////////
@@ -91,14 +99,9 @@ export default function Map() {
         }
       })
         .then((res) => {
-          setShows(res.data);
-          setCurrCity(res.data.currentAddress.address.city);
-          setUserData(prev => (
-            { ...prev, currentAddress: res.data.currentAddress }
-          ));
+          setShowCityUserData(res.data);
         })
         .catch(err => console.log(err.message));
-
     }
   }, [geolocation.loaded, geolocation.coords, shows, userData]);
 
@@ -121,11 +124,7 @@ export default function Map() {
         }
       })
         .then((res) => {
-          setShows(res.data);
-          setCurrCity(res.data.currentAddress.address.city);
-          setUserData(prev => (
-            { ...prev, currentAddress: res.data.currentAddress }
-          ));
+          setShowCityUserData(res.data);
         })
         .catch(err => console.log(err.message));
     }
@@ -142,11 +141,7 @@ export default function Map() {
         params: userData
       })
         .then((res) => {
-          setShows(res.data);
-          setCurrCity(res.data.currentAddress.address.city);
-          setUserData(prev => (
-            { ...prev, currentAddress: res.data.currentAddress })
-          );
+          setShowCityUserData(res.data);
         })
         .catch(err => console.log(err.message));
     }
@@ -181,14 +176,7 @@ export default function Map() {
   //////////////////////////////////////////////////////////////////
   //////
   ////////////////////////////////////////////////////////////////////
-  
-  //////    Save state to sessionStorage
-  // useEffect(() => {
-  //   sessionStorage.setItem('shows', JSON.stringify(shows));
-  //   sessionStorage.setItem('currCity', JSON.stringify(currCity));
-  //   sessionStorage.setItem('artist', JSON.stringify(artist));
-  //   sessionStorage.setItem('userData', JSON.stringify(userData));
-  // }, [shows, artist, currCity, userData]);
+
 
   ////    Submit City on Enter
   const newCityOnEnter = e => {
