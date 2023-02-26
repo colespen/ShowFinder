@@ -9,15 +9,13 @@ import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
 import getArtist from '../helpers/artistActions';
 
 import Title from './Title';
-import DateRange from './DateRange';
+import DateRange, { minDate, maxDate } from './DateRange';
 
 ////// use Render.com server ******
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 
 export default function Map() {
-
-  // const [artist, setArtist] = useState("");
   const [shows, setShows] = useState({});
   const [currCity, setCurrCity] = useState(null);
   const [userData, setUserData] = useState(
@@ -55,16 +53,6 @@ export default function Map() {
   }, [isFirstRender, geolocation.coords, geolocation.loaded,
     userData.lat, geolocation.error]);
 
-
-  //////    Assign Current Date and maxDate Default
-  const currDate = new Date();
-  const minDate =
-    `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
-  const maxDate =
-    `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate() + 3}`;
-  // ***temp hardcode +3 days maxDate
-
-
   //////    Set Default Date Range State
   useEffect(() => {
     setUserData(prev => (
@@ -73,8 +61,7 @@ export default function Map() {
         dateRange: { minDate, maxDate },
       }
     ));
-  }, [minDate, maxDate]);
-
+  }, []);
 
   const setShowCityUserData = (data) => {
     setShows(data);
@@ -105,10 +92,8 @@ export default function Map() {
     }
   }, [geolocation.loaded, geolocation.coords, shows, userData]);
 
-
   //////    GET Current Location Shows and Geo - onClick
   const handleCurrLocationClick = () => {
-
     setCurrCity("");
     setTransition({ opacity: 1, type: "location" });
     setUserData(prev => ({
@@ -132,7 +117,6 @@ export default function Map() {
 
   //////    GET Date Range Shows and Geo - onClick
   const handleDateRangeClick = () => {
-
     if ((Object.keys(userData.dateRange).length === 2)) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "dates" });
@@ -147,14 +131,13 @@ export default function Map() {
     }
   };
 
-
   //////    Set City Name Input
   const handleCityChange = e => {
     setUserData((prev) => ({ ...prev, newCity: e.target.value }));
   };
-  //////    GET New City to Server for Geo & New Shows API calls
-  const handleNewCityRequest = () => {
 
+  //////    GET New City for Geo & New Shows API calls
+  const handleNewCityRequest = () => {
     if (userData.newCity) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "shows" });
@@ -176,7 +159,6 @@ export default function Map() {
   //////////////////////////////////////////////////////////////////
   //////
   ////////////////////////////////////////////////////////////////////
-
 
   ////    Submit City on Enter
   const newCityOnEnter = e => {
@@ -229,12 +211,11 @@ export default function Map() {
     return null;
   }
 
-
   //////    Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
 
-  const newShowMarkers = (shows.data || []).map((show, index) =>
-  (
+
+  const newShowMarkers = (shows.data || []).map((show, index) => (
     show.location.geo ?
 
       <Marker
@@ -263,8 +244,7 @@ export default function Map() {
       </Marker>
       :
       null
-  )
-  );
+  ));
 
 
   return (

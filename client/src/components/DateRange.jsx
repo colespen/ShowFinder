@@ -46,3 +46,11 @@ export default function DateRange(props) {
     />
   );
 }
+
+  //////    Assign Current Date and maxDate Default
+  const currDate = new Date();
+  export const minDate =
+    `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
+  export const maxDate =
+    `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
+  // ***remove temp hardcode +3 days maxDate

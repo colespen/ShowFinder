@@ -1,5 +1,5 @@
 {
-  "name": "leaftlet-test",
+  "name": "showfinder",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:8001",

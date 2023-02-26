@@ -73,13 +73,15 @@ app.get('/api/newshows', (req, res) => {
     city: req.query.newCity,
     format: 'json'
   });
-
-  console.log("req.query.newCity: ", req.query.newCity);
-
+  // does not work for all city names
   axios.get(
     `https://us1.locationiq.com/v1/search?${params.toString()}`
-    // `https://us1.locationiq.com/v1/search?key=
-    // ${iqToken}&city=${req.query.newCity}&format=json`
+    // , {
+    //   headers: {
+    //     // "content-type": "application/json",
+    //     // "Accept": "application/json"
+    //   }
+    // }
   )
     .then(response => {
       console.log("response.data in /api/newshows~~~~~~: ", response.data);
@@ -87,7 +89,7 @@ app.get('/api/newshows', (req, res) => {
       const latLng = response.data;
 
       const params = new URLSearchParams({
-        name: req.query.newCity,
+        name: req.query.newCity, // this works
         ...req.query.dateRange
       });
       return axios.get(
