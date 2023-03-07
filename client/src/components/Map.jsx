@@ -10,7 +10,7 @@ import Title from './Title';
 import DateRange, { minDate, maxDate } from './DateRange';
 
 ////// use Render.com server ******
-// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 export default function Map() {
   const [shows, setShows] = useState({});
@@ -220,7 +220,7 @@ export default function Map() {
         userData={userData}
         currCity={currCity}
       />
-      
+
       <div className="controls-bottom">
         <div className="github">
           <a href="https://github.com/colespen/ShowFinder"
