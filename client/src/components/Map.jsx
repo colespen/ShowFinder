@@ -3,17 +3,14 @@ import axios from 'axios';
 
 import './styles.scss';
 
-import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
-import L from "leaflet";
 import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
-import getArtist from '../helpers/artistActions';
 
+import Container from './MapContainer';
 import Title from './Title';
 import DateRange, { minDate, maxDate } from './DateRange';
 
 ////// use Render.com server ******
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
-
+// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 export default function Map() {
   const [shows, setShows] = useState({});
@@ -30,7 +27,6 @@ export default function Map() {
     opacity: 1,
     type: "initial",
   });
-
   const isFirstRender = useRef(true);
 
   //////    Assign User's Current Coords
@@ -130,40 +126,41 @@ export default function Map() {
         .catch(err => console.log(err.message));
     }
   };
+  
+  //////    GET New City for Geo & New Shows API calls
+  const handleNewCityRequest = () => {
+    if (userData.newCity) {
+      setCurrCity("");
+      setTransition({ opacity: 1, type: "shows" });
+      
+      axios.get('/api/newshows', { params: userData })
+      .then((res) => {
+        setShows(res.data);
+        setCurrCity(userData.newCity);
+        setUserData((prev) => ({
+          ...prev,
+          lat: res.data.latLng[0].lat,
+          lng: res.data.latLng[0].lon,
+        }));
+      })
+      .catch(err => console.log(err.message));
+    };
+  };
+  
+  //////////////////////////////////////////////////////////////////
+  //////
+  ////////////////////////////////////////////////////////////////////
 
   //////    Set City Name Input
   const handleCityChange = e => {
     setUserData((prev) => ({ ...prev, newCity: e.target.value }));
   };
 
-  //////    GET New City for Geo & New Shows API calls
-  const handleNewCityRequest = () => {
-    if (userData.newCity) {
-      setCurrCity("");
-      setTransition({ opacity: 1, type: "shows" });
-
-      axios.get('/api/newshows', { params: userData })
-        .then((res) => {
-          setShows(res.data);
-          setCurrCity(userData.newCity);
-          setUserData((prev) => ({
-            ...prev,
-            lat: res.data.latLng[0].lat,
-            lng: res.data.latLng[0].lon,
-          }));
-        })
-        .catch(err => console.log(err.message));
-    };
-  };
-
-  //////////////////////////////////////////////////////////////////
-  //////
-  ////////////////////////////////////////////////////////////////////
-
   ////    Submit City on Enter
   const newCityOnEnter = e => {
     if (e.key === "Enter") handleNewCityRequest();
   };
+
   //////    Set Date Range to State
   const handleDateSelect = (dateRange) => {
     setUserData(prev => (
@@ -174,77 +171,11 @@ export default function Map() {
     ));
   };
 
-  //////    Default position
-  const budapest = [47.51983881388099, 19.032783326057594];
-
-  //////    Use Current Location for map Position and circle
-  function CurrentLocation() {
-    const map = useMap();
-
-    useEffect(() => {
-      if (geolocation.loaded && currCity) map.flyTo(
-        { lat: userData.lat, lng: userData.lng }, 13);
-      ////    use setView instead of flyTo on page refresh
-      // map.setView({ lat: userData.lat, lng: userData.lng }, 12);
-      map.on('zoomend', () => {
-        //// load position marker after animation
-        const circle = L.circle(
-          geolocation.coords, geolocation.accuracy + 7,
-          {
-            color: '#3084c9', weight: 0.25, opacity: 0.8,
-            fillColor: '#0000ff38', fillOpacity: 0.15
-          });
-        const fixCircle = L.circle(
-          geolocation.coords,
-          {
-            radius: 170, color: '#3084c9', weight: 0.25,
-            opacity: 0.8, fillColor: '#0000ff38', fillOpacity: 0.15
-          });
-        if (geolocation.accuracy > 25) {
-          fixCircle.addTo(map);
-        } else {
-          circle.addTo(map);
-        }
-      });
-    }, [map]);
-
-    return null;
-  }
+  // //////    Default position
+  // const budapest = [47.51983881388099, 19.032783326057594];
 
   //////    Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
-
-
-  const newShowMarkers = (shows.data || []).map((show, index) => (
-    show.location.geo ?
-
-      <Marker
-        key={show.description}
-        position={[show.location.geo.latitude, show.location.geo.longitude]}
-      >
-        <Popup key={index} id="show-popup">
-
-          <ul className="artist-list" href="">
-            {show.performer.map((artist, i) =>
-            (
-              <li className="artist" key={artist + i}>
-                <button onClick={getArtist}>
-                  {artist.name}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <a id="venue-name"
-            href={show.location.sameAs}
-            target="_blank"
-            rel="noreferrer">
-            {show.location.name}
-          </a>
-        </Popup>
-      </Marker>
-      :
-      null
-  ));
 
 
   return (
@@ -283,20 +214,13 @@ export default function Map() {
         </button>
       </div>
 
-      <MapContainer className="map-container"
-        center={budapest}
-        zoom={2.5} scrollWheelZoom={true}
-      >
-        {geolocation.loaded && newShowMarkers}
-
-        <TileLayer
-          attribution=
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <CurrentLocation />
-      </MapContainer>
-
+      <Container 
+        geolocation={geolocation}
+        shows={shows}
+        userData={userData}
+        currCity={currCity}
+      />
+      
       <div className="controls-bottom">
         <div className="github">
           <a href="https://github.com/colespen/ShowFinder"
