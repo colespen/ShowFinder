@@ -4,6 +4,7 @@ export default async function getArtist(e) {
     await new Promise(resolve => {
       setTimeout(resolve, 0);
     });
+    console.log(e)
     const artistName = handleArtistName(e);
     handleArtistLink(artistName);
 
@@ -14,7 +15,6 @@ export default async function getArtist(e) {
 
 //////    Set artist name onClick
 const handleArtistName = e => {
-  // setArtist((e.target.innerText).split(' ').join('+'));
   return (e.target.innerText).split(' ').join('+');
 };
 

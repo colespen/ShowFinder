@@ -126,27 +126,27 @@ export default function Map() {
         .catch(err => console.log(err.message));
     }
   };
-  
+
   //////    GET New City for Geo & New Shows API calls
   const handleNewCityRequest = () => {
     if (userData.newCity) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "shows" });
-      
+
       axios.get('/api/newshows', { params: userData })
-      .then((res) => {
-        setShows(res.data);
-        setCurrCity(userData.newCity);
-        setUserData((prev) => ({
-          ...prev,
-          lat: res.data.latLng[0].lat,
-          lng: res.data.latLng[0].lon,
-        }));
-      })
-      .catch(err => console.log(err.message));
+        .then((res) => {
+          setShows(res.data);
+          setCurrCity(userData.newCity);
+          setUserData((prev) => ({
+            ...prev,
+            lat: res.data.latLng[0].lat,
+            lng: res.data.latLng[0].lon,
+          }));
+        })
+        .catch(err => console.log(err.message));
     };
   };
-  
+
   //////////////////////////////////////////////////////////////////
   //////
   ////////////////////////////////////////////////////////////////////
@@ -164,15 +164,9 @@ export default function Map() {
   //////    Set Date Range to State
   const handleDateSelect = (dateRange) => {
     setUserData(prev => (
-      {
-        ...prev,
-        dateRange,
-      }
+      { ...prev, dateRange, }
     ));
   };
-
-  // //////    Default position
-  // const budapest = [47.51983881388099, 19.032783326057594];
 
   //////    Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
@@ -214,7 +208,7 @@ export default function Map() {
         </button>
       </div>
 
-      <Container 
+      <Container
         geolocation={geolocation}
         shows={shows}
         userData={userData}
