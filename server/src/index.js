@@ -34,12 +34,12 @@ app.get('/api/shows', (req, res) => {
     lon: req.query.lng,
     format: 'json'
   });
-  // https://us1.locationiq.com/v1/reverse.php? removed .php ***
   axios.get(
     `https://us1.locationiq.com/v1/reverse?${params.toString()}`
   )
     .then((response) => {
       const currentAddress = response.data;
+      console.log("currentAddress: ", currentAddress)
 
       const params = new URLSearchParams({
         name: currentAddress.address.city,
@@ -75,19 +75,11 @@ app.get('/api/newshows', (req, res) => {
   });
   axios.get(
     `https://us1.locationiq.com/v1/search?${params.toString()}`
-    ,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      }
-    }
   )
     .then(response => {
+      //  this response.data is entire locationIQ obj incl. coords.
       const citySort =
         response.data.sort((a, b) => parseFloat(b.importance) - parseFloat(a.importance));
-
-      console.log("citySort~~~~~~: ", citySort);
-      //  this response.data is entire locationIQ obj incl. coords.
       const latLng = citySort;
 
       const params = new URLSearchParams({
@@ -114,6 +106,5 @@ app.get('/api/newshows', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.clear();
   console.log(`Server listening on port ${port} `);
 });

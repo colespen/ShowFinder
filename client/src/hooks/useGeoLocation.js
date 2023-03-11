@@ -20,7 +20,6 @@ export default function useGeoLocation(reloadOnError = false) {
     error: undefined
   });
 
-  // moved onSuccess and onError inside useEffect
 
   useEffect(() => {
     const onSuccess = location => {
@@ -35,11 +34,9 @@ export default function useGeoLocation(reloadOnError = false) {
     };
 
     const onError = error => {
-
       // if (error.code === NAVIGTOR_ERROR.PERMISSION_DENIED) {
       //   alert("please allow location in settings to continue.");
       // }
-
       setLocation({
         loaded: true,
         error: {

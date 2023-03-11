@@ -10,7 +10,7 @@ import Title from './Title';
 import DateRange, { minDate, maxDate } from './DateRange';
 
 ////// use Render.com server ******
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 export default function Map() {
   const [shows, setShows] = useState({});

@@ -37,4 +37,4 @@ const ShowMarkers = ({ shows }) => {
   );
 };
 
-export default ShowMarkers
+export default ShowMarkers;
