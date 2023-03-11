@@ -71,7 +71,6 @@ app.get('/api/newshows', (req, res) => {
   const params = new URLSearchParams({
     key: iqToken,
     city: req.query.newCity,
-    limit: 3,
     format: 'json'
   });
   axios.get(
