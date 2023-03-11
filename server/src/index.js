@@ -73,14 +73,14 @@ app.get('/api/newshows', (req, res) => {
     city: req.query.newCity,
     format: 'json'
   });
-  // does not work for all city names
   axios.get(
     `https://us1.locationiq.com/v1/search?${params.toString()}`
     ,
     {
       headers: {
         "Content-Type": "application/json",
-        "Accept-Encoding": "gzip,deflate,compress"
+        // "Accept-Encoding": "gzip,deflate,compress"
+        // (gzip way of compressing - need to talk to locationIQ for long json response)
       }
     }
   )
