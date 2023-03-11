@@ -79,18 +79,19 @@ app.get('/api/newshows', (req, res) => {
     {
       headers: {
         "Content-Type": "application/json",
-        // "Accept-Encoding": "gzip,deflate,compress"
-        // (gzip way of compressing - need to talk to locationIQ for long json response)
       }
     }
   )
     .then(response => {
-      console.log("response.data in /api/newshows~~~~~~: ", response.data);
-      //  this response.data is entire obj incl. coords.
-      const latLng = response.data;
+      const citySort =
+        response.data.sort((a, b) => parseFloat(b.importance) - parseFloat(a.importance));
+
+      console.log("citySort~~~~~~: ", citySort);
+      //  this response.data is entire locationIQ obj incl. coords.
+      const latLng = citySort;
 
       const params = new URLSearchParams({
-        name: req.query.newCity, // this works
+        name: req.query.newCity,
         ...req.query.dateRange
       });
       return axios.get(
@@ -104,7 +105,7 @@ app.get('/api/newshows', (req, res) => {
         .then(response => ({ ...response.data, latLng }));
     })
     .then(data => {
-      console.log("data in api/newshows~~~~: ", data);
+      console.log("data (shows): ~~~~: ", data);
       res.send(data);
     })
     .catch((error) => {
