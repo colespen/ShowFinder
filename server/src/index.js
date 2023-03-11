@@ -76,12 +76,13 @@ app.get('/api/newshows', (req, res) => {
   // does not work for all city names
   axios.get(
     `https://us1.locationiq.com/v1/search?${params.toString()}`
-    // , {
-    //   headers: {
-    //     // "content-type": "application/json",
-    //     // "Accept": "application/json"
-    //   }
-    // }
+    ,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "Accept-Encoding": "gzip,deflate,compress"
+      }
+    }
   )
     .then(response => {
       console.log("response.data in /api/newshows~~~~~~: ", response.data);
@@ -112,5 +113,6 @@ app.get('/api/newshows', (req, res) => {
 });
 
 app.listen(port, () => {
+  console.clear();
   console.log(`Server listening on port ${port} `);
 });
