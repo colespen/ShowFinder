@@ -71,13 +71,13 @@ app.get('/api/newshows', (req, res) => {
   const params = new URLSearchParams({
     key: iqToken,
     city: req.query.newCity,
+    limit: 3,
     format: 'json'
   });
   axios.get(
     `https://us1.locationiq.com/v1/search?${params.toString()}`
   )
     .then(response => {
-      //  this response.data is entire locationIQ obj incl. coords.
       const citySort =
         response.data.sort((a, b) => parseFloat(b.importance) - parseFloat(a.importance));
       const latLng = citySort;
@@ -94,10 +94,10 @@ app.get('/api/newshows', (req, res) => {
           "X-RapidAPI-Host": 'concerts-artists-events-tracker.p.rapidapi.com'
         }
       })
-        .then(response => ({ ...response.data, latLng }));
+      .then(response => ({ ...response.data, latLng }));
     })
     .then(data => {
-      console.log("data (shows): ~~~~: ", data);
+      console.log("data (shows) ~~~~: ", data);
       res.send(data);
     })
     .catch((error) => {
