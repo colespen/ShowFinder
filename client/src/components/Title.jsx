@@ -4,7 +4,7 @@ import './styles.scss';
 
 
 export default function Title(props) {
-  const { currCity, transition, isFirstRender } = props;
+  const { currCity, transition, isFirstRender, geolocation } = props;
   const [wait, setWait] = useState(0);
   const [show, setShow] = useState(0);
   const [text, setText] = useState("locating shows near you");
@@ -27,7 +27,7 @@ export default function Title(props) {
       if (currCity) setWait(0);
       const delayWait = setTimeout(() => {
         if (!currCity) setWait(0.65);
-      }, 350);
+      }, 400);
       return () => { clearTimeout(delayWait); };
     }
   }, [currCity, isFirstRender]);
@@ -53,19 +53,28 @@ export default function Title(props) {
     return () => { clearTimeout(delayShow); };
   }, [currCity]);
 
+  console.log("geo acccess: ", geolocation.access);
 
   return (
     <Fragment>
       {!currCity ?
         <div className="wait-container"
           style={{ opacity: wait }}>
-          <h1 className="title-wait" id="title-wait">
-            {text}
+          <h1 className={geolocation.access ?
+            "title-wait" : "title-wait pls-allow"}
+            id="title-wait">
+            {geolocation.access ? text :
+              "please allow location acesss"
+            }
           </h1>
-          <Loading className="loading-dots" />
+          {geolocation.access && <Loading className="loading-dots" />}
         </div>
         :
-        <h1 className="title-show"
+        <h1
+          className={
+            (currCity.length > 17 ?
+              "title-show long-entry" : "title-show")
+          }
           style={{ opacity: show }}
         >
           {"shows in " + currCity}

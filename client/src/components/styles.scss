@@ -28,6 +28,11 @@
     font-weight: 100;
     width: 100%;
   }
+  .pls-allow {
+    opacity: 0.6;
+    font-style: normal;
+    font-weight:lighter
+  }
 }
 
 #loading-dots {
@@ -345,6 +350,7 @@
     height: 91vh;
   }
 }
+
 
 ////////////////////////////////
 /////  Title Fade

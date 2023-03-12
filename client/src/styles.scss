@@ -15,7 +15,8 @@
   height: 1em;
   width: 90%;
   font-family: 'Montserrat', sans-serif, 'Courier New', Courier, monospace;
-  margin: 2.6vh 0 3.3vh 0;
+  // margin: 2.6vh 0 3.3vh 0;
+  margin: 2.1vh 0 2.8vh 0;
   color: whitesmoke;
   text-align: center;
   font-size: clamp(26px, 6.8vw, 62px);
@@ -30,5 +31,12 @@
   }
   &:focus {
     background-color: #04437a;
+  }
+}
+
+@media only screen and (max-width: 1081px) {
+  .long-entry {
+    font-size: clamp(26px, 5.6vw, 62px);
+    margin: 2.65vh 0 2.75vh 0;
   }
 }

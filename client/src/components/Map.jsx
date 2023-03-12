@@ -10,7 +10,7 @@ import Title from './Title';
 import DateRange, { minDate, maxDate } from './DateRange';
 
 ////// use Render.com server ******
-// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 export default function Map() {
   const [shows, setShows] = useState({});
@@ -174,10 +174,11 @@ export default function Map() {
 
   return (
     <div className="map-main">
-      <Title className="title"
+      <Title       
         currCity={currCity}
         isFirstRender={isFirstRender.current}
         transition={transition}
+        geolocation={geolocation}
       />
       <div className="controls-top">
         <div className="city-input">
@@ -185,6 +186,7 @@ export default function Map() {
             name="enter city"
             placeholder="enter a city | country"
             autoComplete="off"
+            spellCheck="false"
             onChange={handleCityChange}
             onFocus={handleInputTextSelect}
             onKeyDown={newCityOnEnter}

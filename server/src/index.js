@@ -96,12 +96,12 @@ app.get('/api/newshows', (req, res) => {
         }
       })
         .then(response => {
-
-          const dedupe = response.data.data.filter((el, index, arr) =>
-            index === arr.findIndex((x) =>
-              (x.description === el.description && x.startDate === el.startDate)
-            ));
-          return { data: [...dedupe], latLng };
+            const dedupe =
+              response?.data?.data?.filter((el, index, arr) =>
+                index === arr.findIndex((x) =>
+                  (x.description === el.description && x.startDate === el.startDate)
+                )) || [];
+            return { data: [...dedupe], latLng };
         });
     })
     .then(data => {

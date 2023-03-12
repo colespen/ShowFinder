@@ -17,20 +17,44 @@ export default function useGeoLocation(reloadOnError = false) {
     loaded: false,
     coords: { lat: "", lng: "" },
     accuracy: 0,
-    error: undefined
+    error: undefined,
+    access: false
   });
 
 
   useEffect(() => {
-    const onSuccess = location => {
-      setLocation({
-        loaded: true,
-        accuracy: location.coords.accuracy,
-        coords: {
-          lat: location.coords.latitude,
-          lng: location.coords.longitude
+    navigator.permissions.query({ name: 'geolocation' })
+      .then((status) => {
+        if (status.state === "granted") {
+          setLocation(prev => (
+            {
+              ...prev,
+              access: status.state === "granted"
+            }
+          ));
         }
+        status.onchange = () => {
+          setLocation(prev => (
+            {
+              ...prev,
+              access: status.state === "granted"
+            }
+          ));
+        };
       });
+
+    const onSuccess = location => {
+      setLocation(prev => (
+        {
+          ...prev,
+          loaded: true,
+          accuracy: location.coords.accuracy,
+          coords: {
+            lat: location.coords.latitude,
+            lng: location.coords.longitude
+          }
+        }
+        ));
     };
 
     const onError = error => {
