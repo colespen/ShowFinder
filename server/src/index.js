@@ -39,7 +39,7 @@ app.get('/api/shows', (req, res) => {
   )
     .then((response) => {
       const currentAddress = response.data;
-      console.log("currentAddress: ", currentAddress)
+      console.log("currentAddress: ", currentAddress);
 
       const params = new URLSearchParams({
         name: currentAddress.address.city,
@@ -77,8 +77,10 @@ app.get('/api/newshows', (req, res) => {
     `https://us1.locationiq.com/v1/search?${params.toString()}`
   )
     .then(response => {
+
       const citySort =
-        response.data.sort((a, b) => parseFloat(b.importance) - parseFloat(a.importance));
+        response.data.sort((a, b) =>
+          parseFloat(b.importance) - parseFloat(a.importance));
       const latLng = citySort;
 
       const params = new URLSearchParams({
@@ -93,7 +95,14 @@ app.get('/api/newshows', (req, res) => {
           "X-RapidAPI-Host": 'concerts-artists-events-tracker.p.rapidapi.com'
         }
       })
-      .then(response => ({ ...response.data, latLng }));
+        .then(response => {
+
+          const dedupe = response.data.data.filter((el, index, arr) =>
+            index === arr.findIndex((x) =>
+              (x.description === el.description && x.startDate === el.startDate)
+            ));
+          return { data: [...dedupe], latLng };
+        });
     })
     .then(data => {
       console.log("data (shows) ~~~~: ", data);
