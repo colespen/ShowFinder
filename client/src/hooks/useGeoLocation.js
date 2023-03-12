@@ -18,7 +18,8 @@ export default function useGeoLocation(reloadOnError = false) {
     coords: { lat: "", lng: "" },
     accuracy: 0,
     error: undefined,
-    access: false
+    access: false,
+    isClick: false
   });
 
 
@@ -37,7 +38,8 @@ export default function useGeoLocation(reloadOnError = false) {
           setLocation(prev => (
             {
               ...prev,
-              access: status.state === "granted"
+              access: status.state === "granted",
+              isClick: true
             }
           ));
         };

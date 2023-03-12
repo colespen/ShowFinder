@@ -9,18 +9,18 @@
 .title-show {
   font-weight: 200;
   // transition: opacity 1800ms ease;
-  //////    First Render
-  animation: fadeIn 2500ms ease-out;
-  -webkit-animation: fadeIn 2500ms ease-out;
-  -moz-animation: fadeIn 2500ms ease-out;
-  -o-animation: fadeIn 2500ms ease-out;
-  -ms-animation: fadeIn 2500ms ease-out;
+  // title fades
+  animation: fadeIn 5000ms ease-out;
+  -webkit-animation: fadeIn 5000ms ease-out;
+  -moz-animation: fadeIn 5000ms ease-out;
+  -o-animation: fadeIn 5000ms ease-out;
+  -ms-animation: fadeIn 5000ms ease-out;
 }
 
 .wait-container {
   display: flex;
   justify-content: center;
-  transition: opacity 1100ms ease-out;
+  transition: opacity 1650ms ease-out;
 
   .title-wait,
   .loading-dots {
