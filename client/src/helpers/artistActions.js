@@ -4,7 +4,6 @@ export default async function getArtist(e) {
     await new Promise(resolve => {
       setTimeout(resolve, 0);
     });
-    console.log(e)
     const artistName = handleArtistName(e);
     handleArtistLink(artistName);
 
