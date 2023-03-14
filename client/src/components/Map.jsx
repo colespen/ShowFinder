@@ -7,7 +7,9 @@ import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
 
 import Container from './MapContainer';
 import Title from './Title';
+
 import DateRange, { minDate, maxDate } from './DateRange';
+import { cityFilter } from '../helpers/utils';
 
 ////// use Render.com server ******
 axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
@@ -127,7 +129,7 @@ export default function Map() {
     }
   };
 
-  //////    GET New City for Geo & New Shows API calls
+  //////    GET New City --> Geo & New Shows API calls
   const handleNewCityRequest = () => {
     if (userData.newCity) {
       setCurrCity("");
@@ -136,7 +138,8 @@ export default function Map() {
       axios.get('/api/newshows', { params: userData })
         .then((res) => {
           setShows(res.data);
-          setCurrCity(userData.newCity);
+          console.log(cityFilter(userData.newCity));
+          setCurrCity(cityFilter(userData.newCity));
           setUserData((prev) => ({
             ...prev,
             lat: res.data.latLng[0].lat,
@@ -155,26 +158,23 @@ export default function Map() {
   const handleCityChange = e => {
     setUserData((prev) => ({ ...prev, newCity: e.target.value }));
   };
-
   ////    Submit City on Enter
   const newCityOnEnter = e => {
     if (e.key === "Enter") handleNewCityRequest();
   };
-
   //////    Set Date Range to State
   const handleDateSelect = (dateRange) => {
     setUserData(prev => (
       { ...prev, dateRange, }
     ));
   };
-
   //////    Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
 
 
   return (
     <div className="map-main">
-      <Title       
+      <Title
         currCity={currCity}
         isFirstRender={isFirstRender.current}
         transition={transition}
@@ -184,7 +184,7 @@ export default function Map() {
         <div className="city-input">
           <input type="text"
             name="enter city"
-            placeholder="enter a city | country"
+            placeholder="enter a city, state/country"
             autoComplete="off"
             spellCheck="false"
             onChange={handleCityChange}
