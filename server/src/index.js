@@ -22,6 +22,10 @@ let port = process.env.PORT || 8001;
 
 const iqToken = process.env.IQ_TOKEN;
 const rapidKey = process.env.RAPID_KEY;
+const client_id = process.env.CLIENT_ID;
+const client_secret = process.env.CLIENT_SECRET;
+let spotifyToken = "";
+
 
 //////////////////////////////////////////////////////////
 ////    GET - Shows
@@ -39,9 +43,11 @@ app.get('/api/shows', (req, res) => {
   )
     .then((response) => {
       const currentAddress = response.data;
-      console.log("currentAddress: ", currentAddress);
+      console.log("api/shows - currentAddress: ", currentAddress);
 
       const params = new URLSearchParams({
+        // TODO: this city name might change from orig. city query (/newshows)
+        // for example, London -> City of Westminister with geo coords reverse
         name: currentAddress.address.city,
         ...req.query.dateRange
       });
@@ -96,6 +102,7 @@ app.get('/api/newshows', (req, res) => {
         }
       })
         .then(response => {
+          // TODO: this dedupe stil retains some dupes resulting in same keys
           const dedupe =
             response?.data?.data?.filter((el, index, arr) =>
               index === arr.findIndex((x) =>
@@ -112,6 +119,70 @@ app.get('/api/newshows', (req, res) => {
       res.status(500).send("Error: " + error.message);
     });
 });
+
+//////////////////////////////////////////////////////////
+////    POST - Auth Request
+////////////////////////////////////////////////////////
+
+app.post('api/spotifyauth', (req, res) => {
+  const base64ID = new Buffer.from(client_id + ':' + client_secret).toString('base64');
+  console.log("base64Id: ", base64ID);
+  const config = {
+    headers: {
+      'Authorization': 'Basic ' + base64ID,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  };
+  const data = 'grant_type=client_credentials';
+
+  axios.post('https://accounts.spotify.com/api/token', data, config)
+    .then((response) => {
+      console.log(response.data)
+      spotifyToken = response.data.access_token;
+      console.log("token: ", spotifyToken)
+    })
+    .catch((error) => {
+      console.error("Error: ", error)
+    })
+});
+
+//////////////////////////////////////////////////////////
+////    Get - Artist ID -> Top Single
+////////////////////////////////////////////////////////
+
+app.get('api/spotifysample', (req, res) => {
+  const params = new URLSearchParams({
+    q: 'deerhoof',
+    type: 'artist',
+    format: 'json'
+  });
+  axios.get(`https://api.spotify.com/v1/search?${params.toString()}`, {
+    headers : {
+      Authorization: 'Bearer ' + spotifyToken
+    }
+  })
+  .then((response) => {
+    //               NOT CORRECT TODO:
+    const artistId = response.data.artist[0].item.id
+    return axios.get(() => {
+
+    })
+    .then((response) => {
+
+    })
+  })
+  .catch((error)=> {
+    console.error("Error: ", error)
+  })
+})
+
+// get artist id
+// https://api.spotify.com/v1/search?q=deerhoof&type=artist
+// artist[0].item.id ("7AZwAitWq1KcFoIJhRWb6V")
+
+// get top single
+//tracks[0].preview_url
+
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port} `);

@@ -8,6 +8,7 @@ const ShowMarkers = ({ shows }) => {
       show.location.geo ?
 
         <Marker
+        //TODO: some repeat keys still.. fix in filter in server?
           key={show.description}
           position={[show.location.geo.latitude, show.location.geo.longitude]}
         >
@@ -23,6 +24,11 @@ const ShowMarkers = ({ shows }) => {
                 </li>
               ))}
             </ul>
+            <div>
+              <audio controls>
+                <source src={`https://p.scdn.co/mp3-preview/d95978e0b4948c22fb175b39e9436537525c9aeb?cid=76674eb40ff44fc5bf0b290de0cad21c`} type="audio/mpeg" />
+              </audio>
+            </div>
             <a id="venue-name"
               href={show.location.sameAs}
               target="_blank"

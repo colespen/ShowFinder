@@ -29,7 +29,7 @@ export default function Title(props) {
       setOpacity(0);
       const delayWait = setTimeout(() => {
         if (!currCity) setOpacity(0.65);
-      }, 800);
+      }, 1200);
 
       
       return () => { clearTimeout(delayWait); };

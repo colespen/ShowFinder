@@ -12,7 +12,7 @@ import DateRange, { minDate, maxDate } from './DateRange';
 import { cityFilter } from '../helpers/utils';
 
 ////// use Render.com server ******
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 export default function Map() {
   const [shows, setShows] = useState({});
@@ -77,6 +77,9 @@ export default function Map() {
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
 
+      // axios.post('api/spoitfyauth')
+      //   .catch(err => console.log(err.message));
+
       axios.get('/api/shows', {
         params: {
           ...userData,
@@ -87,6 +90,8 @@ export default function Map() {
           setShowCityUserData(res.data);
         })
         .catch(err => console.log(err.message));
+
+
     }
   }, [geolocation.loaded, geolocation.coords, shows, userData]);
 
@@ -110,35 +115,48 @@ export default function Map() {
           setShowCityUserData(res.data);
         })
         .catch(err => console.log(err.message));
+
+
     }
   };
 
+  
   //////    GET Date Range Shows and Geo - onClick
   const handleDateRangeClick = () => {
+    console.log("userData: ", userData)
+
     if ((Object.keys(userData.dateRange).length === 2)) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "dates" });
-
-      axios.get('/api/shows', {
-        params: userData
-      })
+      const newCity = cityFilter(userData.newCity);
+      
+      if (newCity === "" || newCity === currCity) {
+        
+        axios.get('/api/shows', {
+          params: userData
+        })
         .then((res) => {
+          console.log("res.data in /shows: ", res.data)
           setShowCityUserData(res.data);
         })
         .catch(err => console.log(err.message));
+      } else {
+        handleNewCityRequest();
+      }
     }
   };
 
   //////    GET New City --> Geo & New Shows API calls
   const handleNewCityRequest = () => {
+    console.log("userData: ", userData)
     if (userData.newCity) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "shows" });
 
       axios.get('/api/newshows', { params: userData })
         .then((res) => {
+          console.log("res.data in /newshows: ", res.data)
           setShows(res.data);
-          console.log(cityFilter(userData.newCity));
           setCurrCity(cityFilter(userData.newCity));
           setUserData((prev) => ({
             ...prev,
