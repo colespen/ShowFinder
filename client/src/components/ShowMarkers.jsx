@@ -23,7 +23,6 @@ const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
 
   // Only display spinner if new marker (artist)
   const handleSetNewAudio = () => {
-    // console.log("THRU")
     setNewAudio(true);
   };
 
@@ -32,9 +31,11 @@ const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
     setNewAudio(false);
   }, [audioLink]);
 
-  console.log("lastClickedMarker: ", lastClickedMarker);
-  console.log("artist: ", artist);
-  console.log("newAudio: ", newAudio);
+  // console.log("lastClickedMarker: ", lastClickedMarker);
+  // console.log("artist: ", artist);
+  // console.log("newAudio: ", newAudio);
+
+  console.log("audioLink: ", audioLink)
 
   return (
     (shows.data || []).map((show, index) => (
@@ -67,10 +68,11 @@ const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
                 </li>
               ))}
             </ul>
-            <div className="player-container">
-              <div className="player-container-inner">
+            <div className="player-container" >
+              <div className="player-container-inner" >
                 {audioLink && !newAudio && (
-                  <audio className="audio-player" controls
+                  <audio controls
+                    className="audio-player"
                     ref={audioRef}
                   // onCanPlayThrough={handleCanPlayThrough}
                   // onLoadedData={handleCanPlay}

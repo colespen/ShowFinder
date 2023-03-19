@@ -55,6 +55,8 @@
   }
 
   li:first-child button {
+    height: 30px;
+    font-size: 14px;
     background-color: rgb(240, 240, 240);
     border-radius: 5px;
     color: rgb(0, 0, 0);
@@ -78,17 +80,17 @@
   }
 }
 .player-container {
-  height: 35px;
+  height: 30px;
   width: 275px;
   margin-bottom: 10px;
   animation: fadeIn 1s;
-
+  
   .player-container-inner {
     height: 100%;
     width: 100%;
     display: flex;
     align-items:center;
-
+    
     .audio-player {
       height: 100%;
       width: 100%;
@@ -97,9 +99,9 @@
       color: rgb(0, 0, 0);
     }
     .chakra-spinner {
-      height: 20px;
-      width: 20px;
-      margin-left: 10px;
+      height: 25px;
+      width: 25px;
+      margin-left: 5px;
       color: rgb(167, 167, 167);
     }
   }
