@@ -175,15 +175,12 @@ export default function Map() {
     if (artist) {
       axios.get('/api/spotifysample', { params: { artist } })
         .then((response) => {
-          console.log("response.data in useEffect: ", response.data);
+          // console.log("response.data from /api/spotifysample: ", response.data);
           setAudioLink(response.data.topTrack);
         })
         .catch(err => console.log(err.message));
     }
   }, [artist]);
-
-  console.log("artist: ", artist);
-  console.log("audioLink: ", audioLink);
 
   //////////////////////////////////////////////////////////////////
   //////
@@ -252,6 +249,7 @@ export default function Map() {
         userData={userData}
         currCity={currCity}
         handleSetArtist={handleSetArtist}
+        artist={artist}
         audioLink={audioLink}
       />
 

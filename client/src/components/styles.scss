@@ -31,7 +31,7 @@
   .pls-allow {
     opacity: 0.6;
     font-style: normal;
-    font-weight:lighter
+    font-weight: lighter;
   }
 }
 
@@ -66,6 +66,22 @@
 
     &:hover {
       background-color: #72b6ff1f;
+    }
+  }
+}
+.player-container {
+  height: 40px;
+  width: 275px;
+  margin-bottom: 10px;
+  .player-container-inner {
+    height: 100%;
+    width: 100%;
+    .audio-player {
+      height: 100%;
+      width: 100%;
+      background-color: rgb(240, 240, 240);
+      border-radius: 5px;
+      color: rgb(0, 0, 0);
     }
   }
 }
@@ -350,7 +366,6 @@
     height: 91vh;
   }
 }
-
 
 ////////////////////////////////
 /////  Title Fade

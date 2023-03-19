@@ -13,6 +13,7 @@ const Container = (props) => {
     userData,
     currCity,
     handleSetArtist,
+    artist,
     audioLink } = props;
   return (
     <MapContainer className="map-container"
@@ -24,6 +25,7 @@ const Container = (props) => {
           shows={shows}
           handleSetArtist={handleSetArtist}
           audioLink={audioLink}
+          artist={artist}
         />}
 
       <TileLayer
