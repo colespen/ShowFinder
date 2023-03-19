@@ -12,7 +12,7 @@ import DateRange, { minDate, maxDate } from './DateRange';
 import { cityFilter } from '../helpers/utils';
 
 ////// use Render.com server ******
-// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 export default function Map() {
   const [shows, setShows] = useState({});

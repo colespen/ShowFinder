@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Spinner } from '@chakra-ui/spinner';
 
 const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
-  // const [audioLoaded, setAudioLoaded] = useState(true);
   const [lastClickedMarker, setLastClickedMarker] = useState(null);
   const [newAudio, setNewAudio] = useState(false);
   const audioRef = useRef(null);
@@ -16,10 +15,6 @@ const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
       audioRef.current.load();
     }
   }, [audioLink]);
-
-  // const handleCanPlayThrough = () => {
-  //   setAudioLoaded(true);
-  // };
 
   // Only display spinner if new marker (artist)
   const handleSetNewAudio = () => {
