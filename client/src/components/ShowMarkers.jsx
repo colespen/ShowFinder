@@ -2,12 +2,14 @@ import { Marker, Popup } from 'react-leaflet';
 import getArtist from '../helpers/artistActions';
 import { useState, useEffect, useRef } from 'react';
 
+import { Spinner } from '@chakra-ui/spinner';
+
 const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
   // const [audioLoaded, setAudioLoaded] = useState(true);
   const [lastClickedMarker, setLastClickedMarker] = useState(null);
   const [newAudio, setNewAudio] = useState(false);
   const audioRef = useRef(null);
-  const popUpRef = useRef(null)
+  const popUpRef = useRef(null);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -21,19 +23,17 @@ const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
 
   // Only display spinner if new marker (artist)
   const handleSetNewAudio = () => {
-    // if (artist !== currArtist[0].innerText) {
-      console.log("THRU")
-      setNewAudio(true)
-    // }
-  }
+    // console.log("THRU")
+    setNewAudio(true);
+  };
 
   // change with new artist audio link
   useEffect(() => {
-    setNewAudio(false)
-  }, [audioLink])
+    setNewAudio(false);
+  }, [audioLink]);
 
-  console.log("lastClickedMarker: ", lastClickedMarker)
-  console.log("artist: ", artist)
+  console.log("lastClickedMarker: ", lastClickedMarker);
+  console.log("artist: ", artist);
   console.log("newAudio: ", newAudio);
 
   return (
@@ -53,7 +53,7 @@ const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
               }
             }
           }}
-          
+
         >
           <Popup key={index} id="show-popup" ref={popUpRef}>
 
@@ -68,26 +68,23 @@ const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
               ))}
             </ul>
             <div className="player-container">
-              {audioLink ?
-                <div className="player-container-inner">
-                  {newAudio && <div>Spinner...</div>}
-
-                  {!newAudio && (
-                    <audio className="audio-player" controls
-                      ref={audioRef}
-                      // onCanPlayThrough={handleCanPlayThrough}
-                    // onLoadedData={handleCanPlay}
-                    // onLoadedMetadata={handleCanPlay}
-                    // onLoadStart={handleLoadStart}
-                    // onCanPlay={handleCanPlay}
-                    >
-                      <source src={audioLink} type="audio/mpeg" text="dodo" />
-                      <code>audio</code> not supported
-                    </audio>
-                  )}
-                </div>
-                : <span>audio unavailable</span>
-              }
+              <div className="player-container-inner">
+                {audioLink && !newAudio && (
+                  <audio className="audio-player" controls
+                    ref={audioRef}
+                  // onCanPlayThrough={handleCanPlayThrough}
+                  // onLoadedData={handleCanPlay}
+                  // onLoadedMetadata={handleCanPlay}
+                  // onLoadStart={handleLoadStart}
+                  // onCanPlay={handleCanPlay}
+                  >
+                    <source src={audioLink} type="audio/mpeg" />
+                    <code>audio</code> not supported
+                  </audio>
+                )}
+                {newAudio && <Spinner size="md" />}
+                {!audioLink && !newAudio && <span>audio unavailable</span>}
+              </div>
             </div>
             <a id="venue-name"
               href={show.location.sameAs}
