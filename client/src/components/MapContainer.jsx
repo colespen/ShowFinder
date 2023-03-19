@@ -6,13 +6,25 @@ import ShowMarkers from './ShowMarkers';
 //////    Default position
 const budapest = [47.51983881388099, 19.032783326057594];
 
-const Container = ({ geolocation, shows, userData, currCity }) => {
+const Container = (props) => {
+  const {
+    geolocation,
+    shows,
+    userData,
+    currCity,
+    handleSetArtist,
+    audioLink } = props;
   return (
     <MapContainer className="map-container"
       center={budapest}
       zoom={2.5} scrollWheelZoom={true}
     >
-      {geolocation.loaded && <ShowMarkers shows={shows} />}
+      {geolocation.loaded &&
+        <ShowMarkers
+          shows={shows}
+          handleSetArtist={handleSetArtist}
+          audioLink={audioLink}
+        />}
 
       <TileLayer
         attribution=

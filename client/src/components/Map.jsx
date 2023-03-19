@@ -17,6 +17,8 @@ import { cityFilter } from '../helpers/utils';
 export default function Map() {
   const [shows, setShows] = useState({});
   const [currCity, setCurrCity] = useState(null);
+  const [artist, setArtist] = useState(null);
+  const [audioLink, setAudioLink] = useState(null);
   const [userData, setUserData] = useState(
     {
       dateRange: {},
@@ -69,16 +71,14 @@ export default function Map() {
     );
   };
 
+
   ////////////////////////////////////////////////////////////////////
   //////    Calls to Server for Geo and Shows API 
   //////////////////////////////////////////////////////////////////
 
-  /////   GET Current Location Shows and Geo - First Render
+  /////   GET Current Location Shows/Geo/spotifyToken - First Render
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
-
-      // axios.post('api/spoitfyauth')
-      //   .catch(err => console.log(err.message));
 
       axios.get('/api/shows', {
         params: {
@@ -91,7 +91,12 @@ export default function Map() {
         })
         .catch(err => console.log(err.message));
 
-
+      // retrieve spotifyToken in API
+      axios.post('/api/spotifyauth')
+        .then((response) => {
+          console.log("/api/spotifyauth: ", response.data);
+        })
+        .catch(err => console.log(err.message));
     }
   }, [geolocation.loaded, geolocation.coords, shows, userData]);
 
@@ -115,31 +120,26 @@ export default function Map() {
           setShowCityUserData(res.data);
         })
         .catch(err => console.log(err.message));
-
-
     }
   };
 
-  
   //////    GET Date Range Shows and Geo - onClick
   const handleDateRangeClick = () => {
-    console.log("userData: ", userData)
-
     if ((Object.keys(userData.dateRange).length === 2)) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "dates" });
-      const newCity = cityFilter(userData.newCity);
-      
-      if (newCity === "" || newCity === currCity) {
-        
+      // const newCity = cityFilter(userData.newCity);
+
+      if (userData.newCity === "") {
+
         axios.get('/api/shows', {
           params: userData
         })
-        .then((res) => {
-          console.log("res.data in /shows: ", res.data)
-          setShowCityUserData(res.data);
-        })
-        .catch(err => console.log(err.message));
+          .then((res) => {
+            console.log("res.data from /shows: ", res.data);
+            setShowCityUserData(res.data);
+          })
+          .catch(err => console.log(err.message));
       } else {
         handleNewCityRequest();
       }
@@ -148,14 +148,13 @@ export default function Map() {
 
   //////    GET New City --> Geo & New Shows API calls
   const handleNewCityRequest = () => {
-    console.log("userData: ", userData)
     if (userData.newCity) {
       setCurrCity("");
       setTransition({ opacity: 1, type: "shows" });
 
       axios.get('/api/newshows', { params: userData })
         .then((res) => {
-          console.log("res.data in /newshows: ", res.data)
+          console.log("res.data from /newshows: ", res.data);
           setShows(res.data);
           setCurrCity(cityFilter(userData.newCity));
           setUserData((prev) => ({
@@ -168,9 +167,28 @@ export default function Map() {
     };
   };
 
+  const handleSetArtist = (artist) => {
+    if (shows) setArtist(artist);
+  };
+
+  useEffect(() => {
+    if (artist) {
+      axios.get('/api/spotifysample', { params: { artist } })
+        .then((response) => {
+          console.log("response.data in useEffect: ", response.data);
+          setAudioLink(response.data.topTrack);
+        })
+        .catch(err => console.log(err.message));
+    }
+  }, [artist]);
+
+  console.log("artist: ", artist);
+  console.log("audioLink: ", audioLink);
+
   //////////////////////////////////////////////////////////////////
   //////
   ////////////////////////////////////////////////////////////////////
+
 
   //////    Set City Name Input
   const handleCityChange = e => {
@@ -233,6 +251,8 @@ export default function Map() {
         shows={shows}
         userData={userData}
         currCity={currCity}
+        handleSetArtist={handleSetArtist}
+        audioLink={audioLink}
       />
 
       <div className="controls-bottom">

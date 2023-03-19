@@ -1,7 +1,20 @@
 import { Marker, Popup } from 'react-leaflet';
 import getArtist from '../helpers/artistActions';
+import {useEffect, useRef} from 'react';
 
-const ShowMarkers = ({ shows }) => {
+const ShowMarkers = ({ shows, handleSetArtist, audioLink }) => {
+
+  // console.log("audioLink ShowMarkers: ", audioLink);
+
+  const audioRef = useRef(null)
+
+  console.log("audioRef", audioRef)
+
+  useEffect(() => {
+    if(audioRef.current) {
+      audioRef.current.load()
+    }
+  }, [audioLink])
 
   return (
     (shows.data || []).map((show, index) => (
@@ -11,6 +24,7 @@ const ShowMarkers = ({ shows }) => {
         //TODO: some repeat keys still.. fix in filter in server?
           key={show.description}
           position={[show.location.geo.latitude, show.location.geo.longitude]}
+          eventHandlers={{ click: () => handleSetArtist(show.performer[0].name) }} 
         >
           <Popup key={index} id="show-popup">
 
@@ -25,9 +39,13 @@ const ShowMarkers = ({ shows }) => {
               ))}
             </ul>
             <div>
-              <audio controls>
-                <source src={`https://p.scdn.co/mp3-preview/d95978e0b4948c22fb175b39e9436537525c9aeb?cid=76674eb40ff44fc5bf0b290de0cad21c`} type="audio/mpeg" />
-              </audio>
+              {audioLink ? 
+              <audio ref={audioRef} controls>
+                <source src={audioLink} type="audio/mpeg" text="dodo" />
+                <code>audio</code> not supported
+              </audio> 
+              : "audio preview unavailable"
+            }
             </div>
             <a id="venue-name"
               href={show.location.sameAs}

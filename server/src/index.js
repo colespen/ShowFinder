@@ -24,7 +24,7 @@ const iqToken = process.env.IQ_TOKEN;
 const rapidKey = process.env.RAPID_KEY;
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
-let spotifyToken = "";
+let spotifyToken = null;
 
 
 //////////////////////////////////////////////////////////
@@ -66,6 +66,7 @@ app.get('/api/shows', (req, res) => {
     })
     .catch((error) => {
       res.status(500).send("Error: " + error.message);
+      console.error("Error: ", error.message);
     });
 });
 
@@ -117,6 +118,7 @@ app.get('/api/newshows', (req, res) => {
     })
     .catch((error) => {
       res.status(500).send("Error: " + error.message);
+      console.error("Error: ", error.message);
     });
 });
 
@@ -124,9 +126,9 @@ app.get('/api/newshows', (req, res) => {
 ////    POST - Auth Request
 ////////////////////////////////////////////////////////
 
-app.post('api/spotifyauth', (req, res) => {
+app.post('/api/spotifyauth', (req, res) => {
   const base64ID = new Buffer.from(client_id + ':' + client_secret).toString('base64');
-  console.log("base64Id: ", base64ID);
+  console.log("*** base64Id: ", base64ID);
   const config = {
     headers: {
       'Authorization': 'Basic ' + base64ID,
@@ -137,50 +139,67 @@ app.post('api/spotifyauth', (req, res) => {
 
   axios.post('https://accounts.spotify.com/api/token', data, config)
     .then((response) => {
-      console.log(response.data)
+      console.log("*** /api/spotifyauth response.data: ", response.data);
       spotifyToken = response.data.access_token;
-      console.log("token: ", spotifyToken)
+      console.log("*** spotifyToken: ", spotifyToken);
+      res.sendStatus(200);
     })
     .catch((error) => {
-      console.error("Error: ", error)
-    })
+      res.status(500).send("Error: " + error.message);
+      console.error("Error: ", error.message);
+    });
 });
 
 //////////////////////////////////////////////////////////
 ////    Get - Artist ID -> Top Single
 ////////////////////////////////////////////////////////
 
-app.get('api/spotifysample', (req, res) => {
+app.get('/api/spotifysample', (req, res) => {
+  console.log("********* /api/spotifysample req.query.artist: ", req.query.artist);
   const params = new URLSearchParams({
-    q: 'deerhoof',
+    q: req.query.artist,
     type: 'artist',
     format: 'json'
   });
   axios.get(`https://api.spotify.com/v1/search?${params.toString()}`, {
-    headers : {
+    headers: {
       Authorization: 'Bearer ' + spotifyToken
     }
   })
-  .then((response) => {
-    //               NOT CORRECT TODO:
-    const artistId = response.data.artist[0].item.id
-    return axios.get(() => {
-
-    })
     .then((response) => {
-
+      const params = new URLSearchParams({
+        market: 'US',
+        format: 'json'
+      });
+      const artistId = response.data.artists.items[0].id;
+      console.log("artistId: ", artistId);
+      return axios.get(
+        `https://api.spotify.com/v1/artists/${artistId}/top-tracks?${params.toString()}`, {
+        headers: {
+          Authorization: 'Bearer ' + spotifyToken
+        }
+      })
+        .then((response) => {
+          const topTrack = response.data.tracks[0].preview_url;
+          return { topTrack };
+        });
     })
-  })
-  .catch((error)=> {
-    console.error("Error: ", error)
-  })
-})
+    .then((data) => {
+      console.log("data in /api/spotifysample: ", data);
+      res.send(data);
+    })
+    .catch((error) => {
+      res.status(500).send("Error: " + error.message);
+      console.error("Error: ", error.message);
+    });
+});
 
 // get artist id
 // https://api.spotify.com/v1/search?q=deerhoof&type=artist
-// artist[0].item.id ("7AZwAitWq1KcFoIJhRWb6V")
+// artists[0].item.id ("7AZwAitWq1KcFoIJhRWb6V")
 
 // get top single
+// https://api.spotify.com/v1/artists/7AZwAitWq1KcFoIJhRWb6V/top-tracks?market=US
 //tracks[0].preview_url
 
 
