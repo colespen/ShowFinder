@@ -29,8 +29,7 @@ const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
   // console.log("lastClickedMarker: ", lastClickedMarker);
   // console.log("artist: ", artist);
   // console.log("newAudio: ", newAudio);
-
-  console.log("audioLink: ", audioLink)
+  // console.log("audioLink: ", audioLink)
 
   return (
     (shows.data || []).map((show, index) => (

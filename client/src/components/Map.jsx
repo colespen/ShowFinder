@@ -94,7 +94,7 @@ export default function Map() {
       // retrieve spotifyToken in API
       axios.post('/api/spotifyauth')
         .then((response) => {
-          console.log("/api/spotifyauth: ", response.data);
+          // console.log("/api/spotifyauth: ", response.data);
         })
         .catch(err => console.log(err.message));
     }
@@ -136,7 +136,7 @@ export default function Map() {
           params: userData
         })
           .then((res) => {
-            console.log("res.data from /shows: ", res.data);
+            // console.log("res.data from /shows: ", res.data);
             setShowCityUserData(res.data);
           })
           .catch(err => console.log(err.message));
@@ -154,7 +154,7 @@ export default function Map() {
 
       axios.get('/api/newshows', { params: userData })
         .then((res) => {
-          console.log("res.data from /newshows: ", res.data);
+          // console.log("res.data from /newshows: ", res.data);
           setShows(res.data);
           setCurrCity(cityFilter(userData.newCity));
           setUserData((prev) => ({

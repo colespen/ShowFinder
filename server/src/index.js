@@ -139,10 +139,10 @@ app.post('/api/spotifyauth', (req, res) => {
 
   axios.post('https://accounts.spotify.com/api/token', data, config)
     .then((response) => {
-      console.log("*** /api/spotifyauth response.data: ", response.data);
       spotifyToken = response.data.access_token;
-      console.log("*** spotifyToken: ", spotifyToken);
       res.sendStatus(200);
+      console.log("*** /api/spotifyauth response.data: ", response.data);
+      console.log("*** spotifyToken: ", spotifyToken);
     })
     .catch((error) => {
       res.status(500).send("Error: " + error.message);
