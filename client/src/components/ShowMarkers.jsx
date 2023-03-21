@@ -4,17 +4,18 @@ import { useState, useEffect, useRef } from 'react';
 
 import { Spinner } from '@chakra-ui/spinner';
 
-const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
+const ShowMarkers = ({ shows, handleSetArtist, audioRef, audioLink }) => {
   const [lastClickedMarker, setLastClickedMarker] = useState(null);
   const [newAudio, setNewAudio] = useState(true);
-  const audioRef = useRef(null);
+  // const audioRef = useRef(null);
   const popUpRef = useRef(null);
 
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.load();
-    }
-  }, [audioLink]);
+  // // load media for playback
+  // useEffect(() => {
+  //   if (audioRef.current) {
+  //     audioRef.current.load();
+  //   }
+  // }, [audioLink]);
 
   // console.log("popUpRef: ", popUpRef.current);
 
@@ -33,7 +34,6 @@ const ShowMarkers = ({ shows, handleSetArtist, artist, audioLink }) => {
   }, [audioLink]);
 
   // console.log("lastClickedMarker: ", lastClickedMarker);
-  // console.log("artist: ", artist);
   console.log("newAudio: ", newAudio);
   console.log("audioLink: ", audioLink);
 

@@ -14,7 +14,7 @@ import { minDate, maxDate } from './DateRange';
 import { cityFilter } from '../helpers/utils';
 
 ////// use Render.com server ******
-// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 export default function Map() {
   const [shows, setShows] = useState({});
@@ -34,15 +34,17 @@ export default function Map() {
     type: "initial",
   });
   const isFirstRender = useRef(true);
+  const audioRef = useRef(null);
 
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
 
-  // useEffect(() => {
-  //   if (audioRef.current) {
-  //     audioRef.current.load();
-  //   }
-  // }, [audioLink]);
+  // load media for playback
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.load();
+    }
+  }, [audioLink]);
 
 
   //////   Set Geo Coords State After Allow Access - First Render
@@ -176,10 +178,12 @@ export default function Map() {
     };
   };
 
+  ////    Set Artist from marker (headliner [0])
   const handleSetArtist = (artist) => {
     if (shows) setArtist(artist);
   };
 
+  //////    GET and Set Audio When New Artist
   useEffect(() => {
     if (artist) {
       axios.get('/api/spotifysample', { params: { artist } })
@@ -196,7 +200,7 @@ export default function Map() {
   ////////////////////////////////////////////////////////////////////
 
 
-  //////    Set City Name Input
+  ////    Set City Name Input
   const handleCityChange = e => {
     setUserData((prev) => ({ ...prev, newCity: e.target.value }));
   };
@@ -204,13 +208,13 @@ export default function Map() {
   const newCityOnEnter = e => {
     if (e.key === "Enter") handleNewCityRequest();
   };
-  //////    Set Date Range to State
+  ////    Set Date Range to State
   const handleDateSelect = (dateRange) => {
     setUserData(prev => (
       { ...prev, dateRange, }
     ));
   };
-  //////    Auto Focus Text in Input
+  ////   Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
 
 
@@ -239,11 +243,13 @@ export default function Map() {
         handleSetArtist={handleSetArtist}
         artist={artist}
         audioLink={audioLink}
+        audioRef={audioRef}
       />
       <ControlsBottom
         handleDateSelect={handleDateSelect}
         handleDateRangeClick={handleDateRangeClick}
         audioLink={audioLink}
+        audioRef={audioRef}
       />
     </div>
   );

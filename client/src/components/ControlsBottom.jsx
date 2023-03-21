@@ -2,7 +2,7 @@ import DateRange from './DateRange';
 
 import './styles.scss';
 
-const ControlsBottom = ({handleDateSelect, handleDateRangeClick, audioLink}) => {
+const ControlsBottom = ({handleDateSelect, handleDateRangeClick, audioLink, audioRef}) => {
   return (
     <div className="controls-bottom">
     <div className="github">

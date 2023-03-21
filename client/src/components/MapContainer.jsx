@@ -13,7 +13,6 @@ const Container = (props) => {
     userData,
     currCity,
     handleSetArtist,
-    artist,
     audioLink } = props;
     
   return (
@@ -26,7 +25,6 @@ const Container = (props) => {
           shows={shows}
           handleSetArtist={handleSetArtist}
           audioLink={audioLink}
-          artist={artist}
         />}
 
       <TileLayer
