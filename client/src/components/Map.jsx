@@ -7,12 +7,14 @@ import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
 
 import Container from './MapContainer';
 import Title from './Title';
+import ControlsTop from './ControlsTop';
+import ControlsBottom from './ControlsBottom';
 
-import DateRange, { minDate, maxDate } from './DateRange';
+import { minDate, maxDate } from './DateRange';
 import { cityFilter } from '../helpers/utils';
 
 ////// use Render.com server ******
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 export default function Map() {
   const [shows, setShows] = useState({});
@@ -35,6 +37,13 @@ export default function Map() {
 
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
+
+  // useEffect(() => {
+  //   if (audioRef.current) {
+  //     audioRef.current.load();
+  //   }
+  // }, [audioLink]);
+
 
   //////   Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
@@ -213,36 +222,15 @@ export default function Map() {
         transition={transition}
         geolocation={geolocation}
       />
-      <div className="controls-top">
-        <div className="city-input">
-          <input type="text"
-            name="enter city"
-            placeholder="enter a city, state/country"
-            autoComplete="off"
-            spellCheck="false"
-            onChange={handleCityChange}
-            onFocus={handleInputTextSelect}
-            onKeyDown={newCityOnEnter}
-          />
-          <button onClick={handleNewCityRequest}
-          >GO</button>
-        </div>
-
-        <div className="date-location" id="date-top">
-          <DateRange handleDateSelect={handleDateSelect}
-          />
-          <button id="go-button-top"
-            onClick={handleDateRangeClick}>GO</button>
-        </div>
-        <button id="current-location"
-          onClick={handleCurrLocationClick}
-        >
-          <img id="location-icon"
-            src="./target.png"
-            alt="current-location-icon" />
-        </button>
-      </div>
-
+      <ControlsTop
+        handleCityChange={handleCityChange}
+        handleInputTextSelect={handleInputTextSelect}
+        newCityOnEnter={newCityOnEnter}
+        handleNewCityRequest={handleNewCityRequest}
+        handleDateSelect={handleDateSelect}
+        handleDateRangeClick={handleDateRangeClick}
+        handleCurrLocationClick={handleCurrLocationClick}
+      />
       <Container
         geolocation={geolocation}
         shows={shows}
@@ -252,25 +240,11 @@ export default function Map() {
         artist={artist}
         audioLink={audioLink}
       />
-
-      <div className="controls-bottom">
-        <div className="github">
-          <a href="https://github.com/colespen/ShowFinder"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img src="./github-mark.svg" width="18" height="18"
-              alt="GitHub-link"></img>
-          </a>
-          <span>Spencer Cole</span>
-        </div>
-        <div className="date-location" id="date-bottom">
-          <DateRange handleDateSelect={handleDateSelect}
-          />
-          <button id="go-button-bottom"
-            onClick={handleDateRangeClick}>GO</button>
-        </div>
-      </div>
+      <ControlsBottom
+        handleDateSelect={handleDateSelect}
+        handleDateRangeClick={handleDateRangeClick}
+        audioLink={audioLink}
+      />
     </div>
   );
 }

@@ -128,7 +128,7 @@ app.get('/api/newshows', (req, res) => {
 
 app.post('/api/spotifyauth', (req, res) => {
   const base64ID = new Buffer.from(client_id + ':' + client_secret).toString('base64');
-  console.log("*** base64Id: ", base64ID);
+  // console.log("*** base64Id: ", base64ID);
   const config = {
     headers: {
       'Authorization': 'Basic ' + base64ID,

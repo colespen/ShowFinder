@@ -15,6 +15,7 @@ const Container = (props) => {
     handleSetArtist,
     artist,
     audioLink } = props;
+    
   return (
     <MapContainer className="map-container"
       center={budapest}
