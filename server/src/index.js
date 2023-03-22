@@ -143,6 +143,7 @@ app.post('/api/spotifyauth', (req, res) => {
       res.sendStatus(200);
       console.log("*** /api/spotifyauth response.data: ", response.data);
       console.log("*** spotifyToken: ", spotifyToken);
+      return response.data.access_token;
     })
     .catch((error) => {
       res.status(500).send("Error: " + error.message);
@@ -154,44 +155,49 @@ app.post('/api/spotifyauth', (req, res) => {
 ////    Get - Artist ID -> Top Single
 ////////////////////////////////////////////////////////
 
-app.get('/api/spotifysample', (req, res) => {
+app.get('/api/spotifysample', async (req, res) => {
   console.log("********* /api/spotifysample req.query.artist: ", req.query.artist);
-  const params = new URLSearchParams({
-    q: req.query.artist,
-    type: 'artist',
-    format: 'json'
-  });
-  axios.get(`https://api.spotify.com/v1/search?${params.toString()}`, {
-    headers: {
-      Authorization: 'Bearer ' + spotifyToken
-    }
-  })
-    .then((response) => {
-      const params = new URLSearchParams({
-        market: 'US',
-        format: 'json'
-      });
-      const artistId = response.data.artists.items[0].id;
-      console.log("artistId: ", artistId);
-      return axios.get(
-        `https://api.spotify.com/v1/artists/${artistId}/top-tracks?${params.toString()}`, {
-        headers: {
-          Authorization: 'Bearer ' + spotifyToken
-        }
-      })
-        .then((response) => {
-            const topTrack = response.data.tracks[0].preview_url;
-            return { topTrack };
-        });
-    })
-    .then((data) => {
-      console.log("data in /api/spotifysample: ", data);
-      res.send(data);
-    })
-    .catch((error) => {
-      res.status(500).send("Error: " + error.message);
-      console.error("Error: ", error.message);
+
+  try {
+    /** get artist IDs
+     */
+    const getArtistIdParams = new URLSearchParams({
+      q: req.query.artist,
+      type: 'artist',
+      format: 'json'
     });
+    const artistId_response = await axios.get(
+      `https://api.spotify.com/v1/search?${getArtistIdParams.toString()}`,
+      { headers: {
+        Authorization: 'Bearer ' + spotifyToken
+      }
+    });
+    const artistId = artistId_response.data.artists.items[0].id;
+    console.log("artistId: ", artistId);
+    // ----------------------------------------
+
+    /** get artist preview data
+     */
+    const getArtistPreviewParams = new URLSearchParams({
+      market: 'US',
+      format: 'json'
+    });
+    const artistPreview = await axios.get(
+      `https://api.spotify.com/v1/artists/${artistId}/top-tracks?${getArtistPreviewParams.toString()}`, {
+      headers: {
+        Authorization: 'Bearer ' + spotifyToken
+      }
+    });
+    const topTrack = artistPreview.data.tracks[0].preview_url;
+    // ----------------------------------------
+
+    console.log("data in /api/spotifysample: ", topTrack);
+    res.send(topTrack);
+
+  } catch (error) {
+    res.status(500).send("Error: " + error.message);
+    console.error("Error: ", error.message);
+  }
 });
 
 // get artist id
