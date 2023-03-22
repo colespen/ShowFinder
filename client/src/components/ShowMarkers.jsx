@@ -1,41 +1,27 @@
 import { Marker, Popup } from 'react-leaflet';
 import getArtist from '../helpers/artistActions';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 
 import { Spinner } from '@chakra-ui/spinner';
 
-const ShowMarkers = ({ shows, handleSetArtist, audioRef, audioLink }) => {
+const ShowMarkers = (props) => {
+  const {
+    shows,
+    handleSetArtist,
+    audioLink,
+    newAudio,
+    handleSetNewAudio,
+    handlePlayPause,
+    isPlaying,
+    setIsMarkerClicked
+  }
+    = props;
   const [lastClickedMarker, setLastClickedMarker] = useState(null);
-  const [newAudio, setNewAudio] = useState(true);
-  // const audioRef = useRef(null);
   const popUpRef = useRef(null);
 
-  // // load media for playback
-  // useEffect(() => {
-  //   if (audioRef.current) {
-  //     audioRef.current.load();
-  //   }
-  // }, [audioLink]);
-
-  // console.log("popUpRef: ", popUpRef.current);
-
-  // Only display spinner if new marker (artist)
-  const handleSetNewAudio = () => {
-    setNewAudio(false);
-    setTimeout(() => {
-      if (!audioLink) {
-        setNewAudio(true);
-      }
-    }, 500);
-  };
-  // render <audio> w new artist audio link
-  useEffect(() => {
-    setNewAudio(true);
-  }, [audioLink]);
-
   // console.log("lastClickedMarker: ", lastClickedMarker);
-  console.log("newAudio: ", newAudio);
-  console.log("audioLink: ", audioLink);
+  // console.log("newAudio: ", newAudio);
+  // console.log("audioLink: ", audioLink);
 
   return (
     (shows.data || []).map((show, index) => (
@@ -49,13 +35,12 @@ const ShowMarkers = ({ shows, handleSetArtist, audioRef, audioLink }) => {
             click: () => {
               handleSetArtist(show.performer[0].name);
               setLastClickedMarker(show.performer[0].name);
+              setIsMarkerClicked(true);
               if (show.performer[0].name !== lastClickedMarker) {
-                console.log("thru eventHandlers");
                 handleSetNewAudio();
               }
             }
           }}
-
         >
           <Popup key={index} id="show-popup" ref={popUpRef}>
 
@@ -69,29 +54,26 @@ const ShowMarkers = ({ shows, handleSetArtist, audioRef, audioLink }) => {
                 </li>
               ))}
             </ul>
-            <div className="player-container" >
-              <div className="player-container-inner" >
-
-                {audioLink && newAudio && (
-                  <audio controls
-                    className="audio-player"
-                    ref={audioRef}
-                    preload='metadata'
-                  // onCanPlayThrough={handleCanPlayThrough}
-                  // onLoadedData={handleCanPlay}
-                  // onLoadedMetadata={handleCanPlay}
-                  // onLoadStart={handleLoadStart}
-                  // onCanPlay={handleCanPlay}
-                  >
-                    <source src={audioLink} type="audio/mpeg" />
-                    <code>audio</code> not supported
-                  </audio>
-                )}
-                {!newAudio && <Spinner size="md" />}
-                {!audioLink && newAudio &&
-                  <span>audio unavailable</span>
-                }
-              </div>
+            <div className="marker-player-controls">
+              {audioLink && newAudio && (
+                <button className="play-pause media-buttons"
+                  onClick={handlePlayPause}
+                >
+                  {!isPlaying ?
+                    <img src="./play.svg" alt="play-button"></img>
+                    :
+                    <img src="./pause.svg" alt="play-button"></img>
+                  }
+                </button>
+              )}
+              {!newAudio && <Spinner size="md" />}
+              {!audioLink && newAudio &&
+                <button className="play-pause media-buttons disabled"
+                  disabled
+                >
+                  <img src="./link-slash.svg" alt="play-button"></img>
+                </button>
+              }
             </div>
             <a id="venue-name"
               href={show.location.sameAs}

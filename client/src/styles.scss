@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400&display=swap");
 
 .App {
   height: 100vh;
@@ -10,11 +10,11 @@
   height: 100%;
 }
 
-
-.title, h1 {
+.title,
+h1 {
   height: 1em;
   width: 90%;
-  font-family: 'Montserrat', sans-serif, 'Courier New', Courier, monospace;
+  font-family: "Montserrat", sans-serif, "Courier New", Courier, monospace;
   // margin: 2.6vh 0 3.3vh 0;
   margin: 1.9vh 0 2.8vh 0;
   color: whitesmoke;
@@ -23,9 +23,15 @@
 }
 
 .leaflet-bar a {
-  background-color: rgb(27, 27, 32);
+  background-color: rgba(27, 27, 32, 0.787);
   border-bottom: 1px solid rgb(178, 178, 178);
   color: rgb(209, 209, 209);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 3px;
+  padding-right: 1px;
+
   &:hover {
     background-color: #0c75d2;
   }

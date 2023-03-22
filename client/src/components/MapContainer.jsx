@@ -13,8 +13,15 @@ const Container = (props) => {
     userData,
     currCity,
     handleSetArtist,
-    audioLink } = props;
-    
+    audioLink,
+    newAudio,
+    audioRef,
+    handleSetNewAudio,
+    handlePlayPause,
+    isPlaying,
+    setIsMarkerClicked
+  } = props;
+
   return (
     <MapContainer className="map-container"
       center={budapest}
@@ -25,6 +32,12 @@ const Container = (props) => {
           shows={shows}
           handleSetArtist={handleSetArtist}
           audioLink={audioLink}
+          audioRef={audioRef}
+          handlePlayPause={handlePlayPause}
+          handleSetNewAudio={handleSetNewAudio}
+          isPlaying={isPlaying}
+          newAudio={newAudio}
+          setIsMarkerClicked={setIsMarkerClicked}
         />}
 
       <TileLayer

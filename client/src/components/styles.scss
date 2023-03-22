@@ -57,15 +57,16 @@
   li:first-child button {
     height: 30px;
     font-size: 14px;
-    background-color: rgb(240, 240, 240);
+    // background-color: rgb(240, 240, 240);
+    background-color: rgb(246 200 209);
     border-radius: 5px;
     color: rgb(0, 0, 0);
-    
+
     &:hover {
       background-color: #83bfff56;
     }
   }
-  
+
   button {
     width: 100%;
     background-color: white;
@@ -79,33 +80,65 @@
     }
   }
 }
-.player-container {
+.marker-player-controls {
   height: 30px;
   width: 275px;
   margin-bottom: 10px;
-  
-  .player-container-inner {
+
+  .chakra-spinner {
+    height: 25px;
+    width: 25px;
+    margin-left: 5px;
+    color: rgb(167, 167, 167);
+  }
+
+  button {
     height: 100%;
     width: 100%;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(240, 240, 240);
     display: flex;
-    align-items:center;
-    
-    .audio-player {
+    align-items: center;
+    &:hover {
+      background-color: #83bfff56;
+      .media-buttons,
+      img {
+        opacity: 100%;
+        filter: invert(1);
+      }
+    }
+    .media-buttons,
+    img {
+      height: 20px;
+      width: 20px;
+      opacity: 75%;
+      animation: 100ms ease-in fadeIn;
+      -webkit-animation: 100ms ease-in fadeIn;
+      -moz-animation: 100ms ease-in fadeIn;
+      -o-animation: 100ms ease-in fadeIn;
+      -ms-animation: 100ms ease-in fadeIn;
+      filter: invert(0.2);
+      &:hover {
+        opacity: 100%;
+        filter: invert(0);
+      }
+    }
+    &:disabled {
       height: 100%;
       width: 100%;
-      background-color: rgb(240, 240, 240);
+      font-size: 14px;
+      border: none;
       border-radius: 5px;
-      color: rgb(0, 0, 0);
-      animation: fadeIn 150ms ease-in;
-    }
-    .chakra-spinner {
-      height: 25px;
-      width: 25px;
-      margin-left: 5px;
-      color: rgb(167, 167, 167);
-    }
-    span {
-      animation: fadeIn 500ms ease-in;
+      background-color: rgb(240, 240, 240);
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+      .media-buttons,
+      img {
+        filter: invert(0.6);
+      }
     }
   }
 }
@@ -141,6 +174,96 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  .audio-player-bottom-wrapper {
+    height: 30px;
+    width: 182px;
+
+    .audio-player-inner {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 5px;
+
+      .player-controls,
+      span {
+        width: 100%;
+        font-size: 13px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #f5f5f5a5;
+        padding-bottom: 2px;
+        animation: 500ms ease-in fadeIn;
+        -webkit-animation: 500ms ease-in fadeIn;
+        -moz-animation: 500ms ease-in fadeIn;
+        -o-animation: 500ms ease-in fadeIn;
+        -ms-animation: 500ms ease-in fadeIn;
+      }
+
+      .autoplay {
+        font-size: 13px;
+        color: #f5f5f5a5;
+        padding-bottom: 2px;
+        margin-right: 10px;
+        animation: 500ms ease-in fadeIn;
+        -webkit-animation: 500ms ease-in fadeIn;
+        -moz-animation: 500ms ease-in fadeIn;
+        -o-animation: 500ms ease-in fadeIn;
+        -ms-animation: 500ms ease-in fadeIn;
+      }
+      .false {
+        text-decoration: line-through;
+        color: #f5f5f556;
+      }
+
+      .buttons-bottom-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 4px;
+      }
+      button {
+        background-color: #00376800;
+        border: none;
+        display: flex;
+        cursor: pointer;
+        .media-buttons,
+        img {
+          height: 20px;
+          width: 20px;
+          opacity: 75%;
+          animation: 200ms ease-in fadeIn;
+          -webkit-animation: 200ms ease-in fadeIn;
+          -moz-animation: 200ms ease-in fadeIn;
+          -o-animation: 200ms ease-in fadeIn;
+          -ms-animation: 200ms ease-in fadeIn;
+          filter: invert(0.7);
+          transition: all 150ms ease-out;
+          &:hover {
+            opacity: 100%;
+            filter: invert(0);
+          }
+        }
+        #vol-on {
+          height: 23px;
+          width: 23px;
+        }
+      }
+      .spinner-container {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 4px;
+        .chakra-spinner {
+          height: 20px;
+          width: 20px;
+          margin-left: 5px;
+          color: rgb(167, 167, 167);
+        }
+      }
+    }
+  }
 }
 
 .city-input {
@@ -214,7 +337,7 @@
     .date-button-input {
       width: 100%;
       height: 24px;
-      color: rgba(245, 245, 245, 0.866);
+      color: #f5f5f5dd;
       background: #003768;
       border: none;
       background: linear-gradient(
@@ -230,9 +353,6 @@
         background-color: #001b32;
       }
     }
-    // .react-datepicker__input-container {
-    //   height: 100%
-    // }
   }
 
   button {
@@ -255,7 +375,6 @@
 
 #current-location {
   height: 30px;
-  // height: 100%;
   background-color: #003768;
   border: 3px solid #57728a;
   width: 46px;
@@ -277,11 +396,11 @@
     filter: invert(90%);
     width: 16px;
     height: 16px;
-    animation: 3s ease 0s normal forwards 1 iconFadeIn;
-    -webkit-animation: 3s ease 0s normal forwards 1 iconFadeIn;
-    -moz-animation: 3s ease 0s normal forwards 1 iconFadeIn;
-    -o-animation: 3s ease 0s normal forwards 1 iconFadeIn;
-    -ms-animation: 3s ease 0s normal forwards 1 iconFadeIn;
+    animation: 3.5s ease 0s normal forwards 1 iconFadeIn;
+    -webkit-animation: 3.5s ease 0s normal forwards 1 iconFadeIn;
+    -moz-animation: 3.5s ease 0s normal forwards 1 iconFadeIn;
+    -o-animation: 3.5s ease 0s normal forwards 1 iconFadeIn;
+    -ms-animation: 3.5s ease 0s normal forwards 1 iconFadeIn;
   }
 }
 

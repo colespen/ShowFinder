@@ -14,13 +14,17 @@ import { minDate, maxDate } from './DateRange';
 import { cityFilter } from '../helpers/utils';
 
 ////// use Render.com server ******
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 export default function Map() {
   const [shows, setShows] = useState({});
   const [currCity, setCurrCity] = useState(null);
   const [artist, setArtist] = useState(null);
   const [audioLink, setAudioLink] = useState(null);
+  const [newAudio, setNewAudio] = useState(true);
+  const [audioSource, setAudioSource] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMarkerClicked, setIsMarkerClicked] = useState(false)
   const [userData, setUserData] = useState(
     {
       dateRange: {},
@@ -36,16 +40,9 @@ export default function Map() {
   const isFirstRender = useRef(true);
   const audioRef = useRef(null);
 
+
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
-
-  // load media for playback
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.load();
-    }
-  }, [audioLink]);
-
 
   //////   Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
@@ -80,6 +77,38 @@ export default function Map() {
     setUserData(prev => (
       { ...prev, currentAddress: data.currentAddress })
     );
+  };
+
+  // Only display spinner if new marker (artist)
+  const handleSetNewAudio = () => {
+    setNewAudio(false);
+    setTimeout(() => {
+      if (!audioLink) {
+        setNewAudio(true);
+      }
+    }, 500);
+  };
+  // render <audio> when new artist audio link
+  useEffect(() => {
+    setNewAudio(true);
+  }, [audioLink]);
+
+
+  // Load Media for Playback with Ref when new audioLink
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.load();
+    };
+  }, [audioLink]);
+  
+  const handlePlayPause = () => {
+    if (audioLink) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+    }
   };
 
 
@@ -178,11 +207,6 @@ export default function Map() {
     };
   };
 
-  ////    Set Artist from marker (headliner [0])
-  const handleSetArtist = (artist) => {
-    if (shows) setArtist(artist);
-  };
-
   //////    GET and Set Audio When New Artist
   useEffect(() => {
     if (artist) {
@@ -190,6 +214,7 @@ export default function Map() {
         .then((response) => {
           // console.log("response.data from /api/spotifysample: ", response.data);
           setAudioLink(response.data.topTrack);
+          setIsPlaying(false);
         })
         .catch(err => console.log(err.message));
     }
@@ -217,6 +242,11 @@ export default function Map() {
   ////   Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
 
+  ////    Set Artist from marker for src (headliner [0])
+  const handleSetArtist = (artist) => {
+    if (shows) setArtist(artist);
+  };
+
 
   return (
     <div className="map-main">
@@ -241,15 +271,26 @@ export default function Map() {
         userData={userData}
         currCity={currCity}
         handleSetArtist={handleSetArtist}
-        artist={artist}
         audioLink={audioLink}
-        audioRef={audioRef}
+        newAudio={newAudio}
+        // audioRef={audioRef}
+        handlePlayPause={handlePlayPause}
+        handleSetNewAudio={handleSetNewAudio}
+        isPlaying={isPlaying}
+        setIsMarkerClicked={setIsMarkerClicked}
       />
       <ControlsBottom
         handleDateSelect={handleDateSelect}
         handleDateRangeClick={handleDateRangeClick}
-        audioLink={audioLink}
         audioRef={audioRef}
+        audioLink={audioLink}
+        newAudio={newAudio}
+        handlePlayPause={handlePlayPause}
+        setIsPlaying={setIsPlaying}
+        isPlaying={isPlaying}
+        setAudioSource={setAudioSource}
+        audioSource={audioSource}
+        isMarkerClicked={isMarkerClicked}
       />
     </div>
   );
