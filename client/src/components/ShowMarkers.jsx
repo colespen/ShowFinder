@@ -45,7 +45,7 @@ const ShowMarkers = (props) => {
               (
                 <li className="artist" key={artist + i}>
                   <button onClick={getArtist}>
-                    {artist.name}
+                    {artist.name.length > 41 ? artist.name.substring(0, 41) + " ..." : artist.name}
                   </button>
                 </li>
               ))}

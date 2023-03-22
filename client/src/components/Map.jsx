@@ -39,7 +39,6 @@ export default function Map() {
   const isFirstRender = useRef(true);
   const audioRef = useRef(null);
 
-
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
 
