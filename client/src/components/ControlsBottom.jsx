@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import DateRange from './DateRange';
 import { Spinner } from '@chakra-ui/spinner';
 
