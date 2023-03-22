@@ -92,7 +92,11 @@ const ControlsBottom = (props) => {
             <button className={`autoplay-bottom ` + isAutoPlay}
               onClick={handleAutoPlay}
             >
-              {windowSize.innerWidth > 413 ? "autoplay" : "auto"}
+              {windowSize.innerWidth > 375 ?
+                windowSize.innerWidth > 413 ? "autoplay" : "auto"
+                :
+                ""
+              }
             </button>
           }
           <div className="buttons-bottom-wrapper">
@@ -106,7 +110,7 @@ const ControlsBottom = (props) => {
                     <img src="./pause.svg" alt="play-button"></img>
                   }
                 </button>
-                <button className= "media-buttons volume" id="btn-bottom-scale"
+                <button className="media-buttons volume" id="btn-bottom-scale"
                   onClick={handleVolChange}
                 >
                   {volChange ?
@@ -122,7 +126,13 @@ const ControlsBottom = (props) => {
               </div>
             }
             {!audioLink && newAudio && isMarkerClicked &&
-              <span>audio unavailable</span>
+              <span>
+                {windowSize.innerWidth > 350 ?
+                  windowSize.innerWidth > 410 ? "audio unavailable" : "no audio"
+                  :
+                  ""
+                }
+              </span>
             }
           </div>
         </div>
