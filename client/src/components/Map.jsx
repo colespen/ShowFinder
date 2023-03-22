@@ -10,8 +10,7 @@ import Title from './Title';
 import ControlsTop from './ControlsTop';
 import ControlsBottom from './ControlsBottom';
 
-import { minDate, maxDate } from './DateRange';
-import { cityFilter } from '../helpers/utils';
+import { cityFilter, handlePlayPause, handleSetNewAudio } from '../helpers/utils';
 
 ////// use Render.com server ******
 axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
@@ -24,7 +23,7 @@ export default function Map() {
   const [newAudio, setNewAudio] = useState(true);
   const [audioSource, setAudioSource] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMarkerClicked, setIsMarkerClicked] = useState(false)
+  const [isMarkerClicked, setIsMarkerClicked] = useState(false);
   const [userData, setUserData] = useState(
     {
       dateRange: {},
@@ -61,56 +60,25 @@ export default function Map() {
   }, [isFirstRender, geolocation.coords, geolocation.loaded,
     userData.lat, geolocation.error]);
 
-  //////    Set Default Date Range State
-  useEffect(() => {
-    setUserData(prev => (
-      {
-        ...prev,
-        dateRange: { minDate, maxDate },
-      }
-    ));
-  }, []);
-
-  const setShowCityUserData = (data) => {
-    setShows(data);
-    setCurrCity(data.currentAddress.address.city);
-    setUserData(prev => (
-      { ...prev, currentAddress: data.currentAddress })
-    );
-  };
-
-  // Only display spinner if new marker (artist)
-  const handleSetNewAudio = () => {
-    setNewAudio(false);
-    setTimeout(() => {
-      if (!audioLink) {
-        setNewAudio(true);
-      }
-    }, 500);
-  };
-  // render <audio> when new artist audio link
-  useEffect(() => {
-    setNewAudio(true);
-  }, [audioLink]);
-
-
-  // Load Media for Playback with Ref when new audioLink
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.load();
+    // render <audio> when new artist audio link
+    useEffect(() => {
+      setNewAudio(true);
+    }, [audioLink]);
+    
+    // Load Media for Playback with Ref when new audioLink
+    useEffect(() => {
+      if (audioRef.current) {
+        audioRef.current.load();
+      };
+    }, [audioLink]);
+    
+    const setShowCityUserData = (data) => {
+      setShows(data);
+      setCurrCity(data.currentAddress.address.city);
+      setUserData(prev => (
+        { ...prev, currentAddress: data.currentAddress })
+      );
     };
-  }, [audioLink]);
-
-  const handlePlayPause = () => {
-    if (audioLink) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-    }
-  };
-
 
   ////////////////////////////////////////////////////////////////////
   //////    Calls to Server for Geo and Shows API 
@@ -257,6 +225,7 @@ export default function Map() {
         geolocation={geolocation}
       />
       <ControlsTop
+        setUserData={setUserData}
         handleCityChange={handleCityChange}
         handleInputTextSelect={handleInputTextSelect}
         newCityOnEnter={newCityOnEnter}
@@ -273,18 +242,19 @@ export default function Map() {
         handleSetArtist={handleSetArtist}
         audioLink={audioLink}
         newAudio={newAudio}
-        handlePlayPause={handlePlayPause}
-        handleSetNewAudio={handleSetNewAudio}
+        handlePlayPause={() => handlePlayPause(audioLink, isPlaying, audioRef)}
+        handleSetNewAudio={() => handleSetNewAudio(setNewAudio, audioLink)}
         isPlaying={isPlaying}
         setIsMarkerClicked={setIsMarkerClicked}
       />
       <ControlsBottom
+        setUserData={setUserData}
         handleDateSelect={handleDateSelect}
         handleDateRangeClick={handleDateRangeClick}
         audioRef={audioRef}
         audioLink={audioLink}
         newAudio={newAudio}
-        handlePlayPause={handlePlayPause}
+        handlePlayPause={() => handlePlayPause(audioLink, isPlaying, audioRef)}
         setIsPlaying={setIsPlaying}
         isPlaying={isPlaying}
         setAudioSource={setAudioSource}

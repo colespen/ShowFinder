@@ -458,6 +458,7 @@
   align-items: center;
 
   span {
+    width: 125px;
     color: whitesmoke;
     font-family: "Montserrat", sans-serif, "Courier New", Courier, monospace;
     font-size: 18px;
@@ -511,7 +512,7 @@
         width: 55px;
       }
       .autoplay-bottom {
-        padding-right: 3px;
+        padding-right: 5px;
       }
       .spinner-container {
         width: 90%;
@@ -542,7 +543,7 @@
     height: 91vh;
   }
 }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 551px) {
   #author-hover {
     display: none;
   }

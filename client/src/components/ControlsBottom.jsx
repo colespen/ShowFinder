@@ -6,6 +6,7 @@ import './styles.scss';
 
 const ControlsBottom = (props) => {
   const {
+    setUserData,
     handleDateSelect,
     handleDateRangeClick,
     audioLink,
@@ -40,7 +41,7 @@ const ControlsBottom = (props) => {
 
   // default volume
   useEffect(() => {
-    audioRef.current.volume = 0.85;
+    audioRef.current.volume = 0.7;
   }, [audioRef]);
 
   // currently for mute / unmute
@@ -49,7 +50,7 @@ const ControlsBottom = (props) => {
       audioRef.current.volume = 0;
       setVolChange(1);
     } else {
-      audioRef.current.volume = 0.85;
+      audioRef.current.volume = 0.7;
       setVolChange(0);
     }
   };
@@ -139,7 +140,9 @@ const ControlsBottom = (props) => {
       </div>
 
       <div className="date-location" id="date-bottom">
-        <DateRange handleDateSelect={handleDateSelect}
+        <DateRange
+          setUserData={setUserData}
+          handleDateSelect={handleDateSelect}
         />
         <button id="go-button-bottom"
           onClick={handleDateRangeClick}>GO</button>

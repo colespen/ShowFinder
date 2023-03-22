@@ -4,6 +4,7 @@ import './styles.scss';
 
 const ControlsTop = (props) => {
   const {
+    setUserData,
     handleCityChange,
     handleInputTextSelect,
     newCityOnEnter,
@@ -30,7 +31,9 @@ const ControlsTop = (props) => {
       </div>
 
       <div className="date-location" id="date-top">
-        <DateRange handleDateSelect={handleDateSelect}
+        <DateRange 
+        setUserData={setUserData}
+        handleDateSelect={handleDateSelect}
         />
         <button id="go-button-top"
           onClick={handleDateRangeClick}>GO</button>

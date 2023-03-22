@@ -1,15 +1,25 @@
-import { useState, forwardRef } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function DateRange(props) {
+export default function DateRange({handleDateSelect, setUserData}) {
 
   const [range, setRange] = useState([null, null]);
   const [startDate, endDate] = range;
 
   const options = { year: 'numeric', month: 'short', day: '2-digit' };
   const currDate = new Date().toLocaleDateString(undefined, options);
+
+   //////    Set Default Date Range State
+   useEffect(() => {
+    setUserData(prev => (
+      {
+        ...prev,
+        dateRange: { minDate, maxDate },
+      }
+    ));
+  }, [setUserData]);
 
   const handleDateChange = e => {
     let dateRange = {};
@@ -23,7 +33,7 @@ export default function DateRange(props) {
       if (i === 0) dateRange.minDate = `${yyyy1}-${mm1}-${dd1}`;
       if (i === 1) dateRange.maxDate = `${yyyy1}-${mm1}-${dd1}`;
     });
-    props.handleDateSelect(dateRange);
+    handleDateSelect(dateRange);
   };
 
 
@@ -53,4 +63,3 @@ export default function DateRange(props) {
     `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
   export const maxDate =
     `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
-  // ***remove temp hardcode +3 days maxDate
