@@ -508,7 +508,6 @@
     .audio-player-inner {
       padding-right: 10px;
       .buttons-bottom-wrapper {
-        // width: 60px;
         width: 55px;
       }
       .autoplay-bottom {
@@ -529,13 +528,9 @@
 @media only screen and (max-width: 413px) {
   .controls-bottom .audio-player-bottom-wrapper .audio-player-inner {
     .autoplay-bottom {
-      // display: none;
       padding-left: 0px;
-      padding-right: 0px
+      padding-right: 5px;
     }
-    // span {
-    //   display: none;
-    // }
   }
   .github {
     padding-left: 4px;

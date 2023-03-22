@@ -92,7 +92,7 @@ const ControlsBottom = (props) => {
             <button className={`autoplay-bottom ` + isAutoPlay}
               onClick={handleAutoPlay}
             >
-              {windowSize.innerWidth > 375 ?
+              {windowSize.innerWidth > 383 ?
                 windowSize.innerWidth > 413 ? "autoplay" : "auto"
                 :
                 ""
