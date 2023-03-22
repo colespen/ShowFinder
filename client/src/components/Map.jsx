@@ -273,7 +273,6 @@ export default function Map() {
         handleSetArtist={handleSetArtist}
         audioLink={audioLink}
         newAudio={newAudio}
-        // audioRef={audioRef}
         handlePlayPause={handlePlayPause}
         handleSetNewAudio={handleSetNewAudio}
         isPlaying={isPlaying}

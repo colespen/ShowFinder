@@ -19,10 +19,6 @@ const ShowMarkers = (props) => {
   const [lastClickedMarker, setLastClickedMarker] = useState(null);
   const popUpRef = useRef(null);
 
-  // console.log("lastClickedMarker: ", lastClickedMarker);
-  // console.log("newAudio: ", newAudio);
-  // console.log("audioLink: ", audioLink);
-
   return (
     (shows.data || []).map((show, index) => (
       show.location.geo ?

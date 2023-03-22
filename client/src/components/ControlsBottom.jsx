@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DateRange from './DateRange';
 import { Spinner } from '@chakra-ui/spinner';
 
@@ -20,12 +20,18 @@ const ControlsBottom = (props) => {
   const [volChange, setVolChange] = useState(0);
   const [isAutoPlay, setIsAutoplay] = useState(true);
 
+  // default volume
+  useEffect(() => {
+    audioRef.current.volume = 0.85
+  }, [audioRef])
+  
+  // currently for mute / unmute
   const handleVolChange = () => {
     if (!volChange) {
       audioRef.current.volume = 0;
       setVolChange(1);
     } else {
-      audioRef.current.volume = 1;
+      audioRef.current.volume = 0.85;
       setVolChange(0);
     }
   };

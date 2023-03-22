@@ -180,8 +180,8 @@ app.get('/api/spotifysample', (req, res) => {
         }
       })
         .then((response) => {
-          const topTrack = response.data.tracks[0].preview_url;
-          return { topTrack };
+            const topTrack = response.data.tracks[0].preview_url;
+            return { topTrack };
         });
     })
     .then((data) => {
