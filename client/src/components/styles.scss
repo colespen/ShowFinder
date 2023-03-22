@@ -114,11 +114,11 @@
       height: 20px;
       width: 20px;
       opacity: 75%;
-      animation: 100ms ease-in fadeIn;
-      -webkit-animation: 100ms ease-in fadeIn;
-      -moz-animation: 100ms ease-in fadeIn;
-      -o-animation: 100ms ease-in fadeIn;
-      -ms-animation: 100ms ease-in fadeIn;
+      animation: 150ms ease-in fadeIn;
+      -webkit-animation: 150ms ease-in fadeIn;
+      -moz-animation: 150ms ease-in fadeIn;
+      -o-animation: 150ms ease-in fadeIn;
+      -ms-animation: 150ms ease-in fadeIn;
       filter: invert(0.2);
       &:hover {
         opacity: 100%;
@@ -177,7 +177,9 @@
 
   .audio-player-bottom-wrapper {
     height: 30px;
-    width: 182px;
+    width: 135px;
+    // width: 140px;
+    // width: 182px;
 
     .audio-player-inner {
       height: 100%;
@@ -189,11 +191,12 @@
 
       .player-controls,
       span {
-        width: 100%;
+        width: 108px;
         font-size: 13px;
         font-family: Arial, Helvetica, sans-serif;
         color: #f5f5f5a5;
-        padding-bottom: 2px;
+        white-space: nowrap;
+        padding-right: 5px;
         animation: 500ms ease-in fadeIn;
         -webkit-animation: 500ms ease-in fadeIn;
         -moz-animation: 500ms ease-in fadeIn;
@@ -201,16 +204,13 @@
         -ms-animation: 500ms ease-in fadeIn;
       }
 
-      .autoplay {
+      .autoplay-bottom {
         font-size: 13px;
         color: #f5f5f595;
         padding-bottom: 2px;
-        margin-right: 10px;
-        animation: 500ms ease-in fadeIn;
-        -webkit-animation: 500ms ease-in fadeIn;
-        -moz-animation: 500ms ease-in fadeIn;
-        -o-animation: 500ms ease-in fadeIn;
-        -ms-animation: 500ms ease-in fadeIn;
+        position: sticky;
+        right: 140px;
+        width: fit-content;
       }
       .false {
         text-decoration: line-through;
@@ -218,7 +218,7 @@
       }
 
       .buttons-bottom-wrapper {
-        width: 100%;
+        width: 70px;
         display: flex;
         justify-content: flex-end;
         padding-right: 4px;
@@ -252,7 +252,7 @@
       .spinner-container {
         width: 100%;
         display: flex;
-        justify-content: flex-end;
+        justify-content: flex-start;
         padding-right: 4px;
         .chakra-spinner {
           height: 20px;
@@ -464,7 +464,7 @@
     font-weight: 100;
     padding-top: 1px;
     padding-left: 8px;
-    height: 30px;
+    height: 25px;
     opacity: 0;
   }
   &:hover span {
@@ -501,13 +501,60 @@
       right: 50px;
     }
   }
-}
 
+  .controls-bottom .audio-player-bottom-wrapper {
+    width: 100%;
+
+    .audio-player-inner {
+      padding-right: 10px;
+      .buttons-bottom-wrapper {
+        // width: 60px;
+        width: 55px;
+      }
+      .autoplay-bottom {
+        padding-right: 3px;
+      }
+      .spinner-container {
+        width: 90%;
+      }
+    }
+  }
+
+  #btn-bottom-scale  {
+      scale: 0.8;
+      padding-right: 3px;
+      padding-left: 3px;
+  }
+}
+@media only screen and (max-width: 413px) {
+  .controls-bottom .audio-player-bottom-wrapper .audio-player-inner {
+    .autoplay-bottom {
+      // display: none;
+      padding-left: 0px;
+      padding-right: 0px
+    }
+    span {
+      display: none;
+    }
+  }
+  .github {
+    padding-left: 4px;
+    scale: 0.9;
+  }
+}
 @media only screen and (max-width: 480px) {
   .map-main {
     height: 91vh;
   }
 }
+@media only screen and (max-width: 500px) {
+  #author-hover {
+    display: none;
+  }
+}
+
+
+
 
 ////////////////////////////////
 /////  Title Fade

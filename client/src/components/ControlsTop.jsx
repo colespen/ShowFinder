@@ -18,7 +18,7 @@ const ControlsTop = (props) => {
       <div className="city-input">
         <input type="text"
           name="enter city"
-          placeholder="enter a city, state/country"
+          placeholder="enter city, country"
           autoComplete="off"
           spellCheck="false"
           onChange={handleCityChange}

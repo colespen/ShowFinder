@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import DateRange from './DateRange';
 import { Spinner } from '@chakra-ui/spinner';
 
@@ -19,12 +19,30 @@ const ControlsBottom = (props) => {
 
   const [volChange, setVolChange] = useState(0);
   const [isAutoPlay, setIsAutoplay] = useState(true);
+  const [windowSize, setWindowSize] = useState(getWindowSize());
+
+  // get and set window with resolution
+  useEffect(() => {
+    function handleWindowResize() {
+      setWindowSize(getWindowSize());
+    }
+
+    window.addEventListener('resize', handleWindowResize);
+
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []);
+  function getWindowSize() {
+    const { innerWidth } = window;
+    return { innerWidth };
+  }
 
   // default volume
   useEffect(() => {
-    audioRef.current.volume = 0.85
-  }, [audioRef])
-  
+    audioRef.current.volume = 0.85;
+  }, [audioRef]);
+
   // currently for mute / unmute
   const handleVolChange = () => {
     if (!volChange) {
@@ -50,7 +68,7 @@ const ControlsBottom = (props) => {
           <img src="./github-mark.svg" width="18" height="18"
             alt="GitHub-link"></img>
         </a>
-        <span>Spencer Cole</span>
+        <span id="author-hover">Spencer Cole</span>
       </div>
 
       <div className="audio-player-bottom-wrapper" >
@@ -69,16 +87,18 @@ const ControlsBottom = (props) => {
             <code>audio</code> not supported
           </audio>
 
-          {isMarkerClicked && <button className={`autoplay ` + isAutoPlay}
-            onClick={handleAutoPlay}
-          >
-            autoplay
-          </button>}
 
+          {audioLink && isMarkerClicked &&
+            <button className={`autoplay-bottom ` + isAutoPlay}
+              onClick={handleAutoPlay}
+            >
+              {windowSize.innerWidth > 413 ? "autoplay" : "auto"}
+            </button>
+          }
           <div className="buttons-bottom-wrapper">
             {audioLink && newAudio && (
               <>
-                <button className="play-pause media-buttons"
+                <button className="media-buttons play-pause" id="btn-bottom-scale"
                   onClick={handlePlayPause}
                 >
                   {!isPlaying ?
@@ -86,10 +106,10 @@ const ControlsBottom = (props) => {
                     <img src="./pause.svg" alt="play-button"></img>
                   }
                 </button>
-                <button className="volume media-buttons"
+                <button className= "media-buttons volume" id="btn-bottom-scale"
                   onClick={handleVolChange}
                 >
-                  {!volChange ?
+                  {volChange ?
                     <img src="./volume-mute.svg" alt="play-button"></img> :
                     <img id="vol-on" src="./volume-on.svg" alt="play-button"></img>
                   }
@@ -101,9 +121,9 @@ const ControlsBottom = (props) => {
                 <Spinner size="sm" />
               </div>
             }
-          {!audioLink && newAudio && isMarkerClicked &&
-            <span>audio unavailable</span>
-          }
+            {!audioLink && newAudio && isMarkerClicked &&
+              <span>audio unavailable</span>
+            }
           </div>
         </div>
       </div>
