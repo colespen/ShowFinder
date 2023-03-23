@@ -20,8 +20,8 @@
 .wait-container {
   display: flex;
   justify-content: center;
-  transition: opacity 1s ease-out;
-  // transition: opacity 1400ms ease-out;
+  // transition: opacity 1s ease-out;
+  transition: opacity 1400ms ease-out;
 
   .title-wait,
   .loading-dots {
@@ -229,11 +229,11 @@
     filter: invert(90%);
     width: 16px;
     height: 16px;
-    animation: 3.5s ease 0s normal forwards 1 iconFadeIn;
-    -webkit-animation: 3.5s ease 0s normal forwards 1 iconFadeIn;
-    -moz-animation: 3.5s ease 0s normal forwards 1 iconFadeIn;
-    -o-animation: 3.5s ease 0s normal forwards 1 iconFadeIn;
-    -ms-animation: 3.5s ease 0s normal forwards 1 iconFadeIn;
+    animation: 4s ease 0s normal forwards 1 iconFadeIn;
+    -webkit-animation: 4s ease 0s normal forwards 1 iconFadeIn;
+    -moz-animation: 4s ease 0s normal forwards 1 iconFadeIn;
+    -o-animation: 4s ease 0s normal forwards 1 iconFadeIn;
+    -ms-animation: 4s ease 0s normal forwards 1 iconFadeIn;
   }
 }
 

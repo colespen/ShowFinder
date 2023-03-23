@@ -11,10 +11,9 @@ export default function Title(props) {
   const [text, setText] = useState("locating shows near you");
 
   useEffect(() => {
-    if (transition.type === "shows") setText("grabbing shows");
-    if (transition.type === "dates") setText("grabbing show dates");
-    if (transition.type === "location") setText("grabbing your location");
-
+      if (transition.type === "shows") setText("grabbing shows");
+      if (transition.type === "dates") setText("grabbing show dates");
+      if (transition.type === "location") setText("grabbing your location");
   }, [transition]);
 
   useEffect(() => {
@@ -68,7 +67,7 @@ export default function Title(props) {
       return () => { clearTimeout(delayWait); };
     }
 
-  }, [geolocation.access, geolocation.isClick, currCity, isFirstRender]);
+  }, [geolocation.access, geolocation.isClick, currCity, isFirstRender, text]);
 
 
   useEffect(() => {

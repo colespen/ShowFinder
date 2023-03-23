@@ -89,31 +89,32 @@ const getNewCityShowsRequest = (args) => {
   if (userData.newCity) {
     setCurrCity("");
     setTransition({ opacity: 1, type: "shows" });
-
+    
     axios.get('/api/newshows', { params: userData })
-      .then((res) => {
-        setShows(res.data);
-        setCurrCity(cityFilter(userData.newCity));
-        setUserData((prev) => ({
-          ...prev,
-          lat: res.data.latLng[0].lat,
-          lng: res.data.latLng[0].lon,
-        }));
-      })
-      .catch(err => console.log(err.message));
+    .then((res) => {
+      setShows(res.data);
+      setCurrCity(cityFilter(userData.newCity));
+      setUserData((prev) => ({
+        ...prev,
+        lat: res.data.latLng[0].lat,
+        lng: res.data.latLng[0].lon,
+      }));
+    })
+    .catch(err => console.log(err.message));
   };
 };
 
 /** GET - /api/shows - date range rev geo shows
-*/
+ */
 const getNewDateRangeShows = (args) => {
-  const { setShows, setUserData, setCurrCity,
+  const { setShows, setUserData, currCity, setCurrCity,
     setTransition, userData, handleNewCityShowsRequest } = args;
-  if ((Object.keys(userData.dateRange).length === 2)) {
+
+    if ((Object.keys(userData.dateRange).length === 2)) {
     setCurrCity("");
     setTransition({ opacity: 1, type: "dates" });
 
-    if (userData.newCity === "") {
+    if (userData.newCity === "" || currCity === cityFilter(userData.newCity)) {
       axios.get('/api/shows', { params: userData })
         .then((res) => {
           setShowCityUserData(res.data, setShows, setCurrCity, setUserData);

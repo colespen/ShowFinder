@@ -83,6 +83,7 @@ export default function Map() {
     userData,
     setUserData,
     setShows,
+    currCity,
     setCurrCity,
     setTransition
   };
@@ -92,7 +93,6 @@ export default function Map() {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
       //////    GET - /api/shows - reverse geocode current coords then get shows
       getShows(userData, geolocation, setShows, setCurrCity, setUserData);
-
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       getSpotifyToken();
     }
