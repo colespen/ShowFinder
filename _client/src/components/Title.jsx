@@ -4,7 +4,7 @@ import './styles.scss';
 
 
 export default function Title(props) {
-  const { currCity, transition, isFirstRender, geolocation, titleShow } = props;
+  const { currCity, transition, isFirstRender, geolocation } = props;
   const [waitOpacity, setWaitOpacity] = useState(0);
   const [showOpacity, setShowOpacity] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -79,8 +79,6 @@ export default function Title(props) {
     return () => { clearTimeout(delayShow); };
   }, [currCity]);
 
-
-console.log("titleShow", titleShow)
   return (
     <>
       {!currCity ?
