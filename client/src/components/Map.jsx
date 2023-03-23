@@ -23,6 +23,7 @@ import { handlePlayPause, handleSetNewAudio } from '../helpers/utils';
 export default function Map() {
   const [shows, setShows] = useState({});
   const [currCity, setCurrCity] = useState(null);
+  const [cityQuery, setCityQuery] = useState(null)
   const [artist, setArtist] = useState(null);
   const [audioLink, setAudioLink] = useState(null);
   const [newAudio, setNewAudio] = useState(true);
@@ -85,6 +86,8 @@ export default function Map() {
     setShows,
     currCity,
     setCurrCity,
+    cityQuery,
+    setCityQuery,
     setTransition
   };
 
@@ -105,8 +108,8 @@ export default function Map() {
   const handleNewCityShowsRequest = () => getNewCityShowsRequest({ ...args });
 
   //////    GET - /api/shows - date range rev geo shows
-  const handleDateRangeShowsClick = () => getNewDateRangeShows(
-    { ...args, handleNewCityShowsRequest });
+  const handleDateRangeShowsClick = () => getNewDateRangeShows({ ...args, 
+  handleNewCityShowsRequest });
 
   //////    GET - api/spotifysample - artist ID then get preview data
   useEffect(() => {

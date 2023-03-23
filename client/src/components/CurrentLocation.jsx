@@ -39,7 +39,7 @@ const CurrentLocation = ({ geolocation, userData, currCity }) => {
       });
     }
 
-  }, [map, geolocation, userData, currCity]);
+  }, [map, geolocation, userData.lat, userData.lng, currCity]);
 
   return null;
 };

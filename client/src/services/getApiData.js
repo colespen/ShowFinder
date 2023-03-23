@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import { cityFilter } from '../helpers/utils';
 
 ////// use Render.com server ******
@@ -83,44 +82,66 @@ const getCurrLocationShows = (args) => {
 /** GET - /api/newshows - fwd geo then new shows
 */
 const getNewCityShowsRequest = (args) => {
-  const { userData, setCurrCity, setTransition,
-    setShows, setUserData } = args;
+  const { userData, setCurrCity, setCityQuery,
+    setTransition, setShows, setUserData } = args;
+
   if (userData.newCity) {
     setCurrCity("");
+    setCityQuery(userData.newCity);
     setTransition({ opacity: 1, type: "shows" });
-    
+
     axios.get('/api/newshows', { params: userData })
-    .then((res) => {
-      setShows(res.data);
-      setCurrCity(cityFilter(userData.newCity));
-      setUserData((prev) => ({
-        ...prev,
-        lat: res.data.latLng[0].lat,
-        lng: res.data.latLng[0].lon,
-      }));
-    })
-    .catch(err => console.log(err.message));
+      .then((res) => {
+        setShows(res.data);
+        setCurrCity(cityFilter(userData.newCity));
+        setUserData((prev) => ({
+          ...prev,
+          lat: res.data.latLng[0].lat,
+          lng: res.data.latLng[0].lon,
+        }));
+      })
+      .catch(err => console.log(err.message));
   };
 };
 
 /** GET - /api/shows - date range rev geo shows
  */
 const getNewDateRangeShows = (args) => {
-  const { setShows, setUserData, setCurrCity,
-    setTransition, userData, handleNewCityShowsRequest } = args;
+  const { setShows, setUserData, currCity, setCurrCity,
+    handleNewCityShowsRequest, setCityQuery, cityQuery,
+    setTransition, userData } = args;
 
-    if ((Object.keys(userData.dateRange).length === 2)) {
+  const prevCity = currCity;
+  const filterUserCity = cityFilter(userData.currentAddress.address.city);
+
+  if ((Object.keys(userData.dateRange).length === 2)) {
     setCurrCity("");
     setTransition({ opacity: 1, type: "dates" });
 
-    if (userData.newCity === "") {
+    if (userData.newCity === "" && currCity === filterUserCity) {
       axios.get('/api/shows', { params: userData })
-      .then((res) => {
-        setShowCityUserData(res.data, setShows, setCurrCity, setUserData);
-      })
-      .catch(err => console.log(err.message));
-    } else {
+        .then((res) => {
+          setShowCityUserData(res.data, setShows, setCurrCity, setUserData);
+        })
+        .catch(err => console.log(err.message));
+
+    } else if (userData.newCity && cityFilter(userData.newCity) !== prevCity) {
       handleNewCityShowsRequest();
+      setCityQuery(userData.newCity);
+    } else {
+
+      if (userData.newCity) setCityQuery(userData.newCity);
+      axios.get('/api/newshows', { params: { ...userData, newCity: cityQuery } })
+        .then((res) => {
+          setShows(res.data);
+          setCurrCity(cityFilter(cityQuery));
+          setUserData((prev) => ({
+            ...prev,
+            lat: res.data.latLng[0].lat,
+            lng: res.data.latLng[0].lon,
+          }));
+        })
+        .catch(err => console.log(err.message));
     }
   }
 };

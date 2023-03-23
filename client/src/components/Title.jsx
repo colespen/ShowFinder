@@ -5,19 +5,19 @@ import './styles.scss';
 
 export default function Title(props) {
   const { currCity, transition, isFirstRender, geolocation } = props;
-  const [opacity, setOpacity] = useState(0);
-  const [show, setShow] = useState(0);
+  const [waitOpacity, setWaitOpacity] = useState(0);
+  const [showOpacity, setShowOpacity] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [text, setText] = useState("locating shows near you");
 
   useEffect(() => {
       if (transition.type === "shows") setText("grabbing shows");
-      if (transition.type === "dates") setText("grabbing show dates");
+      if (transition.type === "dates") setText("grabbing dates");
       if (transition.type === "location") setText("grabbing your location");
   }, [transition]);
 
   useEffect(() => {
-    if (transition.type !== "inital") setOpacity(transition.opacity);
+    if (transition.type !== "inital") setWaitOpacity(transition.opacity);
 
   }, [transition.opacity, transition.type]);
 
@@ -25,9 +25,9 @@ export default function Title(props) {
   useEffect(() => {
     if (!geolocation.access) {
       setIsVisible(false);
-      setOpacity(0);
+      setWaitOpacity(0);
       const delayWait = setTimeout(() => {
-        if (!currCity) setOpacity(0.65);
+        if (!currCity) setWaitOpacity(0.65);
       }, 1200);
 
       
@@ -36,10 +36,10 @@ export default function Title(props) {
 
     if (geolocation.isClick) {
       setIsVisible(false);
-      setOpacity(0);
+      setWaitOpacity(0);
       const delayWait = setTimeout(() => {
         setIsVisible(true);
-        setOpacity(0.65);
+        setWaitOpacity(0.65);
       }, 2150);
       return () => { clearTimeout(delayWait); };
     };
@@ -47,11 +47,11 @@ export default function Title(props) {
 
     if (isFirstRender && geolocation.access && !geolocation.isClick) {
       setIsVisible(true);
-      setOpacity(0);
-      if (currCity) setOpacity(1);
+      setWaitOpacity(0);
+      if (currCity) setWaitOpacity(1);
       const delayWait = setTimeout(() => {
         if (!currCity) {
-          setOpacity(0.65);
+          setWaitOpacity(0.65);
         }
       }, 450);
       return () => { clearTimeout(delayWait); };
@@ -59,9 +59,9 @@ export default function Title(props) {
 
     if (!isFirstRender) {
       setIsVisible(true);
-      if (currCity) setOpacity(0);
+      if (currCity) setWaitOpacity(0);
       const delayWait = setTimeout(() => {
-        if (!currCity) setOpacity(0.65);
+        if (!currCity) setWaitOpacity(0.65);
       }, 60);
 
       return () => { clearTimeout(delayWait); };
@@ -71,9 +71,9 @@ export default function Title(props) {
 
 
   useEffect(() => {
-    if (currCity) setShow(0);
+    if (currCity) setShowOpacity(0);
     const delayShow = setTimeout(() => {
-      if (currCity) setShow(1);
+      if (currCity) setShowOpacity(1);
     }, 550);
 
     return () => { clearTimeout(delayShow); };
@@ -85,7 +85,7 @@ export default function Title(props) {
     <Fragment>
       {!currCity ?
         <div className="wait-container"
-          style={{ opacity: opacity }}>
+          style={{ opacity: waitOpacity }}>
           <h1 className={geolocation.access ?
             "title-wait" : "title-wait pls-allow"}
             id="title-wait">
@@ -103,7 +103,7 @@ export default function Title(props) {
           className={(currCity.length > 17 ?
             "title-show long-entry" : "title-show")
           }
-          style={{ opacity: show }}
+          style={{ opacity: showOpacity }}
         >
           {"shows in " + currCity}
         </h1>
