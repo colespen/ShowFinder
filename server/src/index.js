@@ -43,14 +43,20 @@ app.get('/api/shows', (req, res) => {
   )
     .then((response) => {
       const currentAddress = response.data;
-      console.log("api/shows - currentAddress: ", currentAddress);
+      console.log(
+        "api/shows - currentAddress.address: ", currentAddress.address.city,
+        currentAddress.address.country
+      );
 
       const params = new URLSearchParams({
-        // TODO: this city name might change from orig. city query (/newshows)
-        // for example, London -> City of Westminister with geo coords reverse
-        name: currentAddress.address.city,
+        name: currentAddress.address.country ?
+          currentAddress.address.city + ", " + currentAddress.address.country :
+          currentAddress.address.city,
         ...req.query.dateRange
       });
+
+      // console.log("/api/shows rapidapi params: ", params);
+
       return axios.get(
         'https://concerts-artists-events-tracker.p.rapidapi.com/location?'
         + params.toString(), {
@@ -113,7 +119,6 @@ app.get('/api/newshows', (req, res) => {
         });
     })
     .then(data => {
-      console.log("data (shows) ~~~~: ", data);
       res.send(data);
     })
     .catch((error) => {
@@ -128,7 +133,6 @@ app.get('/api/newshows', (req, res) => {
 
 app.post('/api/spotifyauth', (req, res) => {
   const base64ID = new Buffer.from(client_id + ':' + client_secret).toString('base64');
-  // console.log("*** base64Id: ", base64ID);
   const config = {
     headers: {
       'Authorization': 'Basic ' + base64ID,
@@ -141,7 +145,6 @@ app.post('/api/spotifyauth', (req, res) => {
     .then((response) => {
       spotifyToken = response.data.access_token;
       res.sendStatus(200);
-      console.log("*** /api/spotifyauth response.data: ", response.data);
       console.log("*** spotifyToken: ", spotifyToken);
     })
     .catch((error) => {
@@ -180,8 +183,8 @@ app.get('/api/spotifysample', (req, res) => {
         }
       })
         .then((response) => {
-            const topTrack = response.data.tracks[0].preview_url;
-            return { topTrack };
+          const topTrack = response.data.tracks[0].preview_url;
+          return { topTrack };
         });
     })
     .then((data) => {

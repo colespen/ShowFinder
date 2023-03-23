@@ -52,8 +52,8 @@ export default function useGeoLocation(reloadOnError = false) {
           loaded: true,
           accuracy: location.coords.accuracy,
           coords: {
-            lat: location.coords.latitude,
-            lng: location.coords.longitude
+            lat: '48.87330892927665',
+            lng: '2.350468227636817'
           }
         }
         ));

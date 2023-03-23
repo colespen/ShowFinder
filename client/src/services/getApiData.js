@@ -39,7 +39,6 @@ const getSpotifySample = (artist, setAudioLink, setIsPlaying) => {
     .catch(err => console.log(err.message));
 };
 
-
 /** GET - /api/shows - reverse geocode current coords then get shows
 */
 const getShows = (
@@ -107,19 +106,19 @@ const getNewCityShowsRequest = (args) => {
 /** GET - /api/shows - date range rev geo shows
  */
 const getNewDateRangeShows = (args) => {
-  const { setShows, setUserData, currCity, setCurrCity,
+  const { setShows, setUserData, setCurrCity,
     setTransition, userData, handleNewCityShowsRequest } = args;
 
     if ((Object.keys(userData.dateRange).length === 2)) {
     setCurrCity("");
     setTransition({ opacity: 1, type: "dates" });
 
-    if (userData.newCity === "" || currCity === cityFilter(userData.newCity)) {
+    if (userData.newCity === "") {
       axios.get('/api/shows', { params: userData })
-        .then((res) => {
-          setShowCityUserData(res.data, setShows, setCurrCity, setUserData);
-        })
-        .catch(err => console.log(err.message));
+      .then((res) => {
+        setShowCityUserData(res.data, setShows, setCurrCity, setUserData);
+      })
+      .catch(err => console.log(err.message));
     } else {
       handleNewCityShowsRequest();
     }
