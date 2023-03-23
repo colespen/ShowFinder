@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+
 
 import './styles.scss';
 
@@ -10,10 +10,16 @@ import Title from './Title';
 import ControlsTop from './ControlsTop';
 import ControlsBottom from './ControlsBottom';
 
-import { cityFilter, handlePlayPause, handleSetNewAudio } from '../helpers/utils';
+import {
+  getShows,
+  getSpotifyToken,
+  getSpotifySample,
+  getNewCityShowsRequest,
+  getCurrLocationShows,
+  getNewDateRangeShows
+} from '../services/getApiData';
+import { handlePlayPause, handleSetNewAudio } from '../helpers/utils';
 
-////// use Render.com server ******
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 export default function Map() {
   const [shows, setShows] = useState({});
@@ -24,14 +30,13 @@ export default function Map() {
   const [audioSource, setAudioSource] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMarkerClicked, setIsMarkerClicked] = useState(false);
-  const [userData, setUserData] = useState(
-    {
-      dateRange: {},
-      lat: null,
-      lng: null,
-      currentAddress: {},
-      newCity: "",
-    });
+  const [userData, setUserData] = useState({
+    dateRange: {},
+    lat: null,
+    lng: null,
+    currentAddress: {},
+    newCity: "",
+  });
   const [transition, setTransition] = useState({
     opacity: 1,
     type: "initial",
@@ -59,131 +64,53 @@ export default function Map() {
   }, [isFirstRender, geolocation.coords, geolocation.loaded,
     userData.lat, geolocation.error]);
 
-    // render <audio> when new artist audio link
-    useEffect(() => {
-      setNewAudio(true);
-    }, [audioLink]);
-    
-    // Load Media for Playback with Ref when new audioLink
-    useEffect(() => {
-      if (audioRef.current) {
-        audioRef.current.load();
-      };
-    }, [audioLink]);
-    
-    const setShowCityUserData = (data) => {
-      setShows(data);
-      setCurrCity(data.currentAddress.address.city);
-      setUserData(prev => (
-        { ...prev, currentAddress: data.currentAddress })
-      );
+  // render <audio> when new artist audio link
+  useEffect(() => {
+    setNewAudio(true);
+  }, [audioLink]);
+
+  // Load Media for Playback with Ref when new audioLink
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.load();
     };
+  }, [audioLink]);
+
 
   ////////////////////////////////////////////////////////////////////
   //////    Calls to Server for Geo and Shows API 
   //////////////////////////////////////////////////////////////////
 
-  /////   GET Current Location Shows/Geo/spotifyToken - First Render
+  //////    GET Current Location Shows/Geo/spotifyToken - First Render
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
+      //////    GET - /api/shows - reverse geocode current coords then get shows
+      getShows(userData, geolocation, setShows, setCurrCity, setUserData);
 
-      axios.get('/api/shows', {
-        params: {
-          ...userData,
-          ...geolocation.coords
-        }
-      })
-        .then((res) => {
-          setShowCityUserData(res.data);
-        })
-        .catch(err => console.log(err.message));
-
-      // retrieve spotifyToken in API
-      axios.post('/api/spotifyauth')
-        .then((response) => {
-          // console.log("/api/spotifyauth: ", response.data);
-        })
-        .catch(err => console.log(err.message));
+      //////    POST - api/spotifyauth - retrieve spotifyToken in API
+      getSpotifyToken();
     }
-  }, [geolocation.loaded, geolocation.coords, shows, userData]);
+  }, [geolocation, shows, userData]);
 
-  //////    GET Current Location Shows and Geo - onClick
-  const handleCurrLocationClick = () => {
-    setCurrCity("");
-    setTransition({ opacity: 1, type: "location" });
-    setUserData(prev => ({
-      ...prev,
-      ...geolocation.coords
-    }));
-    if (geolocation.loaded) {
 
-      axios.get('/api/shows', {
-        params: {
-          ...userData,
-          ...geolocation.coords
-        }
-      })
-        .then((res) => {
-          setShowCityUserData(res.data);
-        })
-        .catch(err => console.log(err.message));
-    }
-  };
+  //////    GET - current location shows and geo
+  const handleCurrLocationClick = () => getCurrLocationShows(
+    setShows, setCurrCity, setTransition, setUserData, geolocation, userData);
 
-  //////    GET Date Range Shows and Geo - onClick
-  const handleDateRangeClick = () => {
-    if ((Object.keys(userData.dateRange).length === 2)) {
-      setCurrCity("");
-      setTransition({ opacity: 1, type: "dates" });
-      // const newCity = cityFilter(userData.newCity);
+  //////    GET - /api/newshows - fwd geo then new shows
+  const handleNewCityShowsRequest = () => getNewCityShowsRequest(
+    userData, setCurrCity, setTransition, setShows, setUserData
+  );
 
-      if (userData.newCity === "") {
+  //////    GET - /api/shows - date range rev geo shows
+  const handleDateRangeShowsClick = () => getNewDateRangeShows(
+    setShows, setUserData, setCurrCity,
+    setTransition, userData, handleNewCityShowsRequest);
 
-        axios.get('/api/shows', {
-          params: userData
-        })
-          .then((res) => {
-            // console.log("res.data from /shows: ", res.data);
-            setShowCityUserData(res.data);
-          })
-          .catch(err => console.log(err.message));
-      } else {
-        handleNewCityRequest();
-      }
-    }
-  };
-
-  //////    GET New City --> Geo & New Shows API calls
-  const handleNewCityRequest = () => {
-    if (userData.newCity) {
-      setCurrCity("");
-      setTransition({ opacity: 1, type: "shows" });
-
-      axios.get('/api/newshows', { params: userData })
-        .then((res) => {
-          // console.log("res.data from /newshows: ", res.data);
-          setShows(res.data);
-          setCurrCity(cityFilter(userData.newCity));
-          setUserData((prev) => ({
-            ...prev,
-            lat: res.data.latLng[0].lat,
-            lng: res.data.latLng[0].lon,
-          }));
-        })
-        .catch(err => console.log(err.message));
-    };
-  };
-
-  //////    GET and Set Audio When New Artist
+  //////    GET - api/spotifysample - artist ID then get preview data
   useEffect(() => {
     if (artist) {
-      axios.get('/api/spotifysample', { params: { artist } })
-        .then((response) => {
-          // console.log("response.data from /api/spotifysample: ", response.data);
-          setAudioLink(response.data.topTrack);
-          setIsPlaying(false);
-        })
-        .catch(err => console.log(err.message));
+      getSpotifySample(artist, setAudioLink, setIsPlaying);
     }
   }, [artist]);
 
@@ -198,7 +125,7 @@ export default function Map() {
   };
   ////    Submit City on Enter
   const newCityOnEnter = e => {
-    if (e.key === "Enter") handleNewCityRequest();
+    if (e.key === "Enter") handleNewCityShowsRequest();
   };
   ////    Set Date Range to State
   const handleDateSelect = (dateRange) => {
@@ -228,9 +155,9 @@ export default function Map() {
         handleCityChange={handleCityChange}
         handleInputTextSelect={handleInputTextSelect}
         newCityOnEnter={newCityOnEnter}
-        handleNewCityRequest={handleNewCityRequest}
+        handleNewCityRequest={handleNewCityShowsRequest}
         handleDateSelect={handleDateSelect}
-        handleDateRangeClick={handleDateRangeClick}
+        handleDateRangeClick={handleDateRangeShowsClick}
         handleCurrLocationClick={handleCurrLocationClick}
       />
       <Container
@@ -249,7 +176,7 @@ export default function Map() {
       <ControlsBottom
         setUserData={setUserData}
         handleDateSelect={handleDateSelect}
-        handleDateRangeClick={handleDateRangeClick}
+        handleDateRangeClick={handleDateRangeShowsClick}
         audioRef={audioRef}
         audioLink={audioLink}
         newAudio={newAudio}

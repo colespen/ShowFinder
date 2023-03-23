@@ -20,7 +20,8 @@
 .wait-container {
   display: flex;
   justify-content: center;
-  transition: opacity 1400ms ease-out;
+  transition: opacity 1s ease-out;
+  // transition: opacity 1400ms ease-out;
 
   .title-wait,
   .loading-dots {
