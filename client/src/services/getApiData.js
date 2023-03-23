@@ -3,7 +3,7 @@ import axios from 'axios';
 import { cityFilter } from '../helpers/utils';
 
 ////// use Render.com server ******
-// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
 // helper to setStates
 const setShowCityUserData =
