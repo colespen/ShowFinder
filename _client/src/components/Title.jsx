@@ -1,10 +1,10 @@
-import { Fragment, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Loading from './Loading';
 import './styles.scss';
 
 
 export default function Title(props) {
-  const { currCity, transition, isFirstRender, geolocation } = props;
+  const { currCity, transition, isFirstRender, geolocation, titleShow } = props;
   const [waitOpacity, setWaitOpacity] = useState(0);
   const [showOpacity, setShowOpacity] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -58,16 +58,16 @@ export default function Title(props) {
     }
 
     if (!isFirstRender) {
-      setIsVisible(true);
       if (currCity) setWaitOpacity(0);
       const delayWait = setTimeout(() => {
+        setIsVisible(true);
         if (!currCity) setWaitOpacity(0.65);
-      }, 60);
+      }, 300); // 60
 
       return () => { clearTimeout(delayWait); };
     }
 
-  }, [geolocation.access, geolocation.isClick, currCity, isFirstRender, text]);
+  }, [geolocation.access, geolocation.isClick, currCity, isFirstRender]); // *text?
 
 
   useEffect(() => {
@@ -80,9 +80,9 @@ export default function Title(props) {
   }, [currCity]);
 
 
-
+console.log("titleShow", titleShow)
   return (
-    <Fragment>
+    <>
       {!currCity ?
         <div className="wait-container"
           style={{ opacity: waitOpacity }}>
@@ -108,6 +108,6 @@ export default function Title(props) {
           {"shows in " + currCity}
         </h1>
       }
-    </Fragment>
+    </>
   );
 }

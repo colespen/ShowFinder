@@ -102,6 +102,7 @@ const getNewCityShowsRequest = (args) => {
       })
       .catch(err => console.log(err.message));
   };
+  // return () => clearTimeout(titleDelay)
 };
 
 /** GET - /api/shows - date range rev geo shows
