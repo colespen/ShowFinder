@@ -9,17 +9,9 @@ const budapest = [47.51983881388099, 19.032783326057594];
 const Container = (props) => {
   const {
     geolocation,
-    shows,
     userData,
     currCity,
-    handleSetArtist,
-    audioLink,
-    newAudio,
-    audioRef,
-    handleSetNewAudio,
-    handlePlayPause,
-    isPlaying,
-    setIsMarkerClicked
+    ...rest
   } = props;
 
   return (
@@ -29,15 +21,7 @@ const Container = (props) => {
     >
       {geolocation.loaded &&
         <ShowMarkers
-          shows={shows}
-          handleSetArtist={handleSetArtist}
-          audioLink={audioLink}
-          audioRef={audioRef}
-          handlePlayPause={handlePlayPause}
-          handleSetNewAudio={handleSetNewAudio}
-          isPlaying={isPlaying}
-          newAudio={newAudio}
-          setIsMarkerClicked={setIsMarkerClicked}
+          {...rest}
         />}
 
       <TileLayer

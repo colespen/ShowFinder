@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 
-
 import './styles.scss';
 
 import useGeoLocation, { NAVIGTOR_ERROR } from '../hooks/useGeoLocation';
@@ -76,10 +75,17 @@ export default function Map() {
     };
   }, [audioLink]);
 
-
   ////////////////////////////////////////////////////////////////////
   //////    Calls to Server for Geo and Shows API 
   //////////////////////////////////////////////////////////////////
+  const args = {
+    geolocation,
+    userData,
+    setUserData,
+    setShows,
+    setCurrCity,
+    setTransition
+  };
 
   //////    GET Current Location Shows/Geo/spotifyToken - First Render
   useEffect(() => {
@@ -92,20 +98,15 @@ export default function Map() {
     }
   }, [geolocation, shows, userData]);
 
-
   //////    GET - current location shows and geo
-  const handleCurrLocationClick = () => getCurrLocationShows(
-    setShows, setCurrCity, setTransition, setUserData, geolocation, userData);
+  const handleCurrLocationClick = () => getCurrLocationShows({ ...args });
 
   //////    GET - /api/newshows - fwd geo then new shows
-  const handleNewCityShowsRequest = () => getNewCityShowsRequest(
-    userData, setCurrCity, setTransition, setShows, setUserData
-  );
+  const handleNewCityShowsRequest = () => getNewCityShowsRequest({ ...args });
 
   //////    GET - /api/shows - date range rev geo shows
   const handleDateRangeShowsClick = () => getNewDateRangeShows(
-    setShows, setUserData, setCurrCity,
-    setTransition, userData, handleNewCityShowsRequest);
+    { ...args, handleNewCityShowsRequest });
 
   //////    GET - api/spotifysample - artist ID then get preview data
   useEffect(() => {
@@ -117,7 +118,6 @@ export default function Map() {
   //////////////////////////////////////////////////////////////////
   //////
   ////////////////////////////////////////////////////////////////////
-
 
   ////    Set City Name Input
   const handleCityChange = e => {

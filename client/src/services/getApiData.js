@@ -3,9 +3,9 @@ import axios from 'axios';
 import { cityFilter } from '../helpers/utils';
 
 ////// use Render.com server ******
-axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
+// axios.defaults.baseURL = 'https://showfinder-server.onrender.com/';
 
-// helper to setState
+// helper to setStates
 const setShowCityUserData =
   (data, setShows, setCurrCity, setUserData) => {
     setShows(data);
@@ -39,6 +39,7 @@ const getSpotifySample = (artist, setAudioLink, setIsPlaying) => {
     .catch(err => console.log(err.message));
 };
 
+
 /** GET - /api/shows - reverse geocode current coords then get shows
 */
 const getShows = (
@@ -57,8 +58,9 @@ const getShows = (
 
 /** GET - /api/shows - current location rev geo then shows - onClick
 */
-const getCurrLocationShows = (
-  setShows, setCurrCity, setTransition, setUserData, geolocation, userData) => {
+const getCurrLocationShows = (args) => {
+  const { setShows, setCurrCity, setTransition,
+    setUserData, geolocation, userData } = args;
   setCurrCity("");
   setTransition({ opacity: 1, type: "location" });
   setUserData(prev => ({
@@ -81,8 +83,9 @@ const getCurrLocationShows = (
 
 /** GET - /api/newshows - fwd geo then new shows
 */
-const getNewCityShowsRequest = (
-  userData, setCurrCity, setTransition, setShows, setUserData) => {
+const getNewCityShowsRequest = (args) => {
+  const { userData, setCurrCity, setTransition,
+    setShows, setUserData } = args;
   if (userData.newCity) {
     setCurrCity("");
     setTransition({ opacity: 1, type: "shows" });
@@ -103,8 +106,9 @@ const getNewCityShowsRequest = (
 
 /** GET - /api/shows - date range rev geo shows
 */
-const getNewDateRangeShows = (
-  setShows, setUserData, setCurrCity, setTransition, userData, handleNewCityShowsRequest) => {
+const getNewDateRangeShows = (args) => {
+  const { setShows, setUserData, setCurrCity,
+    setTransition, userData, handleNewCityShowsRequest } = args;
   if ((Object.keys(userData.dateRange).length === 2)) {
     setCurrCity("");
     setTransition({ opacity: 1, type: "dates" });

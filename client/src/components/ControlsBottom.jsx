@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import DateRange from './DateRange';
 import { Spinner } from '@chakra-ui/spinner';
 
-import './styles.scss';
+// import './styles.scss';
+import './ControlsBottom.scss'
 
 const ControlsBottom = (props) => {
   const {
@@ -41,7 +42,7 @@ const ControlsBottom = (props) => {
 
   // default volume
   useEffect(() => {
-    audioRef.current.volume = 0.7;
+    audioRef.current.volume = 0.6;
   }, [audioRef]);
 
   // currently for mute / unmute
@@ -50,7 +51,7 @@ const ControlsBottom = (props) => {
       audioRef.current.volume = 0;
       setVolChange(1);
     } else {
-      audioRef.current.volume = 0.7;
+      audioRef.current.volume = 0.6;
       setVolChange(0);
     }
   };

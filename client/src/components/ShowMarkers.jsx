@@ -4,6 +4,8 @@ import { useState, useRef } from 'react';
 
 import { Spinner } from '@chakra-ui/spinner';
 
+import './ShowMarkers.scss'
+
 const ShowMarkers = (props) => {
   const {
     shows,
