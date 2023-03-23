@@ -1,6 +1,6 @@
 # ShowFinder
 
-Simple SPA to find local shows surrounding the user. Maps nearby concerts and gives complete information regarding artists, venues and showtimes. Focusing on ease-of-use in a clean interface. 
+Simple SPA to find local shows surrounding the user. Maps nearby concerts and gives complete information regarding artists, track previews, venues and showtimes. Focusing on ease-of-use in a clean interface. 
 
 ## It's Live -- Go Find Shows!:
 https://www.showfinder.ninja/
@@ -11,6 +11,7 @@ https://www.showfinder.ninja/
 ## Features:
 
 - Current shows dates with link to venues, artists and tickets
+- artist top track audio preview
 - Specify any city and date range
 - fully responsive
 
