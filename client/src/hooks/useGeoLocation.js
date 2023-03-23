@@ -10,7 +10,7 @@ export const NAVIGTOR_ERROR = {
 };
 
 /**
- * React hook returns user's geolocation
+ * React hook returns user's geolocation in location state object
  */
 export default function useGeoLocation(reloadOnError = false) {
   const [location, setLocation] = useState({
@@ -52,8 +52,8 @@ export default function useGeoLocation(reloadOnError = false) {
           loaded: true,
           accuracy: location.coords.accuracy,
           coords: {
-            lat: '48.87330892927665',
-            lng: '2.350468227636817'
+            lat: location.coords.latitude,
+            lng: location.coords.longitude
           }
         }
         ));
