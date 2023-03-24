@@ -1,6 +1,6 @@
 export interface GeoLocationState {
   loaded: boolean;
-  coords: { lat: string; lng: string };
+  coords: { lat: number; lng: number };
   accuracy: number;
   error?: {
     code: number;

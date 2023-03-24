@@ -1,23 +1,8 @@
 // this will change if API endpoint changes
 // (curretnly LocationIQ + RapidApi
 
-export interface ShowDataState {
-
-  currentAddress: {
-    address: { [key: string]: string };
-    boundingbox: string[];
-    display_name: string;
-    importance: number;
-    lat: string;
-    licence: string;
-    lon: string;
-    osm_id: string;
-    osm_type: string;
-    place_id: string;
-  } | {};
-
-  data: {
-    "@context": string;
+export interface ShowData {
+  "@context": string;
     "@type": string;
     description: string;
     endDate: string;
@@ -30,7 +15,24 @@ export interface ShowDataState {
       name: string;
     }[];
     startDate: string;
-  }[];
-  
+}
+
+export interface CurrentAddress {
+  address: { [key: string]: string };
+    boundingbox: string[];
+    display_name: string;
+    importance: number;
+    lat: string;
+    licence: string;
+    lon: string;
+    osm_id: string;
+    osm_type: string;
+    place_id: string;
+}
+
+
+export interface ShowDataState {
+  currentAddress: CurrentAddress | {};
+  data: ShowData[];
   page: number;
 }

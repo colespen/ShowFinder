@@ -14,12 +14,10 @@ export const NAVIGTOR_ERROR = {
 /**
  * React hook returns user's geolocation in location state object
  */
-export default function useGeoLocation(
-  reloadOnError = false
-): GeoLocationState {
+export default function useGeoLocation(reloadOnError = false): GeoLocationState {
   const [location, setLocation] = useState<GeoLocationState>({
     loaded: false,
-    coords: { lat: "", lng: "" },
+    coords: { lat: 0, lng: 0 },
     accuracy: 0,
     error: undefined,
     access: false,
@@ -49,8 +47,9 @@ export default function useGeoLocation(
         loaded: true,
         accuracy: location.coords.accuracy,
         coords: {
-          lat: location.coords.latitude.toString(),
-          lng: location.coords.longitude.toString(),
+          lat: location.coords.latitude,
+          lng: location.coords.longitude,
+          //might need to change .toString() and above Interface
         },
       }));
     };

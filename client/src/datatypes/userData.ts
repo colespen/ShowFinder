@@ -1,10 +1,12 @@
+import { CurrentAddress } from "./showData";
+
 export interface UserDataState {
   dateRange: { 
     maxDate: string;
     minDate: string;
   };
-  lat: string | null;
-  lng: string | null;
-  currentAddress: { [key: string]: string };
+  lat: number | null; //might have to change to string
+  lng: number | null; //might have to change to string
+  currentAddress: CurrentAddress | {};
   newCity: string;
 }
