@@ -42,8 +42,8 @@ export default function Map() {
       maxDate: "",
       minDate: "",
     },
-    lat: null,
-    lng: null,
+    lat: 0,
+    lng: 0,
     currentAddress: {},
     newCity: "",
   });

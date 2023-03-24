@@ -5,8 +5,8 @@ export interface UserDataState {
     maxDate: string;
     minDate: string;
   };
-  lat: number | null; //might have to change to string
-  lng: number | null; //might have to change to string
+  lat: number; //might have to change to string
+  lng: number; //might have to change to string
   currentAddress: CurrentAddress | {};
   newCity: string;
 }
