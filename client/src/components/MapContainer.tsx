@@ -6,14 +6,12 @@ import { MapContainer, TileLayer, MapContainerProps } from 'react-leaflet';
 import { GeoLocationState } from '../datatypes/locationData';
 import { UserDataState } from '../datatypes/userData';
 
-
 interface ContainerProps {
   geolocation: GeoLocationState;
   userData: UserDataState;
   currCity: string;
 }
 
-// TODO: INTERFACE
 const Container = (props: MapContainerProps & ContainerProps) => {
   // const {
   //   geolocation,

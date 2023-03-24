@@ -4,7 +4,7 @@ import "./styles.scss";
 
 import useGeoLocation, { NAVIGTOR_ERROR } from "../hooks/useGeoLocation";
 
-// import Container from './MapContainer';
+import Container from "./MapContainer";
 // import Title from './Title';
 // import ControlsTop from './ControlsTop';
 // import ControlsBottom from './ControlsBottom';
@@ -20,7 +20,7 @@ import useGeoLocation, { NAVIGTOR_ERROR } from "../hooks/useGeoLocation";
 // import { handlePlayPause, handleSetNewAudio } from '../helpers/utils';
 
 import { UserDataState } from "../datatypes/userData";
-import { ShowDataState } from "../datatypes/showData";
+// import { ShowDataState } from "../datatypes/showData";
 
 export default function Map() {
   // const [shows, setShows] = useState<ShowDataState>({
@@ -28,13 +28,14 @@ export default function Map() {
   //   data: [],
   //   page: 0,
   // });
-  // const [currCity, setCurrCity] = useState<string>("");
+  const [currCity, setCurrCity] = useState<string>("");
   // const [cityQuery, setCityQuery] = useState<string>("");
   // const [artist, setArtist] = useState<string>("");
   // const [audioLink, setAudioLink] = useState<string>("");
   // const [newAudio, setNewAudio] = useState<boolean>(true);
   // const [isPlaying, setIsPlaying] = useState<boolean>(false);
   // const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
+  // this use state to render text in title upon geo error
   // const [isGeoError, setIsGeoError] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserDataState>({
     dateRange: {
@@ -106,7 +107,7 @@ export default function Map() {
         geolocation={geolocation}
         // shows={shows}
         userData={userData}
-        // currCity={currCity}
+        currCity={currCity}
         // handleSetArtist={handleSetArtist}
         // audioLink={audioLink}
         // newAudio={newAudio}
