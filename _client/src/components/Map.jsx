@@ -27,11 +27,13 @@ export default function Map() {
   const [artist, setArtist] = useState(null);
   const [audioLink, setAudioLink] = useState(null);
   const [newAudio, setNewAudio] = useState(true);
-  const [audioSource, setAudioSource] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMarkerClicked, setIsMarkerClicked] = useState(false);
   const [userData, setUserData] = useState({
-    dateRange: {},
+    dateRange: { 
+      maxDate: "", 
+      minDate: "" 
+    },
     lat: null,
     lng: null,
     currentAddress: {},
@@ -46,6 +48,8 @@ export default function Map() {
 
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
+
+  console.log("userData", shows)
 
   //////   Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
@@ -186,8 +190,6 @@ export default function Map() {
         handlePlayPause={() => handlePlayPause(audioLink, isPlaying, audioRef)}
         setIsPlaying={setIsPlaying}
         isPlaying={isPlaying}
-        setAudioSource={setAudioSource}
-        audioSource={audioSource}
         isMarkerClicked={isMarkerClicked}
       />
     </div>
