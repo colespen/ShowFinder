@@ -3,22 +3,8 @@ import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 import L from "leaflet";
 
-import { GeoLocationState } from '../datatypes/locationData';
-import { UserDataState } from '../datatypes/userData';
-
-interface CurrentLocationProps {
-  geolocation: GeoLocationState;
-  userData: UserDataState;
-  currCity: string;
-}
-
 ////    Use Current Location for map Position and circle
-const CurrentLocation = (props: CurrentLocationProps) => {
-   const {
-    geolocation,
-    userData,
-    currCity,
-  } = props;
+const CurrentLocation = ({ geolocation, userData, currCity }) => {
   const map = useMap();
 
   useEffect(() => {
@@ -29,7 +15,7 @@ const CurrentLocation = (props: CurrentLocationProps) => {
         { lat: userData.lat, lng: userData.lng },
         13
       );
-      //// TODO: use setView instead of flyTo on page refresh
+      ////    use setView instead of flyTo on page refresh
       // map.setView({ lat: userData.lat, lng: userData.lng }, 12);
       map.on('zoomend', () => {
         //// load position marker after animation

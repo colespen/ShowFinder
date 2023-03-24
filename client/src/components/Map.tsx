@@ -20,14 +20,14 @@ import Container from "./MapContainer";
 // import { handlePlayPause, handleSetNewAudio } from '../helpers/utils';
 
 import { UserDataState } from "../datatypes/userData";
-// import { ShowDataState } from "../datatypes/showData";
+import { ShowDataState } from "../datatypes/showData";
 
 export default function Map() {
-  // const [shows, setShows] = useState<ShowDataState>({
-  //   currentAddress: {},
-  //   data: [],
-  //   page: 0,
-  // });
+  const [shows, setShows] = useState<ShowDataState>({
+    currentAddress: {},
+    data: [],
+    page: 0,
+  });
   const [currCity, setCurrCity] = useState<string>("");
   // const [cityQuery, setCityQuery] = useState<string>("");
   // const [artist, setArtist] = useState<string>("");
@@ -65,7 +65,7 @@ export default function Map() {
     if (geolocation.error?.code === NAVIGTOR_ERROR.PERMISSION_DENIED) {
       // setIsGeoError(true);
     }
-    if (geolocation.loaded && isFirstRender.current && userData.lat === null) {
+    if (geolocation.loaded && isFirstRender.current && userData.lat === 0) {
       setUserData((prev) => ({
         ...prev,
         ...geolocation.coords,
@@ -81,6 +81,9 @@ export default function Map() {
     geolocation.error,
   ]);
 
+  console.log("geolocation", geolocation)
+  console.log("userData", userData)
+
   // // render <audio> when new artist audio link
   // useEffect(() => {
   //   setNewAudio(true);
@@ -93,6 +96,35 @@ export default function Map() {
   //   }
   // }, [audioLink]);
 
+  ////////////////////////////////////////////////////////////////////
+  //////    Calls to Server for Geo and Shows API 
+  //////////////////////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////////////////////
+  //////
+  ////////////////////////////////////////////////////////////////////
+
+  // ////    Set City Name Input
+  // const handleCityChange = e => {
+  //   setUserData((prev) => ({ ...prev, newCity: e.target.value }));
+  // };
+  // ////    Submit City on Enter
+  // const newCityOnEnter = e => {
+  //   if (e.key === "Enter") handleNewCityShowsRequest();
+  // };
+  // ////    Set Date Range to State
+  // const handleDateSelect = (dateRange) => {
+  //   setUserData(prev => (
+  //     { ...prev, dateRange, }
+  //   ));
+  // };
+  // ////   Auto Focus Text in Input
+  // const handleInputTextSelect = e => e.target.select();
+
+  // ////    Set Artist from marker for audio src (headliner [0])
+  // const handleSetArtist = (artist) => {
+  //   if (shows) setArtist(artist);
+  // };
   
   return (
     <div className="map-main">
@@ -105,7 +137,7 @@ export default function Map() {
       /> */}
       <Container
         geolocation={geolocation}
-        // shows={shows}
+        shows={shows}
         userData={userData}
         currCity={currCity}
         // handleSetArtist={handleSetArtist}

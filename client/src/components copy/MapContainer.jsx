@@ -1,29 +1,18 @@
-import { MapContainer, TileLayer, MapContainerProps } from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 
 import CurrentLocation from './CurrentLocation';
 import ShowMarkers from './ShowMarkers';
 
-import { GeoLocationState } from '../datatypes/locationData';
-import { UserDataState } from '../datatypes/userData';
-import { ShowDataState } from '../datatypes/showData';
+//////    Default position
+const budapest = [47.51983881388099, 19.032783326057594];
 
-interface ContainerProps {
-  geolocation: GeoLocationState;
-  userData: UserDataState;
-  currCity: string;
-  shows: ShowDataState;
-}
-
-const Container = (props: MapContainerProps & ContainerProps) => {
+const Container = (props) => {
   const {
     geolocation,
     userData,
     currCity,
     ...rest
   } = props;
-
-  //////    Default position
-  const budapest: [number, number] = [47.51983881388099, 19.032783326057594];
 
   return (
     <MapContainer className="map-container"
