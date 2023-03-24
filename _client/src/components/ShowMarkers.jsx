@@ -40,8 +40,9 @@ const ShowMarkers = (props) => {
             }
           }}
         >
-          <Popup key={index} id="show-popup" ref={popUpRef}>
-
+            {/* removed id="show-popup" */}
+          <Popup key={index} ref={popUpRef}> 
+          {/* removed href="" */}
             <ul className="artist-list" href="">
               {show.performer.map((artist, i) =>
               (

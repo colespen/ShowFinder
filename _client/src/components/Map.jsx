@@ -143,7 +143,7 @@ export default function Map() {
   ////   Auto Focus Text in Input
   const handleInputTextSelect = e => e.target.select();
 
-  ////    Set Artist from marker for src (headliner [0])
+  ////    Set Artist from marker for audio src (headliner [0])
   const handleSetArtist = (artist) => {
     if (shows) setArtist(artist);
   };
