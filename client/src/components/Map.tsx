@@ -100,6 +100,45 @@ export default function Map() {
   //////    Calls to Server for Geo and Shows API 
   //////////////////////////////////////////////////////////////////
 
+  // const args = {
+  //   geolocation,
+  //   userData,
+  //   setUserData,
+  //   setShows,
+  //   currCity,
+  //   setCurrCity,
+  //   cityQuery,
+  //   setCityQuery,
+  //   setTransition
+  // };
+
+  // //////    GET Current Location Shows/Geo/spotifyToken - First Render
+  useEffect(() => {
+    if (geolocation.loaded && (Object.keys(shows).length === 0)) {
+      //////    GET - /api/shows - reverse geocode current coords then get shows
+      getShows(userData, geolocation, setShows, setCurrCity, setUserData);
+      //////    POST - api/spotifyauth - retrieve spotifyToken in API
+      // getSpotifyToken();
+    }
+  }, [geolocation, shows, userData]);
+
+  // //////    GET - current location shows and geo
+  // const handleCurrLocationClick = () => getCurrLocationShows({ ...args });
+
+  // //////    GET - /api/newshows - fwd geo then new shows
+  // const handleNewCityShowsRequest = () => getNewCityShowsRequest({ ...args });
+
+  // //////    GET - /api/shows - date range rev geo shows
+  // const handleDateRangeShowsClick = () => getNewDateRangeShows({ ...args, 
+  // handleNewCityShowsRequest });
+
+  // //////    GET - api/spotifysample - artist ID then get preview data
+  // useEffect(() => {
+  //   if (artist) {
+  //     getSpotifySample(artist, setAudioLink, setIsPlaying);
+  //   }
+  // }, [artist]);
+
   //////////////////////////////////////////////////////////////////
   //////
   ////////////////////////////////////////////////////////////////////
@@ -128,13 +167,13 @@ export default function Map() {
   
   return (
     <div className="map-main">
-      {/* <Title
+      <Title
         currCity={currCity}
         isFirstRender={isFirstRender.current}
         transition={transition}
         geolocation={geolocation}
         isGeoError={isGeoError}
-      /> */}
+      />
       <Container
         geolocation={geolocation}
         shows={shows}
