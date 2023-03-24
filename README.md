@@ -33,10 +33,10 @@ https://www.showfinder.ninja/
 ### Developed & Designed by Spencer Cole
 
 
-![grabbing_location](https://github.com/colespen/ShowFinder/blob/master/client/docs/1_grabbing_location.png)
+![grabbing_location](/_client/docs/1_grabbing_location.?raw=true "grab location")
 
-![shows_&_date_range](https://github.com/colespen/ShowFinder/blob/master/client/docs/2_shows_date_range.png)
+![shows_&_date_range](/_client/docs/2_shows_date_range.?raw=true "shows & date range")
 
-![select_artist_&_venue](https://github.com/colespen/ShowFinder/blob/master/client/docs/3_select_artist.png)
+![select_artist_&_venue](/_client/docs/3_select_artist.?raw=true "select artist & venue")
 
-![fully_responsive](https://github.com/colespen/ShowFinder/blob/master/client/docs/4_mobile_responsive.png)
+![fully_responsive](/_client/docs/4_mobile_responsive.?raw=true "fully responsive")
