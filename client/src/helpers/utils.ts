@@ -1,12 +1,17 @@
+import { MutableRefObject, SetStateAction } from "react";
+
 // filter city name before comma for currCity
-const cityFilter = (str) => {
+const cityFilter = (str: string) => {
   if (str) {
     const regex = new RegExp(/,/gm);
-    const upperStr =
-      str.toLowerCase().split(' ').map(el => el[0].toUpperCase() + el.substring(1)).join(' ');
+    const upperStr = str
+      .toLowerCase()
+      .split(" ")
+      .map((el) => el[0].toUpperCase() + el.substring(1))
+      .join(" ");
     if (!regex.test(str)) return upperStr;
-  
-    const index = str.indexOf(',');
+
+    const index = str.indexOf(",");
     return upperStr.substring(0, index);
   } else {
     return "";
@@ -14,7 +19,10 @@ const cityFilter = (str) => {
 };
 
 // Only display spinner if new marker (artist) and to hide initial "audio unavailable"
-const handleSetNewAudio = (setNewAudio, audioLink) => {
+const handleSetNewAudio = (
+  setNewAudio: (state: SetStateAction<boolean>) => void,
+  audioLink: string
+) => {
   setNewAudio(false);
   setTimeout(() => {
     if (!audioLink) {
@@ -23,12 +31,16 @@ const handleSetNewAudio = (setNewAudio, audioLink) => {
   }, 500);
 };
 
-const handlePlayPause = (audioLink, isPlaying, audioRef) => {
+const handlePlayPause = (
+  audioLink: string,
+  isPlaying: string,
+  audioRef: MutableRefObject<HTMLAudioElement | null>
+) => {
   if (audioLink) {
     if (isPlaying) {
-      audioRef.current.pause();
+      audioRef.current?.pause();
     } else {
-      audioRef.current.play();
+      audioRef.current?.play();
     }
   }
 };

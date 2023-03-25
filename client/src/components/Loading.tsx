@@ -3,7 +3,7 @@ import "./styles.scss";
 
 export default function Loading() {
   return (
-    <div>
+    <div className="">
       <h1 className="title-wait" id="loading-dots">
         <span className="dot1">.</span>
         <span className="dot2">.</span>

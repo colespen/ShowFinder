@@ -5,18 +5,18 @@ import "./styles.scss";
 import useGeoLocation, { NAVIGTOR_ERROR } from "../hooks/useGeoLocation";
 
 import Container from "./MapContainer";
-// import Title from './Title';
+import Title from './Title';
 // import ControlsTop from './ControlsTop';
 // import ControlsBottom from './ControlsBottom';
 
-// import {
-//   getShows,
-//   getSpotifyToken,
-//   getSpotifySample,
-//   getNewCityShowsRequest,
-//   getCurrLocationShows,
-//   getNewDateRangeShows
-// } from '../services/getApiData';
+import {
+  getShows,
+  //   getSpotifyToken,
+  //   getSpotifySample,
+  //   getNewCityShowsRequest,
+  //   getCurrLocationShows,
+  //   getNewDateRangeShows
+} from "../services/getApiData";
 // import { handlePlayPause, handleSetNewAudio } from '../helpers/utils';
 
 import { UserDataState } from "../datatypes/userData";
@@ -35,7 +35,7 @@ export default function Map() {
   // const [newAudio, setNewAudio] = useState<boolean>(true);
   // const [isPlaying, setIsPlaying] = useState<boolean>(false);
   // const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
-  // this use state to render text in title upon geo error
+  // this isGeoError to render text in title upon geo error
   // const [isGeoError, setIsGeoError] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserDataState>({
     dateRange: {
@@ -47,13 +47,13 @@ export default function Map() {
     currentAddress: {},
     newCity: "",
   });
-  // const [transition, setTransition] = useState<{
-  //   opacity: number;
-  //   type: string;
-  // }>({
-  //   opacity: 1,
-  //   type: "initial",
-  // });
+  const [transition, setTransition] = useState<{
+    opacity: number;
+    type: string;
+  }>({
+    opacity: 1,
+    type: "initial",
+  });
   const isFirstRender = useRef(true);
   // const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -81,8 +81,8 @@ export default function Map() {
     geolocation.error,
   ]);
 
-  console.log("geolocation", geolocation)
-  console.log("userData", userData)
+  console.log("geolocation", geolocation);
+  console.log("userData", userData);
 
   // // render <audio> when new artist audio link
   // useEffect(() => {
@@ -97,7 +97,7 @@ export default function Map() {
   // }, [audioLink]);
 
   ////////////////////////////////////////////////////////////////////
-  //////    Calls to Server for Geo and Shows API 
+  //////    Calls to Server for Geo and Shows API
   //////////////////////////////////////////////////////////////////
 
   // const args = {
@@ -114,9 +114,9 @@ export default function Map() {
 
   // //////    GET Current Location Shows/Geo/spotifyToken - First Render
   useEffect(() => {
-    if (geolocation.loaded && (Object.keys(shows).length === 0)) {
+    if (geolocation.loaded && Object.keys(shows).length === 0) {
       //////    GET - /api/shows - reverse geocode current coords then get shows
-      getShows(userData, geolocation, setShows, setCurrCity, setUserData);
+      getShows({userData, geolocation, setShows, setCurrCity, setUserData});
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       // getSpotifyToken();
     }
@@ -129,7 +129,7 @@ export default function Map() {
   // const handleNewCityShowsRequest = () => getNewCityShowsRequest({ ...args });
 
   // //////    GET - /api/shows - date range rev geo shows
-  // const handleDateRangeShowsClick = () => getNewDateRangeShows({ ...args, 
+  // const handleDateRangeShowsClick = () => getNewDateRangeShows({ ...args,
   // handleNewCityShowsRequest });
 
   // //////    GET - api/spotifysample - artist ID then get preview data
@@ -164,7 +164,7 @@ export default function Map() {
   // const handleSetArtist = (artist) => {
   //   if (shows) setArtist(artist);
   // };
-  
+
   return (
     <div className="map-main">
       <Title
@@ -172,7 +172,7 @@ export default function Map() {
         isFirstRender={isFirstRender.current}
         transition={transition}
         geolocation={geolocation}
-        isGeoError={isGeoError}
+        // isGeoError={isGeoError}
       />
       <Container
         geolocation={geolocation}

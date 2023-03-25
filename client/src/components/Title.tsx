@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import Loading from './Loading';
+
+import { TitleProps } from '../datatypes/titleProps';
 import './styles.scss';
 
-
-export default function Title(props) {
+export default function Title(props: TitleProps) {
   const { currCity, transition, isFirstRender, geolocation } = props;
   const [waitOpacity, setWaitOpacity] = useState(0);
   const [showOpacity, setShowOpacity] = useState(0);
@@ -94,7 +95,7 @@ export default function Title(props) {
               "please allow location acesss"
             }
           </h1>
-          {geolocation.access && <Loading className="loading-dots" />}
+          {geolocation.access && <Loading />}
         </div>
         :
         <h1
