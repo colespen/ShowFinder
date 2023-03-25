@@ -94,7 +94,7 @@ export default function Title(props) {
               "please allow location acesss"
             }
           </h1>
-          {geolocation.access && <Loading className="loading-dots" />}
+          {geolocation.access && <Loading />}
         </div>
         :
         <h1
