@@ -91,7 +91,7 @@ export default function Map() {
     setTransition
   };
 
-  //////    GET Current Location Shows/Geo/spotifyToken - First Render
+  //////    GET Current Location Geo/Shows/spotifyToken - First Render
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
       //////    GET - /api/shows - reverse geocode current coords then get shows
@@ -99,7 +99,9 @@ export default function Map() {
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       getSpotifyToken();
     }
-  }, [geolocation, shows, userData]);
+   // removed userData from []
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[geolocation, shows]);
 
   //////    GET - current location shows and geo
   const handleCurrLocationClick = () => getCurrLocationShows({ ...args });
