@@ -46,7 +46,7 @@ const ShowMarkers = (props) => {
               {show.performer.map((artist, i) =>
               (
                 <li className="artist" key={artist + i}>
-                  <button onClick={getArtist}>
+                  <button onClick={(e) => getArtist(e, show.location.name)}>
                     {artist.name.length > 41 ? artist.name.substring(0, 41) + " ..." : artist.name}
                   </button>
                 </li>
