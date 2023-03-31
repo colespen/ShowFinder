@@ -1,12 +1,12 @@
 //////    Artist Name Open Link - async
 export default async function getArtist(
-  e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>
+  e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>, venue: string
 ) {
   try {
     await new Promise((resolve) => {
       setTimeout(resolve, 0);
     });
-    const artistName: string = handleArtistName(e);
+    const artistName: string = handleArtistName(e, venue);
     handleArtistLink(artistName);
   } catch (err: unknown) {
     console.error((err as Error).message);
@@ -15,17 +15,17 @@ export default async function getArtist(
 
 //////    Set artist name onClick
 const handleArtistName = (
-  e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>
+  e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
+  venue: string
 ) => {
-  return (e.target as HTMLButtonElement).innerText.split(" ").join("+");
+  const artistVenue = (e.target as HTMLButtonElement).innerText + " " + venue;
+  return artistVenue.split(' ').join('+');
 };
 
 //////    Open artist name onClick
-const handleArtistLink = (artist: string) => {
+const handleArtistLink = (artistVenueName: string) => {
   window.open(
-    `https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=
-      ${artist}&commit=`,
-    "_blank",
-    "noreferrer"
+    `https://www.songkick.com/search?utf8=&type=initial&query=
+      ${artistVenueName}&commit=`, '_blank', 'noreferrer'
   );
 };
