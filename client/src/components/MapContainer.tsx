@@ -1,20 +1,7 @@
 import { MapContainer, TileLayer, MapContainerProps } from 'react-leaflet';
-
 import CurrentLocation from './CurrentLocation';
 import ShowMarkers from './ShowMarkers';
-
-import { GeoLocationState } from '../datatypes/locationData';
-import { UserDataState } from '../datatypes/userData';
-import { ShowDataState } from '../datatypes/showData';
-
-interface ContainerProps {
-  geolocation: GeoLocationState;
-  userData: UserDataState;
-  currCity: string;
-  shows: ShowDataState;
-  handleSetArtist: (artist: string) => void;
-  setIsMarkerClicked: (state: boolean) => void;
-}
+import { ContainerProps } from '../datatypes/props';
 
 const Container = (props: MapContainerProps & ContainerProps) => {
   const {

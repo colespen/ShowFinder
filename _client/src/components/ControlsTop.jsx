@@ -13,7 +13,7 @@ const ControlsTop = (props) => {
     handleDateRangeClick,
     handleCurrLocationClick
   } = props;
-  
+
   return (
     <div className="controls-top">
       <div className="city-input">
@@ -31,9 +31,9 @@ const ControlsTop = (props) => {
       </div>
 
       <div className="date-location" id="date-top">
-        <DateRange 
-        setUserData={setUserData}
-        handleDateSelect={handleDateSelect}
+        <DateRange
+          setUserData={setUserData}
+          handleDateSelect={handleDateSelect}
         />
         <button id="go-button-top"
           onClick={handleDateRangeClick}>GO</button>

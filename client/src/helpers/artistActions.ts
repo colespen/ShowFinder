@@ -1,6 +1,7 @@
 //////    Artist Name Open Link - async
 export default async function getArtist(
-  e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>, venue: string
+  e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
+  venue: string
 ) {
   try {
     await new Promise((resolve) => {
@@ -19,13 +20,15 @@ const handleArtistName = (
   venue: string
 ) => {
   const artistVenue = e.currentTarget.innerText + " " + venue;
-  return artistVenue.split(' ').join('+');
+  return artistVenue.split(" ").join("+");
 };
 
 //////    Open artist name onClick
 const handleArtistLink = (artistVenueName: string) => {
   window.open(
     `https://www.songkick.com/search?utf8=&type=initial&query=
-      ${artistVenueName}&commit=`, '_blank', 'noreferrer'
+      ${artistVenueName}&commit=`,
+    "_blank",
+    "noreferrer"
   );
 };

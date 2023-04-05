@@ -1,12 +1,12 @@
 import { useState, useRef } from "react";
 import { Marker, Popup } from "react-leaflet";
 import getArtist from "../helpers/artistActions";
+import { ShowData } from "../datatypes/showData";
+import { ShowDataState } from "../datatypes/showData";
 
 // import { Spinner } from "@chakra-ui/spinner";
 
 import "./ShowMarkers.scss";
-
-import { ShowDataState } from "../datatypes/showData";
 
 interface ShowMarkersProps {
   shows: ShowDataState;
@@ -31,7 +31,17 @@ const ShowMarkers = (props: ShowMarkersProps) => {
     setIsMarkerClicked,
   } = props;
   const [lastClickedMarker, setLastClickedMarker] = useState("");
+
   const popUpRef = useRef(null);
+
+  const handleMarkerClick = (show: ShowData) => {
+    setIsMarkerClicked(true);
+    // handleSetArtist(show.performer[0].name);
+    // setLastClickedMarker(show.performer[0].name);
+    //   if (show.performer[0].name !== lastClickedMarker) {
+    //     // handleSetNewAudio();
+    //   }
+  };
 
   function ShowsMapped() {
     return (
@@ -47,12 +57,7 @@ const ShowMarkers = (props: ShowMarkersProps) => {
               ]}
               eventHandlers={{
                 click: () => {
-                  handleSetArtist(show.performer[0].name);
-                  setLastClickedMarker(show.performer[0].name);
-                  setIsMarkerClicked(true);
-                  if (show.performer[0].name !== lastClickedMarker) {
-                    // handleSetNewAudio();
-                  }
+                  handleMarkerClick(show);
                 },
               }}
             >
@@ -69,25 +74,28 @@ const ShowMarkers = (props: ShowMarkersProps) => {
                   ))}
                 </ul>
                 {/* <div className="marker-player-controls">
-        {audioLink && newAudio && (
-          <button
-            className="play-pause media-buttons"
-            onClick={handlePlayPause}
-          >
-            {!isPlaying ? (
-              <img src="./play.svg" alt="play-button"></img>
-            ) : (
-              <img src="./pause.svg" alt="play-button"></img>
-            )}
-          </button>
-        )}
-        {!newAudio && <Spinner size="md" />}
-        {!audioLink && newAudio && (
-          <button className="play-pause media-buttons disabled" disabled>
-            <img src="./link-slash.svg" alt="play-button"></img>
-          </button>
-        )}
-      </div> */}
+                  {audioLink && newAudio && (
+                    <button
+                      className="play-pause media-buttons"
+                      onClick={handlePlayPause}
+                    >
+                      {!isPlaying ? (
+                        <img src="./play.svg" alt="play-button"></img>
+                      ) : (
+                        <img src="./pause.svg" alt="play-button"></img>
+                      )}
+                    </button>
+                  )}
+                  {!newAudio && <Spinner size="md" />}
+                  {!audioLink && newAudio && (
+                    <button
+                      className="play-pause media-buttons disabled"
+                      disabled
+                    >
+                      <img src="./link-slash.svg" alt="play-button"></img>
+                    </button>
+                  )}
+                </div> */}
                 <a
                   id="venue-name"
                   href={show.location.sameAs}

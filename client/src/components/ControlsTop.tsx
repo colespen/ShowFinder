@@ -1,20 +1,7 @@
-// import DateRange from "./DateRange";
-import { UserDataState, DateRangeType } from "../datatypes/userData";
-import { SetStateAction } from "react";
-import { KeyboardEvent, ChangeEvent, FocusEvent } from "../datatypes/events";
+import DateRange from "./DateRange";
+import { ControlsTopProps } from "../datatypes/props";
 
 import "./styles.scss";
-
-interface ControlsTopProps {
-  setUserData: (value: SetStateAction<UserDataState>) => void;
-  handleCityChange: (e: ChangeEvent) => void;
-  handleInputTextSelect: (e: FocusEvent) => void;
-  handleNewCityOnEnter: (e: KeyboardEvent) => void;
-  handleNewCityShows: () => void;
-  handleDateSelect: (dateRange: DateRangeType) => void;
-  handleDateRangeShows: () => void;
-  handleCurrLocation: () => void;
-}
 
 const ControlsTop = (props: ControlsTopProps) => {
   const {
@@ -45,10 +32,10 @@ const ControlsTop = (props: ControlsTopProps) => {
       </div>
 
       <div className="date-location" id="date-top">
-        {/* <DateRange
+        <DateRange
           setUserData={setUserData}
           handleDateSelect={handleDateSelect}
-        /> */}
+        />
         <button id="go-button-top" onClick={handleDateRangeShows}>
           GO
         </button>

@@ -1,4 +1,4 @@
-import { SetStateAction } from "react";
+import { SetStateAction, Dispatch } from "react";
 import { UserDataState } from "./userData";
 import { CurrentAddress, ShowData, ShowDataState } from "./showData";
 import { GeoLocationState } from "./locationData";
@@ -6,9 +6,9 @@ import { GeoLocationState } from "./locationData";
 export interface GetShowsArgs {
   userData: UserDataState;
   geolocation: GeoLocationState;
-  setShows: (state: ShowDataState) => void;
-  setCurrCity: (state: string) => void;
-  setUserData: (value: SetStateAction<UserDataState>) => void;
+  setShows: Dispatch<SetStateAction<ShowDataState>>;
+  setCurrCity: Dispatch<SetStateAction<string>>;
+  setUserData: Dispatch<SetStateAction<UserDataState>>;
 }
 
 export interface SetShowCityUserDataArgs {
@@ -17,35 +17,31 @@ export interface SetShowCityUserDataArgs {
     data: ShowData[];
     page: number;
   };
-  setShows: (state: ShowDataState) => void;
-  setCurrCity: (state: string) => void;
-  setUserData: (value: SetStateAction<UserDataState>) => void;
+  setShows: Dispatch<SetStateAction<ShowDataState>>;
+  setCurrCity: Dispatch<SetStateAction<string>>;
+  setUserData: Dispatch<SetStateAction<UserDataState>>;
 }
 
 export interface GetCurrLocationShowsArgs {
-  setShows: (state: ShowDataState) => void;
-  setCurrCity: (state: string) => void;
-  setTransition: (state: { opacity: number; type: string }) => void;
-  setUserData: (value: SetStateAction<UserDataState>) => void;
   geolocation: GeoLocationState;
   userData: UserDataState;
+  setShows: Dispatch<SetStateAction<ShowDataState>>;
+  setCurrCity: Dispatch<SetStateAction<string>>;
+  setUserData: Dispatch<SetStateAction<UserDataState>>;
+  setTransition: Dispatch<SetStateAction<{ opacity: number; type: string }>>;
 }
 
 export interface GetNewCityShowsArgs {
-  setShows: (state: ShowDataState) => void;
-  setCurrCity: (state: string) => void;
-  setTransition: (state: { opacity: number; type: string }) => void;
-  setUserData: (value: SetStateAction<UserDataState>) => void;
   userData: UserDataState;
-  setCityQuery: (state: string) => void;
+  setShows: Dispatch<SetStateAction<ShowDataState>>;
+  setCurrCity: Dispatch<SetStateAction<string>>;
+  setUserData: Dispatch<SetStateAction<UserDataState>>;
+  setTransition: Dispatch<SetStateAction<{ opacity: number; type: string }>>;
+  setCityQuery: Dispatch<SetStateAction<string>>;
 }
 
 export interface GetNewDateRangeShowsArgs {
-  setShows: (state: ShowDataState) => void;
   currCity: string;
-  setCurrCity: (state: string) => void;
-  setTransition: (state: { opacity: number; type: string }) => void;
-  setUserData: (value: SetStateAction<UserDataState>) => void;
   userData: {
     dateRange: {
       maxDate: string;
@@ -57,6 +53,10 @@ export interface GetNewDateRangeShowsArgs {
     newCity: string;
   };
   cityQuery: string;
-  setCityQuery: (state: string) => void;
+  setShows: Dispatch<SetStateAction<ShowDataState>>;
+  setCurrCity: Dispatch<SetStateAction<string>>;
+  setUserData: Dispatch<SetStateAction<UserDataState>>;
+  setTransition: Dispatch<SetStateAction<{ opacity: number; type: string }>>;
+  setCityQuery: Dispatch<SetStateAction<string>>;
   handleNewCityShows: () => void;
 }

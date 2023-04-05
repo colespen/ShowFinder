@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 
 import { Spinner } from '@chakra-ui/spinner';
 
-import './ShowMarkers.scss'
+import './ShowMarkers.scss';
 
 const ShowMarkers = (props) => {
   const {
@@ -40,10 +40,10 @@ const ShowMarkers = (props) => {
             }
           }}
         >
-            {/* removed id="show-popup" */}
-          <Popup key={index} ref={popUpRef}> 
-          {/* removed href="" */}
-            <ul className="artist-list" href="">
+          {/* removed id="show-popup" */}
+          <Popup key={index} ref={popUpRef}>
+            {/* removed href="" */}
+            <ul className="artist-list" >
               {show.performer.map((artist, i) =>
               (
                 <li className="artist" key={artist + i}>

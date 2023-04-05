@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./styles.scss";
 
 import useGeoLocation, { NAVIGTOR_ERROR } from "../hooks/useGeoLocation";
 import Container from "./MapContainer";
 import Title from "./Title";
 import ControlsTop from "./ControlsTop";
-// import ControlsBottom from './ControlsBottom';
+import ControlsBottom from './ControlsBottom';
 
 import {
   getShows,
@@ -72,8 +72,8 @@ export default function Map() {
     geolocation.error,
   ]);
 
-  console.log("geolocation", geolocation);
-  console.log("userData", userData);
+  // console.log("geolocation", geolocation);
+  // console.log("userData", userData);
 
   // // render <audio> when new artist audio link
   // useEffect(() => {
@@ -105,8 +105,10 @@ export default function Map() {
 
   // //////    GET Current Location Shows/Geo/spotifyToken - First Render
   useEffect(() => {
-    if (geolocation.loaded && Object.keys(shows).length === 0) {
-      //////    GET - /api/shows - reverse geocode current coords then get shows
+    //                      changed from (shows) to (shows.data)
+    if (geolocation.loaded && Object.keys(shows.data).length === 0) {
+      
+      //////    GET - /api/shows - rev geocode current coords then get shows
       getShows({ userData, geolocation, setShows, setCurrCity, setUserData });
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       // getSpotifyToken();
@@ -137,7 +139,7 @@ export default function Map() {
 
   ////    Set City Name Input
   const handleCityChange = (e: ChangeEvent) => {
-    setUserData((prev) => ({ ...prev, newCity: e.currentTarget.value }));
+    setUserData((prev) => ({ ...prev, newCity: e.target.value }));
   };
   ////    Submit City on Enter
   const handleNewCityOnEnter = (e: KeyboardEvent) => {
@@ -149,7 +151,7 @@ export default function Map() {
   };
   ////   Auto Focus Text in Input
   const handleInputTextSelect = (e: FocusEvent) =>
-    e.currentTarget.select();
+    e.target.select();
   // (e.target as HTMLInputElement).select();
 
   ////    Set Artist from marker for audio src (headliner [0])
@@ -188,6 +190,18 @@ export default function Map() {
         // handleSetNewAudio={() => handleSetNewAudio(setNewAudio, audioLink)}
         // isPlaying={isPlaying}
         setIsMarkerClicked={setIsMarkerClicked}
+      />
+      <ControlsBottom
+        setUserData={setUserData}
+        handleDateSelect={handleDateSelect}
+        handleDateRangeShows={handleDateRangeShows}
+        // audioRef={audioRef}
+        // audioLink={audioLink}
+        // newAudio={newAudio}
+        // handlePlayPause={() => handlePlayPause(audioLink, isPlaying, audioRef)}
+        // setIsPlaying={setIsPlaying}
+        // isPlaying={isPlaying}
+        isMarkerClicked={isMarkerClicked}
       />
     </div>
   );
