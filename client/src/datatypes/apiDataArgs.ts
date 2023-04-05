@@ -22,7 +22,7 @@ export interface SetShowCityUserDataArgs {
   setUserData: (value: SetStateAction<UserDataState>) => void;
 }
 
-export interface getCurrLocationShowsArgs {
+export interface GetCurrLocationShowsArgs {
   setShows: (state: ShowDataState) => void;
   setCurrCity: (state: string) => void;
   setTransition: (state: { opacity: number; type: string }) => void;
@@ -31,7 +31,7 @@ export interface getCurrLocationShowsArgs {
   userData: UserDataState;
 }
 
-export interface getNewCityShowsRequestArgs {
+export interface GetNewCityShowsArgs {
   setShows: (state: ShowDataState) => void;
   setCurrCity: (state: string) => void;
   setTransition: (state: { opacity: number; type: string }) => void;
@@ -40,7 +40,7 @@ export interface getNewCityShowsRequestArgs {
   setCityQuery: (state: string) => void;
 }
 
-export interface getNewDateRangeShowsArgs {
+export interface GetNewDateRangeShowsArgs {
   setShows: (state: ShowDataState) => void;
   currCity: string;
   setCurrCity: (state: string) => void;
@@ -58,5 +58,5 @@ export interface getNewDateRangeShowsArgs {
   };
   cityQuery: string;
   setCityQuery: (state: string) => void;
-  handleNewCityShowsRequest: () => getNewCityShowsRequestArgs;
+  handleNewCityShows: () => void;
 }

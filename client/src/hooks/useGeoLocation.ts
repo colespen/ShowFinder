@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import { GeoLocationState, onSuccessGeo } from "../datatypes/locationData";
 
 /**

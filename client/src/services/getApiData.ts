@@ -3,9 +3,9 @@ import { cityFilter } from "../helpers/utils";
 import {
   GetShowsArgs,
   SetShowCityUserDataArgs,
-  getCurrLocationShowsArgs,
-  getNewCityShowsRequestArgs,
-  getNewDateRangeShowsArgs,
+  GetCurrLocationShowsArgs,
+  GetNewCityShowsArgs,
+  GetNewDateRangeShowsArgs,
 } from "../datatypes/apiDataArgs";
 
 ////// use Render.com server ******
@@ -78,7 +78,7 @@ const getShows = (args: GetShowsArgs) => {
 /**
  * GET - /api/shows - current location rev geo then shows - onClick
  */
-const getCurrLocationShows = (args: getCurrLocationShowsArgs) => {
+const getCurrLocationShows = (args: GetCurrLocationShowsArgs) => {
   const {
     setShows,
     setCurrCity,
@@ -116,7 +116,7 @@ const getCurrLocationShows = (args: getCurrLocationShowsArgs) => {
 /**
  * GET - /api/newshows - fwd geo then new shows
  */
-const getNewCityShowsRequest = (args: getNewCityShowsRequestArgs) => {
+const getNewCityShows = (args: GetNewCityShowsArgs) => {
   const {
     setShows,
     setCurrCity,
@@ -150,13 +150,13 @@ const getNewCityShowsRequest = (args: getNewCityShowsRequestArgs) => {
 /**
  * GET - /api/shows - date range rev geo shows
  */
-const getNewDateRangeShows = (args: getNewDateRangeShowsArgs) => {
+const getNewDateRangeShows = (args: GetNewDateRangeShowsArgs) => {
   const {
     setShows,
     setUserData,
     currCity,
     setCurrCity,
-    handleNewCityShowsRequest,
+    handleNewCityShows,
     setCityQuery,
     cityQuery,
     setTransition,
@@ -182,9 +182,11 @@ const getNewDateRangeShows = (args: getNewDateRangeShowsArgs) => {
           });
         })
         .catch((err) => console.log(err.message));
+
     } else if (userData.newCity && cityFilter(userData.newCity) !== prevCity) {
-      handleNewCityShowsRequest();
+      handleNewCityShows();
       setCityQuery(userData.newCity);
+
     } else {
       if (userData.newCity) setCityQuery(userData.newCity);
       axios
@@ -205,7 +207,7 @@ const getNewDateRangeShows = (args: getNewDateRangeShowsArgs) => {
 
 export {
   getShows,
-  getNewCityShowsRequest,
+  getNewCityShows,
   getCurrLocationShows,
   getNewDateRangeShows,
   getSpotifyToken,

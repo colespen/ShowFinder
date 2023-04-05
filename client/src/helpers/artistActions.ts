@@ -18,7 +18,7 @@ const handleArtistName = (
   e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
   venue: string
 ) => {
-  const artistVenue = (e.target as HTMLButtonElement).innerText + " " + venue;
+  const artistVenue = e.currentTarget.innerText + " " + venue;
   return artistVenue.split(' ').join('+');
 };
 

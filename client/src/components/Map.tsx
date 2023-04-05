@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
-
 import "./styles.scss";
 
 import useGeoLocation, { NAVIGTOR_ERROR } from "../hooks/useGeoLocation";
-
 import Container from "./MapContainer";
-import Title from './Title';
-// import ControlsTop from './ControlsTop';
+import Title from "./Title";
+import ControlsTop from "./ControlsTop";
 // import ControlsBottom from './ControlsBottom';
 
 import {
   getShows,
   //   getSpotifyToken,
   //   getSpotifySample,
-  //   getNewCityShowsRequest,
-  //   getCurrLocationShows,
-  //   getNewDateRangeShows
+  getNewCityShows,
+  getCurrLocationShows,
+  getNewDateRangeShows,
 } from "../services/getApiData";
 // import { handlePlayPause, handleSetNewAudio } from '../helpers/utils';
 
-import { UserDataState } from "../datatypes/userData";
+import { UserDataState, DateRangeType } from "../datatypes/userData";
 import { ShowDataState } from "../datatypes/showData";
+import { userDataInitial } from "../datatypes/initialState";
+import { KeyboardEvent, ChangeEvent, FocusEvent } from "../datatypes/events";
 
 export default function Map() {
   const [shows, setShows] = useState<ShowDataState>({
@@ -29,7 +29,7 @@ export default function Map() {
     page: 0,
   });
   const [currCity, setCurrCity] = useState<string>("");
-  // const [cityQuery, setCityQuery] = useState<string>("");
+  const [cityQuery, setCityQuery] = useState<string>("");
   const [artist, setArtist] = useState<string>("");
   // const [audioLink, setAudioLink] = useState<string>("");
   // const [newAudio, setNewAudio] = useState<boolean>(true);
@@ -37,16 +37,7 @@ export default function Map() {
   const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
   // this isGeoError to render text in title upon geo error
   // const [isGeoError, setIsGeoError] = useState<boolean>(false);
-  const [userData, setUserData] = useState<UserDataState>({
-    dateRange: {
-      maxDate: "",
-      minDate: "",
-    },
-    lat: 0,
-    lng: 0,
-    currentAddress: {},
-    newCity: "",
-  });
+  const [userData, setUserData] = useState<UserDataState>(userDataInitial);
   const [transition, setTransition] = useState<{
     opacity: number;
     type: string;
@@ -100,38 +91,38 @@ export default function Map() {
   //////    Calls to Server for Geo and Shows API
   //////////////////////////////////////////////////////////////////
 
-  // const args = {
-  //   geolocation,
-  //   userData,
-  //   setUserData,
-  //   setShows,
-  //   currCity,
-  //   setCurrCity,
-  //   cityQuery,
-  //   setCityQuery,
-  //   setTransition
-  // };
+  const args = {
+    geolocation,
+    userData,
+    setUserData,
+    setShows,
+    currCity,
+    setCurrCity,
+    cityQuery,
+    setCityQuery,
+    setTransition,
+  };
 
   // //////    GET Current Location Shows/Geo/spotifyToken - First Render
   useEffect(() => {
     if (geolocation.loaded && Object.keys(shows).length === 0) {
       //////    GET - /api/shows - reverse geocode current coords then get shows
-      getShows({userData, geolocation, setShows, setCurrCity, setUserData});
+      getShows({ userData, geolocation, setShows, setCurrCity, setUserData });
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       // getSpotifyToken();
     }
-   // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geolocation, shows]);
 
-  // //////    GET - current location shows and geo
-  // const handleCurrLocationClick = () => getCurrLocationShows({ ...args });
+  //////    GET - current location shows and geo
+  const handleCurrLocation = () => getCurrLocationShows({ ...args });
 
-  // //////    GET - /api/newshows - fwd geo then new shows
-  // const handleNewCityShowsRequest = () => getNewCityShowsRequest({ ...args });
+  //////    GET - /api/newshows - fwd geo then new shows
+  const handleNewCityShows = () => getNewCityShows({ ...args });
 
-  // //////    GET - /api/shows - date range rev geo shows
-  // const handleDateRangeShowsClick = () => getNewDateRangeShows({ ...args,
-  // handleNewCityShowsRequest });
+  //////    GET - /api/shows - date range rev geo shows
+  const handleDateRangeShows = () =>
+    getNewDateRangeShows({ ...args, handleNewCityShows });
 
   // //////    GET - api/spotifysample - artist ID then get preview data
   // useEffect(() => {
@@ -144,22 +135,22 @@ export default function Map() {
   //////
   ////////////////////////////////////////////////////////////////////
 
-  // ////    Set City Name Input
-  // const handleCityChange = e => {
-  //   setUserData((prev) => ({ ...prev, newCity: e.target.value }));
-  // };
-  // ////    Submit City on Enter
-  // const newCityOnEnter = e => {
-  //   if (e.key === "Enter") handleNewCityShowsRequest();
-  // };
-  // ////    Set Date Range to State
-  // const handleDateSelect = (dateRange) => {
-  //   setUserData(prev => (
-  //     { ...prev, dateRange, }
-  //   ));
-  // };
-  // ////   Auto Focus Text in Input
-  // const handleInputTextSelect = e => e.target.select();
+  ////    Set City Name Input
+  const handleCityChange = (e: ChangeEvent) => {
+    setUserData((prev) => ({ ...prev, newCity: e.currentTarget.value }));
+  };
+  ////    Submit City on Enter
+  const handleNewCityOnEnter = (e: KeyboardEvent) => {
+    if (e.key === "Enter") handleNewCityShows();
+  };
+  ////    Set Date Range to State
+  const handleDateSelect = (dateRange: DateRangeType) => {
+    setUserData((prev) => ({ ...prev, dateRange }));
+  };
+  ////   Auto Focus Text in Input
+  const handleInputTextSelect = (e: FocusEvent) =>
+    e.currentTarget.select();
+  // (e.target as HTMLInputElement).select();
 
   ////    Set Artist from marker for audio src (headliner [0])
   const handleSetArtist = (artist: string) => {
@@ -174,6 +165,16 @@ export default function Map() {
         transition={transition}
         geolocation={geolocation}
         // isGeoError={isGeoError}
+      />
+      <ControlsTop
+        setUserData={setUserData}
+        handleCityChange={handleCityChange}
+        handleInputTextSelect={handleInputTextSelect}
+        handleNewCityOnEnter={handleNewCityOnEnter}
+        handleNewCityShows={handleNewCityShows}
+        handleDateSelect={handleDateSelect}
+        handleDateRangeShows={handleDateRangeShows}
+        handleCurrLocation={handleCurrLocation}
       />
       <Container
         geolocation={geolocation}

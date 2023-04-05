@@ -1,12 +1,14 @@
 import { CurrentAddress } from "./showData";
 
 export interface UserDataState {
-  dateRange: { 
-    maxDate: string;
-    minDate: string;
-  };
+  dateRange: DateRangeType;
   lat: number; //might have to change to string
   lng: number; //might have to change to string
-  currentAddress: CurrentAddress | {};
+  currentAddress: CurrentAddress;
   newCity: string;
+}
+
+export type DateRangeType = {
+  maxDate: string;
+  minDate: string;
 }
