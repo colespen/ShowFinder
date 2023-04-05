@@ -12,6 +12,8 @@ interface ContainerProps {
   userData: UserDataState;
   currCity: string;
   shows: ShowDataState;
+  handleSetArtist: (artist: string) => void;
+  setIsMarkerClicked: (state: boolean) => void;
 }
 
 const Container = (props: MapContainerProps & ContainerProps) => {

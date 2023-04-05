@@ -10,27 +10,27 @@ import { ShowDataState } from "../datatypes/showData";
 
 interface ShowMarkersProps {
   shows: ShowDataState;
-  // handleSetArtist:
+  handleSetArtist: (artist: string) => void;
   // audioLink:
   // newAudio:
   // handleSetNewAudio:
   // handlePlayPause:
   // isPlaying:
-  // setIsMarkerClicked:
+  setIsMarkerClicked: (state: boolean) => void;
 }
 
 const ShowMarkers = (props: ShowMarkersProps) => {
   const {
     shows,
-    // handleSetArtist,
+    handleSetArtist,
     // audioLink,
     // newAudio,
     // handleSetNewAudio,
     // handlePlayPause,
     // isPlaying,
-    // setIsMarkerClicked,
+    setIsMarkerClicked,
   } = props;
-  // const [lastClickedMarker, setLastClickedMarker] = useState(null);
+  const [lastClickedMarker, setLastClickedMarker] = useState("");
   const popUpRef = useRef(null);
 
   function ShowsMapped() {
@@ -45,22 +45,22 @@ const ShowMarkers = (props: ShowMarkersProps) => {
                 show.location.geo.latitude,
                 show.location.geo.longitude,
               ]}
-              // eventHandlers={{
-              //   click: () => {
-              //     handleSetArtist(show.performer[0].name);
-              //     setLastClickedMarker(show.performer[0].name);
-              //     setIsMarkerClicked(true);
-              //     if (show.performer[0].name !== lastClickedMarker) {
-              //       handleSetNewAudio();
-              //     }
-              //   },
-              // }}
+              eventHandlers={{
+                click: () => {
+                  handleSetArtist(show.performer[0].name);
+                  setLastClickedMarker(show.performer[0].name);
+                  setIsMarkerClicked(true);
+                  if (show.performer[0].name !== lastClickedMarker) {
+                    // handleSetNewAudio();
+                  }
+                },
+              }}
             >
               <Popup key={index} ref={popUpRef}>
                 <ul className="artist-list">
                   {show.performer.map((artist, i) => (
                     <li className="artist" key={`${artist}-${i.toString()}`}>
-                      <button onClick={getArtist}>
+                      <button onClick={(e) => getArtist(e, show.location.name)}>
                         {artist.name.length > 41
                           ? artist.name.substring(0, 41) + " ..."
                           : artist.name}

@@ -1,11 +1,12 @@
+
 //////    Artist Name -> Link async
-export default async function getArtist(e) {
+export default async function getArtist(e, venue) {
   try {
     await new Promise(resolve => {
       setTimeout(resolve, 0);
     });
-    const artistName = handleArtistName(e);
-    handleArtistLink(artistName);
+    const artistVenueName = handleArtistVenueName(e, venue);
+    handleArtistLink(artistVenueName);
 
   } catch (err) {
     return console.error(err.message);
@@ -13,14 +14,16 @@ export default async function getArtist(e) {
 };
 
 //////    Set artist name onClick
-const handleArtistName = e => {
-  return (e.target.innerText).split(' ').join('+');
+const handleArtistVenueName = (e, venue) => {
+  const artistVenue = e.target.innerText + " " + venue;
+  return artistVenue.split(' ').join('+');
 };
 
 //////    Open artist name onClick
-const handleArtistLink = (artist) => {
+const handleArtistLink = (artistVenueName) => {
+  console.log("artistVenueName --handleArtistLink: ", artistVenueName.length)
   window.open(
-    `https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=
-      ${artist}&commit=`, '_blank', 'noreferrer'
+    `https://www.songkick.com/search?utf8=&type=initial&query=
+      ${artistVenueName}&commit=`, '_blank', 'noreferrer'
   );
 };

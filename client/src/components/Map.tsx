@@ -30,11 +30,11 @@ export default function Map() {
   });
   const [currCity, setCurrCity] = useState<string>("");
   // const [cityQuery, setCityQuery] = useState<string>("");
-  // const [artist, setArtist] = useState<string>("");
+  const [artist, setArtist] = useState<string>("");
   // const [audioLink, setAudioLink] = useState<string>("");
   // const [newAudio, setNewAudio] = useState<boolean>(true);
   // const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  // const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
+  const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
   // this isGeoError to render text in title upon geo error
   // const [isGeoError, setIsGeoError] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserDataState>({
@@ -161,10 +161,10 @@ export default function Map() {
   // ////   Auto Focus Text in Input
   // const handleInputTextSelect = e => e.target.select();
 
-  // ////    Set Artist from marker for audio src (headliner [0])
-  // const handleSetArtist = (artist) => {
-  //   if (shows) setArtist(artist);
-  // };
+  ////    Set Artist from marker for audio src (headliner [0])
+  const handleSetArtist = (artist: string) => {
+    if (shows) setArtist(artist);
+  };
 
   return (
     <div className="map-main">
@@ -180,13 +180,13 @@ export default function Map() {
         shows={shows}
         userData={userData}
         currCity={currCity}
-        // handleSetArtist={handleSetArtist}
+        handleSetArtist={handleSetArtist}
         // audioLink={audioLink}
         // newAudio={newAudio}
         // handlePlayPause={() => handlePlayPause(audioLink, isPlaying, audioRef)}
         // handleSetNewAudio={() => handleSetNewAudio(setNewAudio, audioLink)}
         // isPlaying={isPlaying}
-        // setIsMarkerClicked={setIsMarkerClicked}
+        setIsMarkerClicked={setIsMarkerClicked}
       />
     </div>
   );
