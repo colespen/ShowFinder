@@ -103,9 +103,8 @@ export default function Map() {
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       getSpotifyToken();
     }
-   // removed userData from []
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [geolocation, shows]);
+  }, [geolocation]);
 
   //////    GET - current location shows and geo
   const handleCurrLocationClick = () => getCurrLocationShows({ ...args });
