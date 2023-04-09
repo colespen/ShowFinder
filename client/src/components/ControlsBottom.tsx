@@ -29,7 +29,6 @@ const ControlsBottom = (props: ControlsBottomProps) => {
     function handleWindowResize() {
       setWindowSize(getWindowSize());
     }
-
     window.addEventListener("resize", handleWindowResize);
 
     return () => {
