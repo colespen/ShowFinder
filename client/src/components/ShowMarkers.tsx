@@ -4,7 +4,7 @@ import getArtist from "../helpers/artistActions";
 import { ShowData } from "../datatypes/showData";
 import { ShowDataState } from "../datatypes/showData";
 
-import { Spinner, SpinnerProps } from "@chakra-ui/spinner";
+import { Spinner } from "@chakra-ui/spinner";
 
 import "./ShowMarkers.scss";
 
@@ -41,10 +41,6 @@ const ShowMarkers = (props: ShowMarkersProps) => {
     if (show.performer[0].name !== lastClickedMarker) {
       handleSetNewAudio();
     }
-  };
-
-  const SpinnerComponent = ({ size }: SpinnerProps): React.ReactElement => {
-    return <Spinner size={size} />;
   };
 
   function ShowsMapped() {
@@ -91,7 +87,7 @@ const ShowMarkers = (props: ShowMarkersProps) => {
                       )}
                     </button>
                   )}
-                  {!newAudio && <SpinnerComponent size="md" />}
+                  {!newAudio && <Spinner size="md" />}
                   {!audioLink && newAudio && (
                     <button
                       className="play-pause media-buttons disabled"
