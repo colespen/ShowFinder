@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import DateRange from "./DateRange";
-// import { Spinner } from '@chakra-ui/spinner';
+import { Spinner } from '@chakra-ui/spinner';
 
 import { ControlsBottomProps } from "../datatypes/props";
 

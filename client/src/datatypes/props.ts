@@ -11,8 +11,6 @@ import {
   KeyboardEvent,
   ChangeEvent,
   FocusEvent,
-  PlayPauseArgs,
-  SetNewAudioArgs,
 } from "./events";
 
 export interface ContainerProps {
@@ -23,8 +21,8 @@ export interface ContainerProps {
   handleSetArtist: (artist: string) => void;
   audioLink: string;
   newAudio: boolean;
-  handlePlayPause: (args: PlayPauseArgs) => void;
-  handleSetNewAudio: (args: SetNewAudioArgs) => void;
+  handlePlayPause: () => void;
+  handleSetNewAudio: () => void;
   isPlaying: boolean;
   setIsMarkerClicked: Dispatch<SetStateAction<boolean>>;
 }
@@ -47,7 +45,7 @@ export interface ControlsBottomProps {
   audioRef: MutableRefObject<HTMLAudioElement | null>;
   audioLink: string;
   newAudio: boolean;
-  handlePlayPause: (args: PlayPauseArgs) => void;
+  handlePlayPause: () => void;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
   isPlaying: boolean;
   isMarkerClicked: boolean;

@@ -15,7 +15,7 @@ import {
   getCurrLocationShows,
   getNewDateRangeShows,
 } from "../services/getApiData";
-import { handlePlayPause, handleSetNewAudio } from "../helpers/utils";
+import { playPause, setNewAudioFn } from "../helpers/utils";
 
 import { UserDataState, DateRangeType } from "../datatypes/userData";
 import { ShowDataState } from "../datatypes/showData";
@@ -157,6 +157,9 @@ export default function Map() {
     if (shows) setArtist(artist);
   };
 
+  const handlePlayPause = () => playPause({ audioLink, isPlaying, audioRef });
+  const handleSetNewAudio = () => setNewAudioFn({ setNewAudio, audioLink });
+
   return (
     <div className="map-main">
       <Title
@@ -184,10 +187,8 @@ export default function Map() {
         handleSetArtist={handleSetArtist}
         audioLink={audioLink}
         newAudio={newAudio}
-        handlePlayPause={() =>
-          handlePlayPause({ audioLink, isPlaying, audioRef })
-        }
-        handleSetNewAudio={() => handleSetNewAudio({ setNewAudio, audioLink })}
+        handlePlayPause={handlePlayPause}
+        handleSetNewAudio={handleSetNewAudio}
         isPlaying={isPlaying}
         setIsMarkerClicked={setIsMarkerClicked}
       />
@@ -198,9 +199,7 @@ export default function Map() {
         audioRef={audioRef}
         audioLink={audioLink}
         newAudio={newAudio}
-        handlePlayPause={() =>
-          handlePlayPause({ audioLink, isPlaying, audioRef })
-        }
+        handlePlayPause={handlePlayPause}
         setIsPlaying={setIsPlaying}
         isPlaying={isPlaying}
         isMarkerClicked={isMarkerClicked}
