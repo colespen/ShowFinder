@@ -144,7 +144,6 @@ const getNewCityShows = (args: GetNewCityShowsArgs) => {
       })
       .catch((err) => console.log(err.message));
   }
-  // return () => clearTimeout(titleDelay)
 };
 
 /**

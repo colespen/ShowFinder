@@ -4,18 +4,18 @@ import getArtist from "../helpers/artistActions";
 import { ShowData } from "../datatypes/showData";
 import { ShowDataState } from "../datatypes/showData";
 
-// import { Spinner } from "@chakra-ui/spinner";
+import { Spinner, SpinnerProps } from "@chakra-ui/spinner";
 
 import "./ShowMarkers.scss";
 
 interface ShowMarkersProps {
   shows: ShowDataState;
   handleSetArtist: (artist: string) => void;
-  // audioLink:
-  // newAudio:
-  // handleSetNewAudio:
-  // handlePlayPause:
-  // isPlaying:
+  audioLink: string;
+  newAudio: boolean;
+  handleSetNewAudio: () => void;
+  handlePlayPause: () => void;
+  isPlaying: boolean;
   setIsMarkerClicked: (state: boolean) => void;
 }
 
@@ -23,11 +23,11 @@ const ShowMarkers = (props: ShowMarkersProps) => {
   const {
     shows,
     handleSetArtist,
-    // audioLink,
-    // newAudio,
-    // handleSetNewAudio,
-    // handlePlayPause,
-    // isPlaying,
+    audioLink,
+    newAudio,
+    handleSetNewAudio,
+    handlePlayPause,
+    isPlaying,
     setIsMarkerClicked,
   } = props;
   const [lastClickedMarker, setLastClickedMarker] = useState("");
@@ -36,11 +36,15 @@ const ShowMarkers = (props: ShowMarkersProps) => {
 
   const handleMarkerClick = (show: ShowData) => {
     setIsMarkerClicked(true);
-    // handleSetArtist(show.performer[0].name);
-    // setLastClickedMarker(show.performer[0].name);
-    //   if (show.performer[0].name !== lastClickedMarker) {
-    //     // handleSetNewAudio();
-    //   }
+    handleSetArtist(show.performer[0].name);
+    setLastClickedMarker(show.performer[0].name);
+    if (show.performer[0].name !== lastClickedMarker) {
+      handleSetNewAudio();
+    }
+  };
+
+  const SpinnerComponent = ({ size }: SpinnerProps): React.ReactElement => {
+    return <Spinner size={size} />;
   };
 
   function ShowsMapped() {
@@ -73,7 +77,8 @@ const ShowMarkers = (props: ShowMarkersProps) => {
                     </li>
                   ))}
                 </ul>
-                {/* <div className="marker-player-controls">
+
+                <div className="marker-player-controls">
                   {audioLink && newAudio && (
                     <button
                       className="play-pause media-buttons"
@@ -86,7 +91,7 @@ const ShowMarkers = (props: ShowMarkersProps) => {
                       )}
                     </button>
                   )}
-                  {!newAudio && <Spinner size="md" />}
+                  {!newAudio && <SpinnerComponent size="md" />}
                   {!audioLink && newAudio && (
                     <button
                       className="play-pause media-buttons disabled"
@@ -95,7 +100,7 @@ const ShowMarkers = (props: ShowMarkersProps) => {
                       <img src="./link-slash.svg" alt="play-button"></img>
                     </button>
                   )}
-                </div> */}
+                </div>
                 <a
                   id="venue-name"
                   href={show.location.sameAs}

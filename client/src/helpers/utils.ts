@@ -1,4 +1,4 @@
-import { MutableRefObject, SetStateAction } from "react";
+import { PlayPauseArgs, SetNewAudioArgs } from "../datatypes/events";
 
 // filter city name before comma for currCity
 const cityFilter = (str: string) => {
@@ -19,10 +19,7 @@ const cityFilter = (str: string) => {
 };
 
 // Only display spinner if new marker (artist) and to hide initial "audio unavailable"
-const handleSetNewAudio = (
-  setNewAudio: (state: SetStateAction<boolean>) => void,
-  audioLink: string
-) => {
+const handleSetNewAudio = ({ setNewAudio, audioLink }: SetNewAudioArgs) => {
   setNewAudio(false);
   setTimeout(() => {
     if (!audioLink) {
@@ -31,11 +28,7 @@ const handleSetNewAudio = (
   }, 500);
 };
 
-const handlePlayPause = (
-  audioLink: string,
-  isPlaying: string,
-  audioRef: MutableRefObject<HTMLAudioElement | null>
-) => {
+const handlePlayPause = ({ audioLink, isPlaying, audioRef }: PlayPauseArgs) => {
   if (audioLink) {
     if (isPlaying) {
       audioRef.current?.pause();

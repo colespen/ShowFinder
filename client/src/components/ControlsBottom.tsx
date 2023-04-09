@@ -11,56 +11,56 @@ const ControlsBottom = (props: ControlsBottomProps) => {
     setUserData,
     handleDateSelect,
     handleDateRangeShows,
-    // audioLink,
-    // audioRef,
-    // newAudio,
-    // handlePlayPause,
-    // setIsPlaying,
-    // isPlaying,
-    // isMarkerClicked
+    audioLink,
+    audioRef,
+    newAudio,
+    handlePlayPause,
+    setIsPlaying,
+    isPlaying,
+    isMarkerClicked
   } = props;
 
-  // const [volChange, setVolChange] = useState(0);
-  // const [isAutoPlay, setIsAutoplay] = useState(true);
-  // const [windowSize, setWindowSize] = useState(getWindowSize());
+  const [volChange, setVolChange] = useState(0);
+  const [isAutoPlay, setIsAutoplay] = useState(true);
+  const [windowSize, setWindowSize] = useState(getWindowSize());
 
-  // // get and set window with resolution
-  // useEffect(() => {
-  //   function handleWindowResize() {
-  //     setWindowSize(getWindowSize());
-  //   }
+  // get and set window with resolution
+  useEffect(() => {
+    function handleWindowResize() {
+      setWindowSize(getWindowSize());
+    }
 
-  //   window.addEventListener('resize', handleWindowResize);
+    window.addEventListener('resize', handleWindowResize);
 
-  //   return () => {
-  //     window.removeEventListener('resize', handleWindowResize);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []);
 
-  // function getWindowSize() {
-  //   const { innerWidth } = window;
-  //   return { innerWidth };
-  // }
+  function getWindowSize() {
+    const { innerWidth } = window;
+    return { innerWidth };
+  }
 
-  // // default volume
-  // useEffect(() => {
-  //   audioRef.current.volume = 0.6;
-  // }, [audioRef]);
+  // default volume
+  useEffect(() => {
+    audioRef.current.volume = 0.6;
+  }, [audioRef]);
 
-  // // currently for mute / unmute
-  // const handleVolChange = () => {
-  //   if (!volChange) {
-  //     audioRef.current.volume = 0;
-  //     setVolChange(1);
-  //   } else {
-  //     audioRef.current.volume = 0.6;
-  //     setVolChange(0);
-  //   }
-  // };
+  // currently for mute / unmute
+  const handleVolChange = () => {
+    if (!volChange) {
+      audioRef.current.volume = 0;
+      setVolChange(1);
+    } else {
+      audioRef.current.volume = 0.6;
+      setVolChange(0);
+    }
+  };
 
-  // const handleAutoPlay = () => {
-  //   setIsAutoplay(prev => !prev);
-  // };
+  const handleAutoPlay = () => {
+    setIsAutoplay(prev => !prev);
+  };
 
   return (
     <div className="controls-bottom">
@@ -76,7 +76,7 @@ const ControlsBottom = (props: ControlsBottomProps) => {
       </div>
 
       <div className="audio-player-bottom-wrapper" >
-        {/* <div className="audio-player-inner" >
+        <div className="audio-player-inner" >
 
           <audio
             className="audio-player"
@@ -139,7 +139,7 @@ const ControlsBottom = (props: ControlsBottomProps) => {
               </span>
             }
           </div>
-        </div> */}
+        </div>
       </div>
 
       <div className="date-location" id="date-bottom">
