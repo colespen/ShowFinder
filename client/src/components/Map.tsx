@@ -108,12 +108,14 @@ export default function Map() {
     //                      changed from (shows) to (shows.data)
     if (geolocation.loaded && Object.keys(shows.data).length === 0) {
       //////    GET - /api/shows - rev geocode current coords then get shows
+      console.log("*** first useEffect ran ***")
       getShows({ userData, geolocation, setShows, setCurrCity, setUserData });
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       getSpotifyToken();
     }
+     // removed userData and shows from []
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [geolocation, shows]);
+  }, [geolocation]);
 
   //////    GET - current location shows and geo
   const handleCurrLocation = () => getCurrLocationShows({ ...args });
