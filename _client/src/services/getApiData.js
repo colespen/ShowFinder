@@ -32,8 +32,18 @@ const getSpotifyToken = () => {
 const getSpotifySample = (artist, setAudioLink, setIsPlaying) => {
   axios.get('/api/spotifysample', { params: { artist } })
     .then((response) => {
-      setAudioLink(response.data.topTrack);
-      setIsPlaying(false);
+      const tracks = response.data.tracks;
+      if (tracks.length === 0) {
+        setAudioLink(null);
+        throw new Error("No tracks found");
+      }
+      for (let i = 0; i < tracks.length; i++) {
+        if (tracks[i].preview_url) {
+          setAudioLink(tracks[i].preview_url);
+          setIsPlaying(false);
+          break;
+        }
+      }
     })
     .catch(err => console.log(err.message));
 };

@@ -183,12 +183,11 @@ app.get('/api/spotifysample', (req, res) => {
         }
       })
         .then((response) => {
-          const topTrack = response.data.tracks[0].preview_url;
-          return { topTrack };
+          const tracks = response.data.tracks;
+          return { tracks };
         });
     })
     .then((data) => {
-      console.log("data in /api/spotifysample: ", data);
       res.send(data);
     })
     .catch((error) => {
