@@ -9,8 +9,8 @@ import {
 } from "../datatypes/apiDataArgs";
 
 ////// use Render.com server ******
-axios.defaults.baseURL = "https://showfinder-server.onrender.com/";
-// axios.defaults.baseURL = "http://localhost:8001/";
+// axios.defaults.baseURL = "https://showfinder-server.onrender.com/";
+axios.defaults.baseURL = "http://localhost:8001/";
 
 // helper to setStates
 const setShowCityUserData = (props: SetShowCityUserDataArgs) => {
@@ -47,7 +47,10 @@ const getSpotifySample = (
     .get("/api/spotifysample", { params: { artist } })
     .then((response) => {
       const tracks = response.data.tracks;
-
+      if (tracks.length === 0) {
+        setAudioLink("");
+        throw new Error("No tracks found");
+      }
       for (let i = 0; i < tracks.length; i++) {
         if (tracks[i].preview_url) {
           setAudioLink(tracks[i].preview_url);

@@ -21,7 +21,6 @@ const handleArtistVenueName = (e, venue) => {
 
 //////    Open artist name onClick
 const handleArtistLink = (artistVenueName) => {
-  console.log("artistVenueName --handleArtistLink: ", artistVenueName.length)
   window.open(
     `https://www.songkick.com/search?utf8=&type=initial&query=
       ${artistVenueName}&commit=`, '_blank', 'noreferrer'
