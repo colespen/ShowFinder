@@ -44,7 +44,7 @@ const ControlsBottom = (props: ControlsBottomProps) => {
   // default volume
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = 0.6;
+      audioRef.current.volume = 0.7;
     }
   }, [audioRef]);
 
@@ -55,7 +55,7 @@ const ControlsBottom = (props: ControlsBottomProps) => {
         audioRef.current.volume = 0;
         setVolChange(1);
       } else {
-        audioRef.current.volume = 0.6;
+        audioRef.current.volume = 0.7;
         setVolChange(0);
       }
     }

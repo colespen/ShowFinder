@@ -183,8 +183,8 @@ app.get('/api/spotifysample', (req, res) => {
         }
       })
         .then((response) => {
-          const topTrack = response.data.tracks[0].preview_url;
-          return { topTrack };
+          const tracks = response.data.tracks;
+          return { tracks };
         });
     })
     .then((data) => {
@@ -196,14 +196,6 @@ app.get('/api/spotifysample', (req, res) => {
       console.error("Error: ", error.message);
     });
 });
-
-// get artist id
-// https://api.spotify.com/v1/search?q=deerhoof&type=artist
-// artists[0].item.id ("7AZwAitWq1KcFoIJhRWb6V")
-
-// get top single
-// https://api.spotify.com/v1/artists/7AZwAitWq1KcFoIJhRWb6V/top-tracks?market=US
-//tracks[0].preview_url
 
 
 app.listen(port, () => {

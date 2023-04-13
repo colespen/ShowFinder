@@ -10,6 +10,7 @@ import {
 
 ////// use Render.com server ******
 axios.defaults.baseURL = "https://showfinder-server.onrender.com/";
+// axios.defaults.baseURL = "http://localhost:8001/";
 
 // helper to setStates
 const setShowCityUserData = (props: SetShowCityUserDataArgs) => {
@@ -45,8 +46,15 @@ const getSpotifySample = (
   axios
     .get("/api/spotifysample", { params: { artist } })
     .then((response) => {
-      setAudioLink(response.data.topTrack);
-      setIsPlaying(false);
+      const tracks = response.data.tracks;
+
+      for (let i = 0; i < tracks.length; i++) {
+        if (tracks[i].preview_url) {
+          setAudioLink(tracks[i].preview_url);
+          setIsPlaying(false);
+          break;
+        }
+      }
     })
     .catch((err) => console.log(err.message));
 };
@@ -181,11 +189,9 @@ const getNewDateRangeShows = (args: GetNewDateRangeShowsArgs) => {
           });
         })
         .catch((err) => console.log(err.message));
-
     } else if (userData.newCity && cityFilter(userData.newCity) !== prevCity) {
       handleNewCityShows();
       setCityQuery(userData.newCity);
-
     } else {
       if (userData.newCity) setCityQuery(userData.newCity);
       axios
