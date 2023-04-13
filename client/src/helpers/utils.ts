@@ -19,13 +19,14 @@ const cityFilter = (str: string) => {
 };
 
 // Only display spinner if new marker (artist) and to hide initial "audio unavailable"
-const setNewAudioFn = ({ setNewAudio, audioLink }: SetNewAudioArgs) => {
+const setNewAudioDelay = ({ setNewAudio, audioLink }: SetNewAudioArgs) => {
   setNewAudio(false);
-  setTimeout(() => {
+  const setStateDelay = setTimeout(() => {
     if (!audioLink) {
       setNewAudio(true);
     }
   }, 500);
+  return () => clearTimeout(setStateDelay)
 };
 
 const playPause = ({ audioLink, isPlaying, audioRef }: PlayPauseArgs) => {
@@ -38,4 +39,4 @@ const playPause = ({ audioLink, isPlaying, audioRef }: PlayPauseArgs) => {
   }
 };
 
-export { cityFilter, playPause, setNewAudioFn };
+export { cityFilter, playPause, setNewAudioDelay };

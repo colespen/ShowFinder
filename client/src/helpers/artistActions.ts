@@ -7,8 +7,9 @@ export default async function getArtist(
     await new Promise((resolve) => {
       setTimeout(resolve, 0);
     });
-    const artistName: string = handleArtistName(e, venue);
-    handleArtistLink(artistName);
+    const artistVenueName: string = handleArtistName(e, venue);
+    handleArtistLink(artistVenueName);
+    
   } catch (err: unknown) {
     console.error((err as Error).message);
   }
@@ -19,7 +20,7 @@ const handleArtistName = (
   e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
   venue: string
 ) => {
-  const target = e.target as HTMLButtonElement
+  const target = e.target as HTMLButtonElement;
   const artistVenue = target.innerText + " " + venue;
   return artistVenue.split(" ").join("+");
 };

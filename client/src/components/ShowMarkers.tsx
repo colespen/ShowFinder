@@ -19,6 +19,8 @@ interface ShowMarkersProps {
   setIsMarkerClicked: (state: boolean) => void;
 }
 
+// ISSUE --- upon first click of NEW marker (new artist), the Popup open on two click, but then on one click as normal if reclick.
+
 const ShowMarkers = (props: ShowMarkersProps) => {
   const {
     shows,
@@ -30,10 +32,18 @@ const ShowMarkers = (props: ShowMarkersProps) => {
     isPlaying,
     setIsMarkerClicked,
   } = props;
-  const [lastClickedMarker, setLastClickedMarker] = useState("");
 
+  //                                       was useState<string>("")
+  const [lastClickedMarker, setLastClickedMarker] = useState<string | null>(
+    null
+  );
+
+  console.log("lastClickedMarker: ", lastClickedMarker);
+
+  // currently this is doing nothing
   const popUpRef = useRef(null);
 
+  // tried wrapping in useCallback
   const handleMarkerClick = (show: ShowData) => {
     setIsMarkerClicked(true);
     handleSetArtist(show.performer[0].name);
@@ -43,10 +53,17 @@ const ShowMarkers = (props: ShowMarkersProps) => {
     }
   };
 
-  function ShowsMapped() {
-    return (
-      <>
-        {(shows.data || []).map((show, index) =>
+  // function ShowsMapped() {
+  //   return (
+  //     <>
+        
+  //     </>
+  //   );
+  // }
+
+  return (
+    <>
+      {(shows.data || []).map((show, index) =>
           show.location.geo ? (
             <Marker
               //TODO: some repeat keys still.. fix in filter in server?
@@ -109,13 +126,6 @@ const ShowMarkers = (props: ShowMarkersProps) => {
             </Marker>
           ) : null
         )}
-      </>
-    );
-  }
-
-  return (
-    <>
-      <ShowsMapped />
     </>
   );
 };
