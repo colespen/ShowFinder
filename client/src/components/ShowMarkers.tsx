@@ -2,22 +2,11 @@ import { useState } from "react";
 import { Marker, Popup } from "react-leaflet";
 import getArtist from "../helpers/artistActions";
 import { ShowData } from "../datatypes/showData";
-import { ShowDataState } from "../datatypes/showData";
+import { ShowMarkersProps } from "../datatypes/props";
 
 import MarkerPlayer from "./MarkerPlayer";
 
 import "./ShowMarkers.scss";
-
-interface ShowMarkersProps {
-  shows: ShowDataState;
-  handleSetArtist: (artist: string) => void;
-  audioLink: string;
-  newAudio: boolean;
-  handleSetNewAudio: () => void;
-  handlePlayPause: () => void;
-  isPlaying: boolean;
-  setIsMarkerClicked: (state: boolean) => void;
-}
 
 const ShowMarkers = (props: ShowMarkersProps) => {
   const {
@@ -35,7 +24,6 @@ const ShowMarkers = (props: ShowMarkersProps) => {
   const [lastClickedMarker, setLastClickedMarker] = useState<string | null>(
     null
   );
-
   // currently this is doing nothing
   // const popUpRef = useRef(null);
 

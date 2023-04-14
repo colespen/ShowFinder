@@ -32,7 +32,7 @@ export default function Map() {
   const [cityQuery, setCityQuery] = useState<string>("");
   const [artist, setArtist] = useState<string>("");
   const [audioLink, setAudioLink] = useState<string>("");
-  const [newAudio, setNewAudio] = useState<boolean>(true);
+  const [newAudio, setNewAudio] = useState<boolean>(false); //true
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
   // this isGeoError to render text in title upon geo error
@@ -74,10 +74,15 @@ export default function Map() {
 
   // console.log("geolocation", geolocation);
   // console.log("userData", userData);
+  console.log(newAudio)
 
-  // render <audio> when new artist audio link
+  // set true to render <audio> when new artist audio link
+  // TODO: this should only run with audioLink changes - broken
   useEffect(() => {
-    setNewAudio(true);
+    if (!isFirstRender.current) {
+      setNewAudio(true);
+      console.log("in useEffect setNewAudio true");
+    }
   }, [audioLink]);
 
   // Load Media for Playback with Ref when new audioLink

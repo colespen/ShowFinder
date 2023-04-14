@@ -7,11 +7,17 @@ import {
   Dispatch,
   MutableRefObject,
 } from "react";
-import {
-  KeyboardEvent,
-  ChangeEvent,
-  FocusEvent,
-} from "./events";
+import { KeyboardEvent, ChangeEvent, FocusEvent } from "./events";
+
+export interface TitleProps {
+  currCity: string
+  transition: {
+    opacity: number;
+    type: string;
+  };
+  isFirstRender: boolean;
+  geolocation: GeoLocationState;
+}
 
 export interface ContainerProps {
   geolocation: GeoLocationState;
@@ -25,6 +31,17 @@ export interface ContainerProps {
   handleSetNewAudio: () => void;
   isPlaying: boolean;
   setIsMarkerClicked: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface ShowMarkersProps {
+  shows: ShowDataState;
+  handleSetArtist: (artist: string) => void;
+  audioLink: string;
+  newAudio: boolean;
+  handleSetNewAudio: () => void;
+  handlePlayPause: () => void;
+  isPlaying: boolean;
+  setIsMarkerClicked: (state: boolean) => void;
 }
 
 export interface ControlsTopProps {
@@ -49,6 +66,12 @@ export interface ControlsBottomProps {
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
   isPlaying: boolean;
   isMarkerClicked: boolean;
+}
+
+export interface BottomPlayerProps extends Partial<ControlsBottomProps> {
+  onPlay: () => void;
+  onPause: () => void;
+  onEnded: () => void;
 }
 
 export interface DateRangeProps {

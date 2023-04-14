@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Loading from './Loading';
 
-import { TitleProps } from '../datatypes/titleProps';
+import { TitleProps } from '../datatypes/props';
 import './styles.scss';
 
 export default function Title(props: TitleProps) {
