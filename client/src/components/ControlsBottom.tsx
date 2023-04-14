@@ -17,8 +17,9 @@ const ControlsBottom = (props: ControlsBottomProps) => {
     setIsPlaying,
     isPlaying,
     isMarkerClicked,
+    handleAutoPlay,
+    isAutoPlay,
   } = props;
-
 
   return (
     <div className="controls-bottom">
@@ -37,18 +38,19 @@ const ControlsBottom = (props: ControlsBottomProps) => {
         </a>
         <span id="author-hover">Spencer Cole</span>
       </div>
-      <BottomPlayer 
-          audioRef={audioRef}
-          audioLink={audioLink}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-          onEnded={() => setIsPlaying(false)}
-          isMarkerClicked={isMarkerClicked}
-          newAudio={newAudio}
-          isPlaying={isPlaying}
-          handlePlayPause={handlePlayPause}
+      <BottomPlayer
+        audioRef={audioRef}
+        audioLink={audioLink}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onEnded={() => setIsPlaying(false)}
+        isMarkerClicked={isMarkerClicked}
+        newAudio={newAudio}
+        isPlaying={isPlaying}
+        handlePlayPause={handlePlayPause}
+        handleAutoPlay={handleAutoPlay}
+        isAutoPlay={isAutoPlay}
       />
-
       <div className="date-location" id="date-bottom">
         <DateRange
           setUserData={setUserData}

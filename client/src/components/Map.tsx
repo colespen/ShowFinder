@@ -34,6 +34,7 @@ export default function Map() {
   const [audioLink, setAudioLink] = useState<string>("");
   const [newAudio, setNewAudio] = useState<boolean>(false); //true
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isAutoPlay, setIsAutoplay] = useState(true);
   const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
   // this isGeoError to render text in title upon geo error
   // const [isGeoError, setIsGeoError] = useState<boolean>(false);
@@ -72,24 +73,21 @@ export default function Map() {
     geolocation.error,
   ]);
 
-  // console.log("geolocation", geolocation);
-  // console.log("userData", userData);
-  console.log(newAudio)
-
   // set true to render <audio> when new artist audio link
   // TODO: this should only run with audioLink changes - broken
   useEffect(() => {
     if (!isFirstRender.current) {
       setNewAudio(true);
-      console.log("in useEffect setNewAudio true");
     }
+    localStorage.setItem('audioLink', JSON.stringify(audioLink))
   }, [audioLink]);
 
   // Load Media for Playback with Ref when new audioLink
   useEffect(() => {
-    if (audioRef.current) {
+    if (audioRef.current && audioLink && isAutoPlay) {
       audioRef.current.load();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioLink]);
 
   ////////////////////////////////////////////////////////////////////
@@ -113,7 +111,6 @@ export default function Map() {
     //                      changed from (shows) to (shows.data)
     if (geolocation.loaded && Object.keys(shows.data).length === 0) {
       //////    GET - /api/shows - rev geocode current coords then get shows
-      console.log("*** first useEffect ran ***");
       getShows({ userData, geolocation, setShows, setCurrCity, setUserData });
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       getSpotifyToken();
@@ -171,6 +168,10 @@ export default function Map() {
     setNewAudioDelay({ setNewAudio, audioLink });
   };
 
+  const handleAutoPlay = () => {
+    setIsAutoplay((prev) => !prev);
+  };
+
   return (
     <div className="map-main">
       <Title
@@ -214,6 +215,8 @@ export default function Map() {
         setIsPlaying={setIsPlaying}
         isPlaying={isPlaying}
         isMarkerClicked={isMarkerClicked}
+        isAutoPlay={isAutoPlay}
+        handleAutoPlay={handleAutoPlay}
       />
     </div>
   );

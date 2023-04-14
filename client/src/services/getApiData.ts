@@ -56,6 +56,9 @@ const getSpotifySample = (
           setAudioLink(tracks[i].preview_url);
           setIsPlaying(false);
           break;
+        } else {
+          setAudioLink("");
+          // setIsPlaying(false);
         }
       }
     })

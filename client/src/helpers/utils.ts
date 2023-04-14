@@ -26,15 +26,19 @@ const setNewAudioDelay = ({ setNewAudio, audioLink }: SetNewAudioArgs) => {
       setNewAudio(true);
     }
   }, 500);
-  return () => clearTimeout(setStateDelay)
+  return () => clearTimeout(setStateDelay);
 };
 
 const playPause = ({ audioLink, isPlaying, audioRef }: PlayPauseArgs) => {
-  if (audioLink) {
+  if (audioLink && audioRef.current) {
+    if (audioRef.current.currentSrc !== audioLink) {
+      audioRef.current.load();
+    }
+
     if (isPlaying) {
-      audioRef.current?.pause();
+      audioRef.current.pause();
     } else {
-      audioRef.current?.play();
+      audioRef.current.play();
     }
   }
 };

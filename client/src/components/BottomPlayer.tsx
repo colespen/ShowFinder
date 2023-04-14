@@ -13,10 +13,12 @@ const BottomPlayer = (props: BottomPlayerProps) => {
     newAudio,
     isPlaying,
     handlePlayPause,
+    handleAutoPlay,
+    isAutoPlay
   } = props;
 
   const [volChange, setVolChange] = useState(0);
-  const [isAutoPlay, setIsAutoplay] = useState(true);
+  // const [isAutoPlay, setIsAutoplay] = useState(true);
   const [windowSize, setWindowSize] = useState(getWindowSize());
 
   // get and set window with resolution
@@ -57,11 +59,6 @@ const BottomPlayer = (props: BottomPlayerProps) => {
     }
   };
 
-  const handleAutoPlay = () => {
-    setIsAutoplay((prev) => !prev);
-  };
-
-  console.log("audioLink: ", !audioLink)
   return (
     <>
       <div className="audio-player-bottom-wrapper">

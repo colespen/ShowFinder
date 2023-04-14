@@ -10,7 +10,7 @@ import {
 import { KeyboardEvent, ChangeEvent, FocusEvent } from "./events";
 
 export interface TitleProps {
-  currCity: string
+  currCity: string;
   transition: {
     opacity: number;
     type: string;
@@ -66,6 +66,15 @@ export interface ControlsBottomProps {
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
   isPlaying: boolean;
   isMarkerClicked: boolean;
+  isAutoPlay: boolean;
+  handleAutoPlay: () => void;
+}
+
+export interface MarkerPlayerProps {
+  audioLink: string;
+  newAudio: boolean;
+  handlePlayPause: () => void;
+  isPlaying: boolean;
 }
 
 export interface BottomPlayerProps extends Partial<ControlsBottomProps> {

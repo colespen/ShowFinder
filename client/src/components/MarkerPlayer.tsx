@@ -1,13 +1,7 @@
 import { Spinner } from "@chakra-ui/spinner";
+import { MarkerPlayerProps } from "../datatypes/props";
 
-interface MarkerProps {
-  audioLink: string;
-  newAudio: boolean;
-  handlePlayPause: () => void;
-  isPlaying: boolean;
-}
-
-const MarkerControls = (props: MarkerProps) => {
+const MarkerControls = (props: MarkerPlayerProps) => {
   const { audioLink, newAudio, handlePlayPause, isPlaying } = props;
 
   return (
