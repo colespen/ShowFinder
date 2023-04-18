@@ -34,7 +34,6 @@ const playPause = ({ audioLink, isPlaying, audioRef }: PlayPauseArgs) => {
     if (audioRef.current.currentSrc !== audioLink) {
       audioRef.current.load();
     }
-
     if (isPlaying) {
       audioRef.current.pause();
     } else {

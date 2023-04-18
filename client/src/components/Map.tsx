@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./styles.scss";
 
 import useGeoLocation, { NAVIGTOR_ERROR } from "../hooks/useGeoLocation";
-import Container from "./MapContainer";
+import MapContainerComponent from "./MapContainer/MapContainer";
 import Title from "./Title";
 import ControlsTop from "./ControlsTop";
 import ControlsBottom from "./ControlsBottom";
@@ -93,7 +93,6 @@ export default function Map() {
   ////////////////////////////////////////////////////////////////////
   //////    Calls to Server for Geo and Shows API
   //////////////////////////////////////////////////////////////////
-
   const args = {
     geolocation,
     userData,
@@ -203,7 +202,7 @@ export default function Map() {
         handleDateRangeShows={handleDateRangeShows}
         handleCurrLocation={handleCurrLocation}
       />
-      <Container
+      <MapContainerComponent
         geolocation={geolocation}
         shows={shows}
         userData={userData}

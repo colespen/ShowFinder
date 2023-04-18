@@ -1,6 +1,6 @@
 import { UserDataState, DateRangeType } from "./userData";
 import { GeoLocationState } from "../datatypes/locationData";
-import { ShowDataState } from "../datatypes/showData";
+import { ShowData, ShowDataState } from "../datatypes/showData";
 import {
   SetStateAction,
   MouseEventHandler,
@@ -42,6 +42,11 @@ export interface ShowMarkersProps {
   handlePlayPause: () => void;
   isPlaying: boolean;
   setIsMarkerClicked: (state: boolean) => void;
+}
+
+export interface PopUpProps extends MarkerPlayerProps {
+  index: number;
+  show: ShowData;
 }
 
 export interface ControlsTopProps {
