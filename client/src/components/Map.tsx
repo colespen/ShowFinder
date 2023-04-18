@@ -15,7 +15,6 @@ import {
   getCurrLocationShows,
   getNewDateRangeShows,
 } from "../services/getApiData";
-import { playPause, setNewAudioDelay } from "../helpers/utils";
 
 import { UserDataState } from "../datatypes/userData";
 import { ShowDataState } from "../datatypes/showData";
@@ -149,19 +148,6 @@ export default function Map() {
   //////
   ////////////////////////////////////////////////////////////////////
 
-
-  const handlePlayPause = () => {
-    playPause({ audioLink, isPlaying, audioRef });
-  };
-
-  const handleSetNewAudio = () => {
-    setNewAudioDelay({ setNewAudio, audioLink });
-  };
-
-  const handleAutoPlay = () => {
-    setIsAutoplay((prev) => !prev);
-  };
-
   return (
     <div className="map-main">
       <Title
@@ -180,28 +166,27 @@ export default function Map() {
       <MapContainerComponent
         geolocation={geolocation}
         shows={shows}
+        audioRef={audioRef}
         userData={userData}
         currCity={currCity}
-        setArtist={setArtist}
         audioLink={audioLink}
         newAudio={newAudio}
-        handlePlayPause={handlePlayPause}
-        handleSetNewAudio={handleSetNewAudio}
         isPlaying={isPlaying}
+        setArtist={setArtist}
+        setNewAudio={setNewAudio}
         setIsMarkerClicked={setIsMarkerClicked}
       />
       <ControlsBottom
-        setUserData={setUserData}
-        handleDateRangeShows={handleDateRangeShows}
         audioRef={audioRef}
         audioLink={audioLink}
         newAudio={newAudio}
-        handlePlayPause={handlePlayPause}
-        setIsPlaying={setIsPlaying}
         isPlaying={isPlaying}
         isMarkerClicked={isMarkerClicked}
         isAutoPlay={isAutoPlay}
-        handleAutoPlay={handleAutoPlay}
+        setUserData={setUserData}
+        handleDateRangeShows={handleDateRangeShows}
+        setIsPlaying={setIsPlaying}
+        setIsAutoplay={setIsAutoplay}
       />
     </div>
   );

@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, MutableRefObject, SetStateAction } from "react";
+import { playPause, setNewAudioDelay } from "../helpers/utils";
 import { DateRangeType, UserDataState } from "../datatypes/userData";
 import { ChangeEvent, FocusEvent, KeyboardEvent } from "../datatypes/events";
 import { ShowDataState } from "../datatypes/showData";
@@ -41,10 +42,32 @@ const handleSetArtist = (
   if (shows.data) setArtist(artist);
 };
 
+const handlePlayPause = (
+  audioLink: string,
+  isPlaying: boolean,
+  audioRef: MutableRefObject<HTMLAudioElement | null>
+) => {
+  playPause({ audioLink, isPlaying, audioRef });
+};
+
+const handleSetNewAudio = (
+  setNewAudio: Dispatch<SetStateAction<boolean>>,
+  audioLink: string
+) => {
+  setNewAudioDelay({ setNewAudio, audioLink });
+};
+
+const handleAutoPlay = (setIsAutoplay: Dispatch<SetStateAction<boolean>>) => {
+  setIsAutoplay((prev) => !prev);
+};
+
 export {
   handleCityChange,
   handleInputTextSelect,
   handleNewCityOnEnter,
   handleDateSelect,
-  handleSetArtist
+  handleSetArtist,
+  handlePlayPause,
+  handleSetNewAudio,
+  handleAutoPlay,
 };

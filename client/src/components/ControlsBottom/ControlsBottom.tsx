@@ -6,19 +6,7 @@ import DateRange from "../DateRange";
 import BottomPlayer from "./BottomPlayer";
 
 const ControlsBottom = (props: ControlsBottomProps) => {
-  const {
-    setUserData,
-    handleDateRangeShows,
-    audioLink,
-    audioRef,
-    newAudio,
-    handlePlayPause,
-    setIsPlaying,
-    isPlaying,
-    isMarkerClicked,
-    handleAutoPlay,
-    isAutoPlay,
-  } = props;
+  const { setUserData, handleDateRangeShows, ...rest } = props;
 
   return (
     <div className="controls-bottom">
@@ -37,19 +25,7 @@ const ControlsBottom = (props: ControlsBottomProps) => {
         </a>
         <span id="author-hover">Spencer Cole</span>
       </div>
-      <BottomPlayer
-        audioRef={audioRef}
-        audioLink={audioLink}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
-        isMarkerClicked={isMarkerClicked}
-        newAudio={newAudio}
-        isPlaying={isPlaying}
-        handlePlayPause={handlePlayPause}
-        handleAutoPlay={handleAutoPlay}
-        isAutoPlay={isAutoPlay}
-      />
+      <BottomPlayer {...rest} />
       <div className="date-location" id="date-bottom">
         <DateRange setUserData={setUserData} />
         <button id="go-button-bottom" onClick={handleDateRangeShows}>

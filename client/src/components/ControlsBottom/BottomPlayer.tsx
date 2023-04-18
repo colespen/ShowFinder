@@ -1,24 +1,21 @@
 import { useState, useEffect } from "react";
 import { Spinner } from "@chakra-ui/spinner";
+import { handlePlayPause, handleAutoPlay } from "../../helpers/eventHandlers";
 import { BottomPlayerProps } from "../../datatypes/props";
 
 const BottomPlayer = (props: BottomPlayerProps) => {
   const {
     audioRef,
     audioLink,
-    onPlay,
-    onPause,
-    onEnded,
     isMarkerClicked,
     newAudio,
     isPlaying,
-    handlePlayPause,
-    handleAutoPlay,
-    isAutoPlay
+    isAutoPlay,
+    setIsAutoplay,
+    setIsPlaying,
   } = props;
 
   const [volChange, setVolChange] = useState(0);
-  // const [isAutoPlay, setIsAutoplay] = useState(true);
   const [windowSize, setWindowSize] = useState(getWindowSize());
 
   // get and set window with resolution
@@ -45,7 +42,6 @@ const BottomPlayer = (props: BottomPlayerProps) => {
     }
   }, [audioRef]);
 
-
   // currently for mute / unmute
   const handleVolChange = () => {
     if (audioRef && audioRef.current) {
@@ -68,9 +64,9 @@ const BottomPlayer = (props: BottomPlayerProps) => {
             ref={audioRef}
             autoPlay={isAutoPlay}
             preload="metadata"
-            onPlay={onPlay}
-            onPause={onPause}
-            onEnded={onEnded}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            onEnded={() => setIsPlaying(false)}
           >
             <source src={audioLink} type="audio/mpeg" />
             <code>audio</code> not supported
@@ -79,7 +75,7 @@ const BottomPlayer = (props: BottomPlayerProps) => {
           {audioLink && isMarkerClicked && (
             <button
               className={`autoplay-bottom ` + isAutoPlay}
-              onClick={handleAutoPlay}
+              onClick={() => handleAutoPlay(setIsAutoplay)}
             >
               {windowSize.innerWidth > 383
                 ? windowSize.innerWidth > 413
@@ -94,7 +90,9 @@ const BottomPlayer = (props: BottomPlayerProps) => {
                 <button
                   className="media-buttons play-pause"
                   id="btn-bottom-scale"
-                  onClick={handlePlayPause}
+                  onClick={() =>
+                    handlePlayPause(audioLink, isPlaying, audioRef)
+                  }
                 >
                   {!isPlaying ? (
                     <img src="./play.svg" alt="play button"></img>

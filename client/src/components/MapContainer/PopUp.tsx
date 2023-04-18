@@ -6,8 +6,7 @@ import { Performer } from "../../datatypes/showData";
 import MarkerPlayer from "./MarkerPlayer";
 
 const PopUp = (props: PopUpProps) => {
-  const { audioLink, newAudio, handlePlayPause, isPlaying, index, show } =
-    props;
+  const { index, show , ...rest} = props;
 
   return (
     <Popup
@@ -26,10 +25,7 @@ const PopUp = (props: PopUpProps) => {
         ))}
       </ul>
       <MarkerPlayer
-        audioLink={audioLink}
-        newAudio={newAudio}
-        handlePlayPause={handlePlayPause}
-        isPlaying={isPlaying}
+        {...rest}
       />
       <a
         id="venue-name"

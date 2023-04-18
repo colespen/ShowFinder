@@ -2,15 +2,18 @@ import { useState } from "react";
 import "./ShowMarkers.scss";
 
 import { Marker } from "react-leaflet";
-import { handleSetArtist } from "../../helpers/eventHandlers";
+import {
+  handleSetArtist,
+  handleSetNewAudio,
+} from "../../helpers/eventHandlers";
+
 import { ShowData } from "../../datatypes/showData";
 import { ShowMarkersProps } from "../../datatypes/props";
 
 import PopUp from "./PopUp";
 
-
 const ShowMarkers = (props: ShowMarkersProps) => {
-  const { shows, setArtist, handleSetNewAudio, setIsMarkerClicked } =
+  const { shows, setArtist, setNewAudio, audioLink, setIsMarkerClicked } =
     props;
   //                                       was useState<string>("")
   const [lastClickedMarker, setLastClickedMarker] = useState<string | null>(
@@ -18,12 +21,13 @@ const ShowMarkers = (props: ShowMarkersProps) => {
   );
   // currently this is doing nothing
   // const popUpRef = useRef(null);
+
   const handleMarkerClick = (show: ShowData) => {
     setIsMarkerClicked(true);
     handleSetArtist(show.performer[0].name, shows, setArtist);
     setLastClickedMarker(show.performer[0].name);
     if (show.performer[0].name !== lastClickedMarker) {
-      handleSetNewAudio();
+      handleSetNewAudio(setNewAudio, audioLink);
     }
   };
 

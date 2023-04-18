@@ -18,34 +18,34 @@ export interface TitleProps {
   geolocation: GeoLocationState;
 }
 
-export interface ContainerProps {
+export interface ContainerProps extends ShowMarkersProps {
   geolocation: GeoLocationState;
-  shows: ShowDataState;
+  audioRef: MutableRefObject<HTMLAudioElement | null>;
   userData: UserDataState;
   currCity: string;
-  audioLink: string;
-  newAudio: boolean;
-  handlePlayPause: () => void;
-  handleSetNewAudio: () => void;
-  isPlaying: boolean;
-  setArtist: Dispatch<SetStateAction<string>>;
-  setIsMarkerClicked: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface ShowMarkersProps {
   shows: ShowDataState;
   audioLink: string;
+  audioRef: MutableRefObject<HTMLAudioElement | null>;
   newAudio: boolean;
-  handleSetNewAudio: () => void;
-  handlePlayPause: () => void;
   isPlaying: boolean;
   setArtist: Dispatch<SetStateAction<string>>;
-  setIsMarkerClicked: (state: boolean) => void;
+  setIsMarkerClicked: Dispatch<SetStateAction<boolean>>;
+  setNewAudio: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface PopUpProps extends MarkerPlayerProps {
   index: number;
   show: ShowData;
+}
+
+export interface MarkerPlayerProps {
+  audioLink: string;
+  audioRef: MutableRefObject<HTMLAudioElement | null>;
+  newAudio: boolean;
+  isPlaying: boolean;
 }
 
 export interface ControlsTopProps {
@@ -55,32 +55,27 @@ export interface ControlsTopProps {
   handleCurrLocation: () => void;
 }
 
-export interface ControlsBottomProps {
+export interface ControlsBottomProps extends BottomProps {
+  isMarkerClicked: boolean;
+  isAutoPlay: boolean;
+  setIsAutoplay: Dispatch<SetStateAction<boolean>>;
   setUserData: Dispatch<SetStateAction<UserDataState>>;
   handleDateRangeShows: () => void;
+}
+
+export interface BottomPlayerProps extends BottomProps {
+  isMarkerClicked: boolean;
+  isAutoPlay: boolean;
+  setIsAutoplay: Dispatch<SetStateAction<boolean>>;
+}
+
+export type BottomProps = {
   audioRef: MutableRefObject<HTMLAudioElement | null>;
   audioLink: string;
   newAudio: boolean;
-  handlePlayPause: () => void;
+  isPlaying: boolean;
   setIsPlaying: Dispatch<SetStateAction<boolean>>;
-  isPlaying: boolean;
-  isMarkerClicked: boolean;
-  isAutoPlay: boolean;
-  handleAutoPlay: () => void;
-}
-
-export interface MarkerPlayerProps {
-  audioLink: string;
-  newAudio: boolean;
-  handlePlayPause: () => void;
-  isPlaying: boolean;
-}
-
-export interface BottomPlayerProps extends Partial<ControlsBottomProps> {
-  onPlay: () => void;
-  onPause: () => void;
-  onEnded: () => void;
-}
+};
 
 export interface DateRangeProps {
   setUserData: Dispatch<SetStateAction<UserDataState>>;

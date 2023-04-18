@@ -1,8 +1,9 @@
 import { Spinner } from "@chakra-ui/spinner";
+import { handlePlayPause } from "../../helpers/eventHandlers";
 import { MarkerPlayerProps } from "../../datatypes/props";
 
 const MarkerControls = (props: MarkerPlayerProps) => {
-  const { audioLink, newAudio, handlePlayPause, isPlaying } = props;
+  const { audioLink, newAudio, isPlaying, audioRef } = props;
 
   return (
     <>
@@ -10,7 +11,7 @@ const MarkerControls = (props: MarkerPlayerProps) => {
         {audioLink && newAudio && (
           <button
             className="play-pause media-buttons"
-            onClick={handlePlayPause}
+            onClick={()=>handlePlayPause(audioLink, isPlaying, audioRef)}
           >
             {!isPlaying ? (
               <img src="./play.svg" alt="play button"></img>
