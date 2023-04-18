@@ -1,7 +1,8 @@
 import { MapContainer, TileLayer, MapContainerProps } from "react-leaflet";
-import CurrentLocation from "../CurrentLocation";
-import ShowMarkers from "./ShowMarkers";
 import { ContainerProps } from "../../datatypes/props";
+
+import CurrentLocation from "./CurrentLocation";
+import ShowMarkers from "./ShowMarkers";
 
 const MapContainerComponent = (props: MapContainerProps & ContainerProps) => {
   const { geolocation, userData, currCity, ...rest } = props;

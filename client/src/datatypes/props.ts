@@ -7,7 +7,7 @@ import {
   Dispatch,
   MutableRefObject,
 } from "react";
-import { KeyboardEvent, ChangeEvent, FocusEvent } from "./events";
+import { KeyboardEvent } from "./events";
 
 export interface TitleProps {
   currCity: string;
@@ -51,8 +51,6 @@ export interface PopUpProps extends MarkerPlayerProps {
 
 export interface ControlsTopProps {
   setUserData: Dispatch<SetStateAction<UserDataState>>;
-  handleCityChange: (e: ChangeEvent) => void;
-  handleInputTextSelect: (e: FocusEvent) => void;
   handleNewCityOnEnter: (e: KeyboardEvent) => void;
   handleNewCityShows: () => void;
   handleDateSelect: (dateRange: DateRangeType) => void;

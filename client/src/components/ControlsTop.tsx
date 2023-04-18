@@ -1,14 +1,17 @@
-import DateRange from "./DateRange";
+import {
+  handleCityChange,
+  handleInputTextSelect,
+  handleNewCityOnEnter,
+} from "../helpers/eventHandlers";
 import { ControlsTopProps } from "../datatypes/props";
+
+import DateRange from "./DateRange";
 
 import "./styles.scss";
 
 const ControlsTop = (props: ControlsTopProps) => {
   const {
     setUserData,
-    handleCityChange,
-    handleInputTextSelect,
-    handleNewCityOnEnter,
     handleNewCityShows,
     handleDateSelect,
     handleDateRangeShows,
@@ -24,9 +27,9 @@ const ControlsTop = (props: ControlsTopProps) => {
           placeholder="enter city, country"
           autoComplete="off"
           spellCheck="false"
-          onChange={handleCityChange}
+          onChange={(e) => handleCityChange(e, setUserData)}
           onFocus={handleInputTextSelect}
-          onKeyDown={handleNewCityOnEnter}
+          onKeyDown={(e) => handleNewCityOnEnter(e, handleNewCityShows)}
         />
         <button onClick={handleNewCityShows}>GO</button>
       </div>

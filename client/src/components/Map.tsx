@@ -20,7 +20,7 @@ import { playPause, setNewAudioDelay } from "../helpers/utils";
 import { UserDataState, DateRangeType } from "../datatypes/userData";
 import { ShowDataState } from "../datatypes/showData";
 import { userDataInitial } from "../datatypes/initialState";
-import { KeyboardEvent, ChangeEvent, FocusEvent } from "../datatypes/events";
+import { KeyboardEvent } from "../datatypes/events";
 
 export default function Map() {
   const [shows, setShows] = useState<ShowDataState>({
@@ -34,7 +34,7 @@ export default function Map() {
   const [audioLink, setAudioLink] = useState<string>("");
   const [newAudio, setNewAudio] = useState<boolean>(false); //true
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isAutoPlay, setIsAutoplay] = useState(true);
+  const [isAutoPlay, setIsAutoplay] = useState<boolean>(true);
   const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
   // this isGeoError to render text in title upon geo error
   // const [isGeoError, setIsGeoError] = useState<boolean>(false);
@@ -150,10 +150,6 @@ export default function Map() {
   //////
   ////////////////////////////////////////////////////////////////////
 
-  ////    Set City Name Input
-  const handleCityChange = (e: ChangeEvent) => {
-    setUserData((prev) => ({ ...prev, newCity: e.target.value }));
-  };
   ////    Submit City on Enter
   const handleNewCityOnEnter = (e: KeyboardEvent) => {
     if (e.key === "Enter") handleNewCityShows();
@@ -162,9 +158,6 @@ export default function Map() {
   const handleDateSelect = (dateRange: DateRangeType) => {
     setUserData((prev) => ({ ...prev, dateRange }));
   };
-  ////   Auto Focus Text in Input
-  const handleInputTextSelect = (e: FocusEvent) => e.target.select();
-  // (e.target as HTMLInputElement).select();
 
   ////    Set Artist from marker for audio src (headliner [0])
   const handleSetArtist = (artist: string) => {
@@ -175,6 +168,7 @@ export default function Map() {
   const handlePlayPause = () => {
     playPause({ audioLink, isPlaying, audioRef });
   };
+
   const handleSetNewAudio = () => {
     setNewAudioDelay({ setNewAudio, audioLink });
   };
@@ -194,13 +188,11 @@ export default function Map() {
       />
       <ControlsTop
         setUserData={setUserData}
-        handleCityChange={handleCityChange}
-        handleInputTextSelect={handleInputTextSelect}
         handleNewCityOnEnter={handleNewCityOnEnter}
         handleNewCityShows={handleNewCityShows}
+        handleCurrLocation={handleCurrLocation}
         handleDateSelect={handleDateSelect}
         handleDateRangeShows={handleDateRangeShows}
-        handleCurrLocation={handleCurrLocation}
       />
       <MapContainerComponent
         geolocation={geolocation}
