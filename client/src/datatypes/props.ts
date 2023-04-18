@@ -51,7 +51,6 @@ export interface PopUpProps extends MarkerPlayerProps {
 
 export interface ControlsTopProps {
   setUserData: Dispatch<SetStateAction<UserDataState>>;
-  handleNewCityOnEnter: (e: KeyboardEvent) => void;
   handleNewCityShows: () => void;
   handleDateSelect: (dateRange: DateRangeType) => void;
   handleDateRangeShows: () => void;

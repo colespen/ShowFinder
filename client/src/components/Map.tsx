@@ -150,10 +150,6 @@ export default function Map() {
   //////
   ////////////////////////////////////////////////////////////////////
 
-  ////    Submit City on Enter
-  const handleNewCityOnEnter = (e: KeyboardEvent) => {
-    if (e.key === "Enter") handleNewCityShows();
-  };
   ////    Set Date Range to State
   const handleDateSelect = (dateRange: DateRangeType) => {
     setUserData((prev) => ({ ...prev, dateRange }));
@@ -188,7 +184,6 @@ export default function Map() {
       />
       <ControlsTop
         setUserData={setUserData}
-        handleNewCityOnEnter={handleNewCityOnEnter}
         handleNewCityShows={handleNewCityShows}
         handleCurrLocation={handleCurrLocation}
         handleDateSelect={handleDateSelect}
