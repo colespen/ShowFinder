@@ -71,13 +71,11 @@ export default function Map() {
     geolocation.error,
   ]);
 
-  // set true to render <audio> when new artist audio link
-  // TODO: this should only run with audioLink changes - broken
   useEffect(() => {
     if (!isFirstRender.current) {
       setNewAudio(true);
+      // localStorage.setItem("audioLink", JSON.stringify(audioLink));
     }
-    localStorage.setItem("audioLink", JSON.stringify(audioLink));
   }, [audioLink]);
 
   // Load Media for Playback with Ref when new audioLink
