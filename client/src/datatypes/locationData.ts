@@ -1,6 +1,11 @@
+export type Coords = {
+  lat: number; 
+  lng: number;
+}
+
 export interface GeoLocationState {
   loaded: boolean;
-  coords: { lat: number; lng: number };
+  coords: Coords;
   accuracy: number;
   error?: {
     code: number;

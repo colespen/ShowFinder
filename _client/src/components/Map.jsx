@@ -49,8 +49,6 @@ export default function Map() {
   //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
 
-  // console.log("userData", shows)
-
   //////   Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
     if (geolocation.error === NAVIGTOR_ERROR.PERMISSION_DENIED) {

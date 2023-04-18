@@ -79,7 +79,7 @@ export default function Map() {
     if (!isFirstRender.current) {
       setNewAudio(true);
     }
-    localStorage.setItem('audioLink', JSON.stringify(audioLink))
+    localStorage.setItem("audioLink", JSON.stringify(audioLink));
   }, [audioLink]);
 
   // Load Media for Playback with Ref when new audioLink
@@ -87,7 +87,7 @@ export default function Map() {
     if (audioRef.current && audioLink && isAutoPlay) {
       audioRef.current.load();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioLink]);
 
   ////////////////////////////////////////////////////////////////////
@@ -97,11 +97,13 @@ export default function Map() {
   const args = {
     geolocation,
     userData,
+    currCity,
+    cityQuery,
+  };
+  const callbacks = {
     setUserData,
     setShows,
-    currCity,
     setCurrCity,
-    cityQuery,
     setCityQuery,
     setTransition,
   };
@@ -111,7 +113,11 @@ export default function Map() {
     //                      changed from (shows) to (shows.data)
     if (geolocation.loaded && Object.keys(shows.data).length === 0) {
       //////    GET - /api/shows - rev geocode current coords then get shows
-      getShows({ userData, geolocation, setShows, setCurrCity, setUserData });
+      getShows({
+        userData,
+        geolocation,
+        callbacks: { setShows, setCurrCity, setUserData },
+      });
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       getSpotifyToken();
     }
@@ -120,14 +126,19 @@ export default function Map() {
   }, [geolocation]);
 
   //////    GET - current location shows and geo
-  const handleCurrLocation = () => getCurrLocationShows({ ...args });
+  const handleCurrLocation = () =>
+    getCurrLocationShows({ ...args, callbacks: { ...callbacks } });
 
   //////    GET - /api/newshows - fwd geo then new shows
-  const handleNewCityShows = () => getNewCityShows({ ...args });
+  const handleNewCityShows = () =>
+    getNewCityShows({ ...args, callbacks: { ...callbacks } });
 
   //////    GET - /api/shows - date range rev geo shows
   const handleDateRangeShows = () =>
-    getNewDateRangeShows({ ...args, handleNewCityShows });
+    getNewDateRangeShows({
+      ...args,
+      callbacks: { ...callbacks, handleNewCityShows },
+    });
 
   //////    GET - api/spotifysample - artist ID then get preview data
   useEffect(() => {
@@ -158,7 +169,8 @@ export default function Map() {
 
   ////    Set Artist from marker for audio src (headliner [0])
   const handleSetArtist = (artist: string) => {
-    if (shows) setArtist(artist);
+    // was if (shows) ***
+    if (shows.data) setArtist(artist);
   };
 
   const handlePlayPause = () => {

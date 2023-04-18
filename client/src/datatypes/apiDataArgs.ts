@@ -3,12 +3,16 @@ import { UserDataState } from "./userData";
 import { CurrentAddress, ShowData, ShowDataState } from "./showData";
 import { GeoLocationState } from "./locationData";
 
-export interface GetShowsArgs {
-  userData: UserDataState;
-  geolocation: GeoLocationState;
+export type ShowCallbackArgs = {
   setShows: Dispatch<SetStateAction<ShowDataState>>;
   setCurrCity: Dispatch<SetStateAction<string>>;
   setUserData: Dispatch<SetStateAction<UserDataState>>;
+};
+
+export interface GetShowsArgs {
+  userData: UserDataState;
+  geolocation: GeoLocationState;
+  callbacks: ShowCallbackArgs;
 }
 
 export interface SetShowCityUserDataArgs {
@@ -17,46 +21,32 @@ export interface SetShowCityUserDataArgs {
     data: ShowData[];
     page: number;
   };
-  setShows: Dispatch<SetStateAction<ShowDataState>>;
-  setCurrCity: Dispatch<SetStateAction<string>>;
-  setUserData: Dispatch<SetStateAction<UserDataState>>;
+  callbacks: ShowCallbackArgs;
 }
 
 export interface GetCurrLocationShowsArgs {
-  geolocation: GeoLocationState;
   userData: UserDataState;
-  setShows: Dispatch<SetStateAction<ShowDataState>>;
-  setCurrCity: Dispatch<SetStateAction<string>>;
-  setUserData: Dispatch<SetStateAction<UserDataState>>;
-  setTransition: Dispatch<SetStateAction<{ opacity: number; type: string }>>;
+  geolocation: GeoLocationState;
+  callbacks: ShowCallbackArgs & {
+    setTransition: Dispatch<SetStateAction<{ opacity: number; type: string }>>;
+  };
 }
 
 export interface GetNewCityShowsArgs {
   userData: UserDataState;
-  setShows: Dispatch<SetStateAction<ShowDataState>>;
-  setCurrCity: Dispatch<SetStateAction<string>>;
-  setUserData: Dispatch<SetStateAction<UserDataState>>;
-  setTransition: Dispatch<SetStateAction<{ opacity: number; type: string }>>;
-  setCityQuery: Dispatch<SetStateAction<string>>;
+  callbacks: ShowCallbackArgs & {
+    setTransition: Dispatch<SetStateAction<{ opacity: number; type: string }>>;
+    setCityQuery: Dispatch<SetStateAction<string>>;
+  };
 }
 
 export interface GetNewDateRangeShowsArgs {
+  userData: UserDataState;
   currCity: string;
-  userData: {
-    dateRange: {
-      maxDate: string;
-      minDate: string;
-    };
-    lat: number;
-    lng: number;
-    currentAddress: CurrentAddress;
-    newCity: string;
-  };
   cityQuery: string;
-  setShows: Dispatch<SetStateAction<ShowDataState>>;
-  setCurrCity: Dispatch<SetStateAction<string>>;
-  setUserData: Dispatch<SetStateAction<UserDataState>>;
-  setTransition: Dispatch<SetStateAction<{ opacity: number; type: string }>>;
-  setCityQuery: Dispatch<SetStateAction<string>>;
-  handleNewCityShows: () => void;
+  callbacks: ShowCallbackArgs & {
+    setTransition: Dispatch<SetStateAction<{ opacity: number; type: string }>>;
+    setCityQuery: Dispatch<SetStateAction<string>>;
+    handleNewCityShows: () => void;
+  };
 }
