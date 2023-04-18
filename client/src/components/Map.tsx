@@ -20,7 +20,6 @@ import { playPause, setNewAudioDelay } from "../helpers/utils";
 import { UserDataState, DateRangeType } from "../datatypes/userData";
 import { ShowDataState } from "../datatypes/showData";
 import { userDataInitial } from "../datatypes/initialState";
-import { KeyboardEvent } from "../datatypes/events";
 
 export default function Map() {
   const [shows, setShows] = useState<ShowDataState>({
