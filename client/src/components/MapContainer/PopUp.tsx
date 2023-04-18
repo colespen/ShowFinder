@@ -1,5 +1,5 @@
 import { Popup } from "react-leaflet";
-import getArtist from "../../helpers/artistActions";
+import getArtist from "../../helpers/getArtistHandler";
 import { PopUpProps } from "../../datatypes/props";
 import { Performer } from "../../datatypes/showData";
 

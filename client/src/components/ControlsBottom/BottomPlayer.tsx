@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Spinner } from "@chakra-ui/spinner";
-import { BottomPlayerProps } from "../datatypes/props";
+import { BottomPlayerProps } from "../../datatypes/props";
 
 const BottomPlayer = (props: BottomPlayerProps) => {
   const {

@@ -15,12 +15,27 @@ export interface GetShowsArgs {
   callbacks: ShowCallbackArgs;
 }
 
+
 export interface SetShowCityUserDataArgs {
   data: {
     currentAddress: CurrentAddress;
     data: ShowData[];
     page: number;
   };
+  callbacks: ShowCallbackArgs;
+}
+
+export interface SetNewShowCityUserDataArgs {
+  data: {
+    currentAddress: CurrentAddress;
+    data: ShowData[];
+    page: number;
+    latLng: [{
+      lat: number, 
+      lon: number
+    }]
+  };
+  cityQuery: string;
   callbacks: ShowCallbackArgs;
 }
 

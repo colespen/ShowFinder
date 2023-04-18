@@ -3,6 +3,7 @@ import { cityFilter } from "../helpers/utils";
 import {
   GetShowsArgs,
   SetShowCityUserDataArgs,
+  SetNewShowCityUserDataArgs,
   GetCurrLocationShowsArgs,
   GetNewCityShowsArgs,
   GetNewDateRangeShowsArgs,
@@ -15,7 +16,9 @@ import { UserDataState } from "../datatypes/userData";
 // axios.defaults.baseURL = "https://showfinder-server.onrender.com/";
 axios.defaults.baseURL = "http://localhost:8001/";
 
-// helper to setStates
+/**
+ * helper - set state in setShows, setCurrCity and setUserData
+ */
 const setShowCityUserData = (args: SetShowCityUserDataArgs) => {
   const { data, callbacks } = args;
   const { setShows, setCurrCity, setUserData } = callbacks;
@@ -24,10 +27,28 @@ const setShowCityUserData = (args: SetShowCityUserDataArgs) => {
   setUserData((prev) => ({ ...prev, currentAddress: data.currentAddress }));
 };
 
+/**
+ * helper - set new coords in setUserData, and set state in setShows, setCurrCity
+ */
+const setNewShowCityUserData = (args: SetNewShowCityUserDataArgs) => {
+  const { data, callbacks, cityQuery } = args;
+  const { setShows, setCurrCity, setUserData } = callbacks;
+  setShows(data);
+  if (cityQuery !== undefined) setCurrCity(cityFilter(cityQuery));
+  setUserData((prev) => ({
+    ...prev,
+    lat: data.latLng[0].lat,
+    lng: data.latLng[0].lon,
+  }));
+};
+
 ////////////////////////////////////////////////////////////////////
 //////    Calls to Server for Geo and Shows API
 //////////////////////////////////////////////////////////////////
 
+/**
+ * helper - GET - /api/shows & setShowCityUserData
+ */
 const fetchShows = (
   params: UserDataState & (Coords | undefined),
   callbacks: ShowCallbackArgs
@@ -37,6 +58,25 @@ const fetchShows = (
     .then((res) => {
       setShowCityUserData({
         data: res.data,
+        callbacks,
+      });
+    })
+    .catch((err) => console.log(err.message));
+};
+/**
+ * helper - GET - /api/newshows & setShowCityUserData
+ */
+const fetchNewShows = (
+  userData: UserDataState,
+  cityQuery: string,
+  callbacks: ShowCallbackArgs
+) => {
+  axios
+    .get("/api/newshows", { params: { ...userData, newCity: cityQuery } })
+    .then((res) => {
+      setNewShowCityUserData({
+        data: res.data,
+        cityQuery,
         callbacks,
       });
     })
@@ -90,7 +130,7 @@ const getSpotifySample = (
 const getShows = (args: GetShowsArgs) => {
   const { userData, geolocation, callbacks } = args;
   const { setShows, setCurrCity, setUserData } = callbacks;
-
+  //
   fetchShows(
     {
       ...userData,
@@ -135,19 +175,12 @@ const getNewCityShows = (args: GetNewCityShowsArgs) => {
     setCurrCity("");
     setCityQuery(userData.newCity);
     setTransition({ opacity: 1, type: "shows" });
-
-    axios
-      .get("/api/newshows", { params: userData })
-      .then((res) => {
-        setShows(res.data);
-        setCurrCity(cityFilter(userData.newCity));
-        setUserData((prev) => ({
-          ...prev,
-          lat: res.data.latLng[0].lat,
-          lng: res.data.latLng[0].lon,
-        }));
-      })
-      .catch((err) => console.log(err.message));
+    //
+    fetchNewShows({ ...userData }, userData.newCity, {
+      setShows,
+      setCurrCity,
+      setUserData,
+    });
   }
 };
 
@@ -179,18 +212,12 @@ const getNewDateRangeShows = (args: GetNewDateRangeShowsArgs) => {
       setCityQuery(userData.newCity);
     } else {
       if (userData.newCity) setCityQuery(userData.newCity);
-      axios
-        .get("/api/newshows", { params: { ...userData, newCity: cityQuery } })
-        .then((res) => {
-          setShows(res.data);
-          setCurrCity(cityFilter(cityQuery));
-          setUserData((prev) => ({
-            ...prev,
-            lat: res.data.latLng[0].lat,
-            lng: res.data.latLng[0].lon,
-          }));
-        })
-        .catch((err) => console.log(err.message));
+      //
+      fetchNewShows({ ...userData }, cityQuery, {
+        setShows,
+        setCurrCity,
+        setUserData,
+      });
     }
   }
 };

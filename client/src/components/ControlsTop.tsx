@@ -13,7 +13,6 @@ const ControlsTop = (props: ControlsTopProps) => {
   const {
     setUserData,
     handleNewCityShows,
-    handleDateSelect,
     handleDateRangeShows,
     handleCurrLocation,
   } = props;
@@ -28,17 +27,14 @@ const ControlsTop = (props: ControlsTopProps) => {
           autoComplete="off"
           spellCheck="false"
           onChange={(e) => handleCityChange(e, setUserData)}
-          onFocus={handleInputTextSelect}
+          onFocus={(e) => handleInputTextSelect(e)}
           onKeyDown={(e) => handleNewCityOnEnter(e, handleNewCityShows)}
         />
         <button onClick={handleNewCityShows}>GO</button>
       </div>
 
       <div className="date-location" id="date-top">
-        <DateRange
-          setUserData={setUserData}
-          handleDateSelect={handleDateSelect}
-        />
+        <DateRange setUserData={setUserData} />
         <button id="go-button-top" onClick={handleDateRangeShows}>
           GO
         </button>

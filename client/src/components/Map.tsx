@@ -5,7 +5,7 @@ import useGeoLocation, { NAVIGTOR_ERROR } from "../hooks/useGeoLocation";
 import MapContainerComponent from "./MapContainer/MapContainer";
 import Title from "./Title";
 import ControlsTop from "./ControlsTop";
-import ControlsBottom from "./ControlsBottom";
+import ControlsBottom from "./ControlsBottom/ControlsBottom";
 
 import {
   getShows,
@@ -17,7 +17,7 @@ import {
 } from "../services/getApiData";
 import { playPause, setNewAudioDelay } from "../helpers/utils";
 
-import { UserDataState, DateRangeType } from "../datatypes/userData";
+import { UserDataState } from "../datatypes/userData";
 import { ShowDataState } from "../datatypes/showData";
 import { userDataInitial } from "../datatypes/initialState";
 
@@ -149,16 +149,6 @@ export default function Map() {
   //////
   ////////////////////////////////////////////////////////////////////
 
-  ////    Set Date Range to State
-  const handleDateSelect = (dateRange: DateRangeType) => {
-    setUserData((prev) => ({ ...prev, dateRange }));
-  };
-
-  ////    Set Artist from marker for audio src (headliner [0])
-  const handleSetArtist = (artist: string) => {
-    // was if (shows) ***
-    if (shows.data) setArtist(artist);
-  };
 
   const handlePlayPause = () => {
     playPause({ audioLink, isPlaying, audioRef });
@@ -185,7 +175,6 @@ export default function Map() {
         setUserData={setUserData}
         handleNewCityShows={handleNewCityShows}
         handleCurrLocation={handleCurrLocation}
-        handleDateSelect={handleDateSelect}
         handleDateRangeShows={handleDateRangeShows}
       />
       <MapContainerComponent
@@ -193,7 +182,7 @@ export default function Map() {
         shows={shows}
         userData={userData}
         currCity={currCity}
-        handleSetArtist={handleSetArtist}
+        setArtist={setArtist}
         audioLink={audioLink}
         newAudio={newAudio}
         handlePlayPause={handlePlayPause}
@@ -203,7 +192,6 @@ export default function Map() {
       />
       <ControlsBottom
         setUserData={setUserData}
-        handleDateSelect={handleDateSelect}
         handleDateRangeShows={handleDateRangeShows}
         audioRef={audioRef}
         audioLink={audioLink}

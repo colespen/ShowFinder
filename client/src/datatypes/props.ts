@@ -1,4 +1,4 @@
-import { UserDataState, DateRangeType } from "./userData";
+import { UserDataState } from "./userData";
 import { GeoLocationState } from "../datatypes/locationData";
 import { ShowData, ShowDataState } from "../datatypes/showData";
 import {
@@ -7,7 +7,6 @@ import {
   Dispatch,
   MutableRefObject,
 } from "react";
-import { KeyboardEvent } from "./events";
 
 export interface TitleProps {
   currCity: string;
@@ -24,23 +23,23 @@ export interface ContainerProps {
   shows: ShowDataState;
   userData: UserDataState;
   currCity: string;
-  handleSetArtist: (artist: string) => void;
   audioLink: string;
   newAudio: boolean;
   handlePlayPause: () => void;
   handleSetNewAudio: () => void;
   isPlaying: boolean;
+  setArtist: Dispatch<SetStateAction<string>>;
   setIsMarkerClicked: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface ShowMarkersProps {
   shows: ShowDataState;
-  handleSetArtist: (artist: string) => void;
   audioLink: string;
   newAudio: boolean;
   handleSetNewAudio: () => void;
   handlePlayPause: () => void;
   isPlaying: boolean;
+  setArtist: Dispatch<SetStateAction<string>>;
   setIsMarkerClicked: (state: boolean) => void;
 }
 
@@ -52,14 +51,12 @@ export interface PopUpProps extends MarkerPlayerProps {
 export interface ControlsTopProps {
   setUserData: Dispatch<SetStateAction<UserDataState>>;
   handleNewCityShows: () => void;
-  handleDateSelect: (dateRange: DateRangeType) => void;
   handleDateRangeShows: () => void;
   handleCurrLocation: () => void;
 }
 
 export interface ControlsBottomProps {
   setUserData: Dispatch<SetStateAction<UserDataState>>;
-  handleDateSelect: (dateRange: DateRangeType) => void;
   handleDateRangeShows: () => void;
   audioRef: MutableRefObject<HTMLAudioElement | null>;
   audioLink: string;
@@ -86,7 +83,6 @@ export interface BottomPlayerProps extends Partial<ControlsBottomProps> {
 }
 
 export interface DateRangeProps {
-  handleDateSelect: (dateRange: DateRangeType) => void;
   setUserData: Dispatch<SetStateAction<UserDataState>>;
 }
 

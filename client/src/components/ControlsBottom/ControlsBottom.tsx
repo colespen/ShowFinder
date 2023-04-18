@@ -1,14 +1,13 @@
-import { ControlsBottomProps } from "../datatypes/props";
-
-import DateRange from "./DateRange";
-import BottomPlayer from "./BottomPlayer";
-
 import "./ControlsBottom.scss";
+
+import { ControlsBottomProps } from "../../datatypes/props";
+
+import DateRange from "../DateRange";
+import BottomPlayer from "./BottomPlayer";
 
 const ControlsBottom = (props: ControlsBottomProps) => {
   const {
     setUserData,
-    handleDateSelect,
     handleDateRangeShows,
     audioLink,
     audioRef,
@@ -52,10 +51,7 @@ const ControlsBottom = (props: ControlsBottomProps) => {
         isAutoPlay={isAutoPlay}
       />
       <div className="date-location" id="date-bottom">
-        <DateRange
-          setUserData={setUserData}
-          handleDateSelect={handleDateSelect}
-        />
+        <DateRange setUserData={setUserData} />
         <button id="go-button-bottom" onClick={handleDateRangeShows}>
           GO
         </button>

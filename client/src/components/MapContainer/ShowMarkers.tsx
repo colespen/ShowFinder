@@ -1,16 +1,17 @@
 import { useState } from "react";
+import "./ShowMarkers.scss";
+
 import { Marker } from "react-leaflet";
+import { handleSetArtist } from "../../helpers/eventHandlers";
 import { ShowData } from "../../datatypes/showData";
 import { ShowMarkersProps } from "../../datatypes/props";
 
 import PopUp from "./PopUp";
 
-import "./ShowMarkers.scss";
 
 const ShowMarkers = (props: ShowMarkersProps) => {
-  const { shows, handleSetArtist, handleSetNewAudio, setIsMarkerClicked } =
+  const { shows, setArtist, handleSetNewAudio, setIsMarkerClicked } =
     props;
-
   //                                       was useState<string>("")
   const [lastClickedMarker, setLastClickedMarker] = useState<string | null>(
     null
@@ -19,7 +20,7 @@ const ShowMarkers = (props: ShowMarkersProps) => {
   // const popUpRef = useRef(null);
   const handleMarkerClick = (show: ShowData) => {
     setIsMarkerClicked(true);
-    handleSetArtist(show.performer[0].name);
+    handleSetArtist(show.performer[0].name, shows, setArtist);
     setLastClickedMarker(show.performer[0].name);
     if (show.performer[0].name !== lastClickedMarker) {
       handleSetNewAudio();

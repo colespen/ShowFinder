@@ -11,4 +11,4 @@ export default function Loading() {
       </h1>
     </div>
   );
-};
+}

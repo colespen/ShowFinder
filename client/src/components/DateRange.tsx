@@ -1,11 +1,19 @@
 import { useState, useEffect, forwardRef } from "react";
 import { DateRangeProps, DateButtonInputProps } from "../datatypes/props";
+import { handleDateSelect } from "../helpers/eventHandlers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function DateRange(props: DateRangeProps) {
-  const { setUserData, handleDateSelect } = props;
+//////    Assign Current Date and maxDate Default
+const currDate = new Date();
+const minDate = `${currDate.getFullYear()}-${
+  currDate.getMonth() + 1
+}-${currDate.getDate()}`;
+const maxDate = `${currDate.getFullYear()}-${
+  currDate.getMonth() + 1
+}-${currDate.getDate()}`;
 
+export default function DateRange({ setUserData }: DateRangeProps) {
   const [range, setRange] = useState<[Date | null, Date | null]>([null, null]);
   const [startDate, endDate] = range;
 
@@ -36,7 +44,7 @@ export default function DateRange(props: DateRangeProps) {
         if (i === 0) dateRange.minDate = `${yyyy1}-${mm1}-${dd1}`;
         if (i === 1) dateRange.maxDate = `${yyyy1}-${mm1}-${dd1}`;
       });
-    handleDateSelect(dateRange);
+    handleDateSelect(dateRange, setUserData);
   };
 
   const DateButtonInput = forwardRef<HTMLButtonElement, DateButtonInputProps>(
@@ -58,12 +66,3 @@ export default function DateRange(props: DateRangeProps) {
     />
   );
 }
-
-//////    Assign Current Date and maxDate Default
-const currDate = new Date();
-export const minDate = `${currDate.getFullYear()}-${
-  currDate.getMonth() + 1
-}-${currDate.getDate()}`;
-export const maxDate = `${currDate.getFullYear()}-${
-  currDate.getMonth() + 1
-}-${currDate.getDate()}`;
