@@ -31,7 +31,8 @@ import _ from 'lodash';
 /** import routes
  */
 import { router as indexRoute } from './routes/index.route.js';
-import { router as showRoute } from './routes/show.route.js';
+import { router as showsRoute } from './routes/shows.route.js';
+import { router as spotifyRoute } from './routes/spotify.route.js';
 // ----------------------------------------
 
 const app = express();
@@ -43,11 +44,13 @@ app.use(cookieParser());
 /** load routes
  */
 app.use('/', indexRoute);
-app.use(showRoute);
+app.use('/api', showsRoute);
+app.use('/spotify', spotifyRoute);
 // ----------------------------------------
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
+  debug(`NOT FOUND 404: ${req.url}`);
   next(createError(404));
 });
 
