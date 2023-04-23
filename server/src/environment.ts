@@ -19,9 +19,12 @@ if (!process.env.LOCATION_IQ_TOKEN) {
 if (!process.env.TICKERMASTER_KEY) {
   throw new Error('misconfigured environment TICKERMASTER_KEY');
 }
-// if (!process.env.RAPID_KEY) {
-//   throw new Error('misconfigured environment RAPID_KEY');
-// }
+if (!process.env.SPOTIFY_ID) {
+  throw new Error('misconfigured environment SPOTIFY_ID');
+}
+if (!process.env.SPOTIFY_SECRET) {
+  throw new Error('misconfigured environment SPOTIFY_SECRET');
+}
 
 const ENV = {
   PORT: process.env.PORT,
@@ -30,7 +33,8 @@ const ENV = {
   DB_NAME: process.env.DB_NAME,
   LOCATION_IQ_TOKEN: process.env.LOCATION_IQ_TOKEN,
   TICKERMASTER_KEY: process.env.TICKERMASTER_KEY,
-  // RAPID_KEY: process.env.RAPID_KEY,
+  SPOTIFY_ID: process.env.SPOTIFY_ID,
+  SPOTIFY_SECRET: process.env.SPOTIFY_SECRET,
 };
 
 export default ENV;
