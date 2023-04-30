@@ -27,6 +27,7 @@ https://www.showfinder.ninja/
 ### utilizes free APIs!
 - LocationIQ: forward and reverse geocoding
 - RapidAPI: artists events tracker by location
+- SpotifyAPI: audio samples
 - tried: PredictHQ, Songkick, Zyla
 <br>
 

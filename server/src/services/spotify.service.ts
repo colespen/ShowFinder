@@ -46,6 +46,7 @@ class SpotifyService {
   async getArtistSample(id: string, market: string) {
     if (!this._validateAccessToken()) await this._getAccessToken();
     const params = new URLSearchParams({
+      // I think only market: "US" really works for this Spotify API endpoint
       market: market,
       format: 'json'
     });

@@ -6,7 +6,7 @@ import { Performer } from "../../datatypes/showData";
 import MarkerPlayer from "./MarkerPlayer";
 
 const PopUp = (props: PopUpProps) => {
-  const { index, show , ...rest} = props;
+  const { index, show, ...rest } = props;
 
   return (
     <Popup
@@ -24,9 +24,7 @@ const PopUp = (props: PopUpProps) => {
           </li>
         ))}
       </ul>
-      <MarkerPlayer
-        {...rest}
-      />
+      <MarkerPlayer {...rest} />
       <a
         id="venue-name"
         href={show.location.sameAs}
