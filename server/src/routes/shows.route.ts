@@ -3,6 +3,7 @@ import Geohash from 'latlon-geohash';
 import Debug from 'debug';
 import TicketMasterService from '../services/ticketmaster.service.js';
 import createError from 'http-errors';
+import moment from 'moment';
 
 const debug = Debug('sf-api:route:shows');
 const router = express.Router();
@@ -12,16 +13,26 @@ const rootRoute = '/shows';
  */
 router.get(`${rootRoute}`, async (req, res, next) => {
   try {
+    // if no date range was provided, then set defaults
+    const dateStart = req.query?.dateStart && moment.utc(req.query.dateStart as string) || moment.utc();
+    const dateEnd = req.query?.dateEnd && moment.utc(req.query.dateEnd as string) || moment.utc().add(1, 'day');
+
     const geoPoint = Geohash.encode(Number(req.query.lat), Number(req.query.lng), 9);
-    const events = await TicketMasterService.eventSearch(geoPoint);
+    const [sentDateStart, sentDateEnd, events] = await TicketMasterService.eventSearch(geoPoint, dateStart, dateEnd);
+
     res.send({
       geoPoint,
+      sentDateStart,
+      sentDateEnd,
       events: events.data,
     });
   } catch(e: any) {
-    const msg = e?.message?.toLowerCase();
-    if (msg == 'invalid geohash') {
+    if (e?.message == 'Invalid geohash') {
       next(createError(417, 'query paramaters \'lat\' or \'lng\' missing'));
+      return;
+    }
+    if (e?.message == 'sf-api:service:ticketmaster:dateEnd:beforeDateStart') {
+      next(createError(400, 'the end date can not be before the start date'));
       return;
     }
     next(e);
