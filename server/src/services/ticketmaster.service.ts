@@ -26,6 +26,7 @@ class TicketMasterService {
     const eventSearchURL = `https://app.ticketmaster.com/discovery/v2/events.json?`
       + `apikey=${ENV.TICKERMASTER_KEY}`
       + `&geoPoint=${geoPoint}`
+      + `&classificationName=music`
       + `&startDateTime=${dateStart.toISOString().split('.')[0]}Z`
       + `&endDateTime=${dateEnd.toISOString().split('.')[0]}Z`;
 
