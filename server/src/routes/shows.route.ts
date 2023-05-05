@@ -24,7 +24,7 @@ router.get(`${rootRoute}`, async (req, res, next) => {
       geoPoint,
       sentDateStart,
       sentDateEnd,
-      events: events.data,
+      events,
     });
   } catch(e: any) {
     if (e?.message == 'Invalid geohash') {
