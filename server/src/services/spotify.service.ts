@@ -39,7 +39,7 @@ class SpotifyService {
 
     } catch (e) {
       debug('spotify-authorisation-error');
-      throw Error('spotify-authorisation-error');
+      throw new Error('sf-api:service:spotify:artist:authorisationError');
     }
   }
 
@@ -59,10 +59,17 @@ class SpotifyService {
           }
         }
       );
-      return response.data.tracks;
+      const tracks = response.data?.tracks;
+      if (!tracks || Array.isArray(tracks) === false || tracks.length == 0) {
+        throw new Error('sf-api:service:spotify:artist:sample:noData')
+      }
+      if (!tracks[0].preview_url) {
+        throw new Error('sf-api:service:spotify:artist:sample:noPreviewUrl')
+      }
+      return tracks[0].preview_url;
     } catch(e) {
-      debug('spotify-artist-sample-error');
-      throw Error('spotify-artist-sample-error');
+      debug(['sf-api:service:spotify:artist:sample:error', e]);
+      throw new Error('sf-api:service:spotify:artist:sample:error');
     }
   }
 
@@ -84,7 +91,7 @@ class SpotifyService {
       return response.data.artists;
     } catch (e: any) {
       debug('spotify-artist-search-error');
-      throw Error('spotify-artist-search-error');
+      throw new Error('sf-api:service:spotify:artist:search:error');
     }
   }
 
