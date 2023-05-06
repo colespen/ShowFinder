@@ -93,7 +93,7 @@ export default function Map() {
     setTransition
   };
 
-  //////    GET Current Location Shows/Geo/spotifyToken - First Render
+  //////    GET Current Location Geo/Shows/spotifyToken - First Render
   useEffect(() => {
     if (geolocation.loaded && (Object.keys(shows).length === 0)) {
       //////    GET - /api/shows - reverse geocode current coords then get shows

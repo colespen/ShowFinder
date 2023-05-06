@@ -34,10 +34,10 @@ https://www.showfinder.ninja/
 ### Developed & Designed by Spencer Cole
 
 
-![grabbing_location](/_client/docs/1_grabbing_location.?raw=true "grab location")
+![grabbing_location](_client/docs/1_grabbing_location.png)
 
-![shows_&_date_range](/_client/docs/2_shows_date_range.?raw=true "shows & date range")
+![shows_&_date_range](_client/docs/2_shows_date_range.png)
 
-![select_artist_&_venue](/_client/docs/3_select_artist.?raw=true "select artist & venue")
+![select_artist_&_venue](_client/docs/3_select_artist.png)
 
-![fully_responsive](/_client/docs/4_mobile_responsive.?raw=true "fully responsive")
+![fully_responsive](_client/docs/4_mobile_responsive.png)
