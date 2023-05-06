@@ -20,7 +20,7 @@ try {
 }
 // ----------------------------------------
 
-import createError from "http-errors";
+import createHttpError from "http-errors";
 import path from "path";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
@@ -43,15 +43,16 @@ app.use(cookieParser());
 
 /** load routes
  */
+const rootRoute = '/api';
 app.use("/", indexRoute);
-app.use("/api", showsRoute);
-app.use("/spotify", spotifyRoute);
+app.use(`${rootRoute}`, showsRoute);
+app.use(`${rootRoute}`, spotifyRoute);
 // ----------------------------------------
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   debug(`NOT FOUND 404: ${req.url}`);
-  next(createError(404));
+  next(createHttpError(404));
 });
 
 // error handler
