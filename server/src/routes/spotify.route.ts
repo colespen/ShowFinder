@@ -10,6 +10,7 @@ const rootRoute = '/spotify';
 
 router.get(`${rootRoute}/artist-sample/:artistid/:country`, async (req, res, next) => {
   try {
+    // I've found "US" market works for majority of previews globally
     const response = await spotfiy.getArtistSample(req.params.artistid, req.params.country);
     res.send(response);
   } catch(e) {

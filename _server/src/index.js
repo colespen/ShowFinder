@@ -196,6 +196,14 @@ app.get('/api/spotifysample', (req, res) => {
     });
 });
 
+// get artist id
+// https://api.spotify.com/v1/search?q=deerhoof&type=artist
+// artists[0].item.id ("7AZwAitWq1KcFoIJhRWb6V")
+
+// get top single
+// https://api.spotify.com/v1/artists/7AZwAitWq1KcFoIJhRWb6V/top-tracks?market=US
+//tracks[0].preview_url
+
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port} `);

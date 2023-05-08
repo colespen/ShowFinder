@@ -1,0 +1,347 @@
+{
+  "attractions": [
+    {
+      "name": "Coheed and Cambria",
+      "type": "attraction",
+      "id": "K8vZ9175Kbf",
+      "test": false,
+      "url": "https://www.ticketmaster.ca/coheed-and-cambria-tickets/artist/852827",
+      "locale": "en-us",
+      "externalLinks": {
+        "youtube": [
+          {
+            "url": "https://www.youtube.com/user/OfficialCoheed"
+          },
+          {
+            "url": "https://www.youtube.com/user/coheedandcambriaVEVO"
+          }
+        ],
+        "twitter": [
+          {
+            "url": "https://twitter.com/coheed"
+          }
+        ],
+        "itunes": [
+          {
+            "url": "https://itunes.apple.com/us/artist/id15031628"
+          }
+        ],
+        "lastfm": [
+          {
+            "url": "http://www.last.fm/music/Coheed+and+Cambria"
+          }
+        ],
+        "facebook": [
+          {
+            "url": "https://www.facebook.com/coheedandcambria"
+          }
+        ],
+        "wiki": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Coheed_and_Cambria"
+          }
+        ],
+        "spotify": [
+          {
+            "url": "https://open.spotify.com/artist/3utxjLheHaVEd9bPjQRsy8?si=zaTD2RqNQiCCX8KjD-gqtQ&nd=1"
+          }
+        ],
+        "musicbrainz": [
+          {
+            "id": "ae1b47d5-5128-431c-9d30-e08fd90e0767"
+          }
+        ],
+        "instagram": [
+          {
+            "url": "https://www.instagram.com/coheed/"
+          }
+        ],
+        "homepage": [
+          {
+            "url": "http://www.coheedandcambria.com/"
+          }
+        ]
+      },
+      "images": [
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/592/1fdd5818-ea14-4e56-97f0-65457f4ce592_1518011_RECOMENDATION_16_9.jpg",
+          "width": 100,
+          "height": 56,
+          "fallback": false
+        },
+        {
+          "ratio": "3_2",
+          "url": "https://s1.ticketm.net/dam/a/592/1fdd5818-ea14-4e56-97f0-65457f4ce592_1518011_ARTIST_PAGE_3_2.jpg",
+          "width": 305,
+          "height": 203,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/592/1fdd5818-ea14-4e56-97f0-65457f4ce592_1518011_TABLET_LANDSCAPE_LARGE_16_9.jpg",
+          "width": 2048,
+          "height": 1152,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/592/1fdd5818-ea14-4e56-97f0-65457f4ce592_1518011_RETINA_PORTRAIT_16_9.jpg",
+          "width": 640,
+          "height": 360,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/592/1fdd5818-ea14-4e56-97f0-65457f4ce592_1518011_RETINA_LANDSCAPE_16_9.jpg",
+          "width": 1136,
+          "height": 639,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/592/1fdd5818-ea14-4e56-97f0-65457f4ce592_1518011_TABLET_LANDSCAPE_16_9.jpg",
+          "width": 1024,
+          "height": 576,
+          "fallback": false
+        },
+        {
+          "ratio": "3_2",
+          "url": "https://s1.ticketm.net/dam/a/592/1fdd5818-ea14-4e56-97f0-65457f4ce592_1518011_RETINA_PORTRAIT_3_2.jpg",
+          "width": 640,
+          "height": 427,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/592/1fdd5818-ea14-4e56-97f0-65457f4ce592_1518011_EVENT_DETAIL_PAGE_16_9.jpg",
+          "width": 205,
+          "height": 115,
+          "fallback": false
+        },
+        {
+          "ratio": "4_3",
+          "url": "https://s1.ticketm.net/dam/a/592/1fdd5818-ea14-4e56-97f0-65457f4ce592_1518011_CUSTOM.jpg",
+          "width": 305,
+          "height": 225,
+          "fallback": false
+        },
+        {
+          "ratio": "3_2",
+          "url": "https://s1.ticketm.net/dam/a/592/1fdd5818-ea14-4e56-97f0-65457f4ce592_1518011_TABLET_LANDSCAPE_3_2.jpg",
+          "width": 1024,
+          "height": 683,
+          "fallback": false
+        }
+      ],
+      "classifications": [
+        {
+          "primary": true,
+          "segment": {
+            "id": "KZFzniwnSyZfZ7v7nJ",
+            "name": "Music"
+          },
+          "genre": {
+            "id": "KnvZfZ7vAeA",
+            "name": "Rock"
+          },
+          "subGenre": {
+            "id": "KZazBEonSMnZfZ7v6dt",
+            "name": "Alternative Rock"
+          },
+          "type": {
+            "id": "KZAyXgnZfZ7v7nI",
+            "name": "Undefined"
+          },
+          "subType": {
+            "id": "KZFzBErXgnZfZ7v7lJ",
+            "name": "Undefined"
+          },
+          "family": false
+        }
+      ],
+      "upcomingEvents": {
+        "_total": 44,
+        "tmr": 16,
+        "mfx-de": 3,
+        "ticketmaster": 25,
+        "_filtered": 0
+      },
+      "_links": {
+        "self": {
+          "href": "/discovery/v2/attractions/K8vZ9175Kbf?locale=en-us"
+        }
+      }
+    },
+    {
+      "name": "Deafheaven",
+      "type": "attraction",
+      "id": "K8vZ917CKc0",
+      "test": false,
+      "url": "https://www.ticketmaster.ca/deafheaven-tickets/artist/1581026",
+      "locale": "en-us",
+      "externalLinks": {
+        "youtube": [
+          {
+            "url": "https://www.youtube.com/channel/UC97UMkZzchbn0uO-KFyq8ww"
+          }
+        ],
+        "twitter": [
+          {
+            "url": "https://twitter.com/deafheavenband"
+          }
+        ],
+        "itunes": [
+          {
+            "url": "https://music.apple.com/us/artist/deafheaven/425470694"
+          }
+        ],
+        "lastfm": [
+          {
+            "url": "http://www.last.fm/music/Deafheaven"
+          }
+        ],
+        "facebook": [
+          {
+            "url": "https://www.facebook.com/deafheaven"
+          }
+        ],
+        "wiki": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Deafheaven"
+          }
+        ],
+        "spotify": [
+          {
+            "url": "https://open.spotify.com/artist/4XpPveeg7RuYS3CgLo75t9?autoplay=true"
+          }
+        ],
+        "instagram": [
+          {
+            "url": "http://instagram.com/deafheavenband"
+          }
+        ],
+        "musicbrainz": [
+          {
+            "id": "f4ccf6c5-ad41-4f8f-bb9e-6e2c6ad23302"
+          }
+        ],
+        "homepage": [
+          {
+            "url": "http://deafheaven.com/"
+          }
+        ]
+      },
+      "images": [
+        {
+          "ratio": "3_2",
+          "url": "https://s1.ticketm.net/dam/a/6ab/ceb8010b-80ec-417f-b007-7e41cca256ab_1472281_ARTIST_PAGE_3_2.jpg",
+          "width": 305,
+          "height": 203,
+          "fallback": false
+        },
+        {
+          "ratio": "3_2",
+          "url": "https://s1.ticketm.net/dam/a/6ab/ceb8010b-80ec-417f-b007-7e41cca256ab_1472281_RETINA_PORTRAIT_3_2.jpg",
+          "width": 640,
+          "height": 427,
+          "fallback": false
+        },
+        {
+          "ratio": "3_2",
+          "url": "https://s1.ticketm.net/dam/a/6ab/ceb8010b-80ec-417f-b007-7e41cca256ab_1472281_TABLET_LANDSCAPE_3_2.jpg",
+          "width": 1024,
+          "height": 683,
+          "fallback": false
+        },
+        {
+          "ratio": "4_3",
+          "url": "https://s1.ticketm.net/dam/a/6ab/ceb8010b-80ec-417f-b007-7e41cca256ab_1472281_CUSTOM.jpg",
+          "width": 305,
+          "height": 225,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/6ab/ceb8010b-80ec-417f-b007-7e41cca256ab_1472281_RETINA_PORTRAIT_16_9.jpg",
+          "width": 640,
+          "height": 360,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/6ab/ceb8010b-80ec-417f-b007-7e41cca256ab_1472281_EVENT_DETAIL_PAGE_16_9.jpg",
+          "width": 205,
+          "height": 115,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/6ab/ceb8010b-80ec-417f-b007-7e41cca256ab_1472281_RECOMENDATION_16_9.jpg",
+          "width": 100,
+          "height": 56,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/6ab/ceb8010b-80ec-417f-b007-7e41cca256ab_1472281_RETINA_LANDSCAPE_16_9.jpg",
+          "width": 1136,
+          "height": 639,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/6ab/ceb8010b-80ec-417f-b007-7e41cca256ab_1472281_TABLET_LANDSCAPE_16_9.jpg",
+          "width": 1024,
+          "height": 576,
+          "fallback": false
+        },
+        {
+          "ratio": "16_9",
+          "url": "https://s1.ticketm.net/dam/a/6ab/ceb8010b-80ec-417f-b007-7e41cca256ab_1472281_TABLET_LANDSCAPE_LARGE_16_9.jpg",
+          "width": 2048,
+          "height": 1152,
+          "fallback": false
+        }
+      ],
+      "classifications": [
+        {
+          "primary": true,
+          "segment": {
+            "id": "KZFzniwnSyZfZ7v7nJ",
+            "name": "Music"
+          },
+          "genre": {
+            "id": "KnvZfZ7vAeA",
+            "name": "Rock"
+          },
+          "subGenre": {
+            "id": "KZazBEonSMnZfZ7v6F1",
+            "name": "Pop"
+          },
+          "type": {
+            "id": "KZAyXgnZfZ7v7nI",
+            "name": "Undefined"
+          },
+          "subType": {
+            "id": "KZFzBErXgnZfZ7v7lJ",
+            "name": "Undefined"
+          },
+          "family": false
+        }
+      ],
+      "upcomingEvents": {
+        "_total": 40,
+        "tmr": 17,
+        "ticketmaster": 21,
+        "_filtered": 0,
+        "moshtix": 2
+      },
+      "_links": {
+        "self": {
+          "href": "/discovery/v2/attractions/K8vZ917CKc0?locale=en-us"
+        }
+      }
+    }
+  ]
+}

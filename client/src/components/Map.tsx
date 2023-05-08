@@ -47,7 +47,6 @@ export default function Map() {
   const isFirstRender = useRef(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  //////    Assign User's Current Coords
   const geolocation = useGeoLocation();
 
   //////   Set Geo Coords State After Allow Access - First Render
@@ -56,6 +55,7 @@ export default function Map() {
       // setIsGeoError(true);
     }
     if (geolocation.loaded && isFirstRender.current && userData.lat === 0) {
+      ////  Assign User's Current Coords
       setUserData((prev) => ({
         ...prev,
         ...geolocation.coords,

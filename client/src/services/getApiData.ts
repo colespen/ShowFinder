@@ -47,7 +47,7 @@ const setNewShowCityUserData = (args: SetNewShowCityUserDataArgs) => {
 //////////////////////////////////////////////////////////////////
 
 /**
- * helper - GET - /api/shows & setShowCityUserData
+ * GET - /api/shows & setShowCityUserData
  */
 const fetchShows = (
   params: UserDataState & (Coords | undefined),
@@ -63,8 +63,9 @@ const fetchShows = (
     })
     .catch((err) => console.log(err.message));
 };
+
 /**
- * helper - GET - /api/newshows & setShowCityUserData
+ * GET - /api/newshows & setShowCityUserData
  */
 const fetchNewShows = (
   userData: UserDataState,
@@ -124,8 +125,10 @@ const getSpotifySample = (
     .catch((err) => console.log(err.message));
 };
 
+///////////////////////////////////////////////////////
+
 /**
- * GET - /api/shows - reverse geocode current coords then get shows
+ * Get reverse geocode current coords then get shows
  */
 const getShows = (args: GetShowsArgs) => {
   const { userData, geolocation, callbacks } = args;
@@ -141,7 +144,7 @@ const getShows = (args: GetShowsArgs) => {
 };
 
 /**
- * GET - /api/shows - current location rev geo then shows - onClick
+ * Get current location rev geo then shows - onClick
  */
 const getCurrLocationShows = (args: GetCurrLocationShowsArgs) => {
   const { userData, geolocation, callbacks } = args;
@@ -164,7 +167,7 @@ const getCurrLocationShows = (args: GetCurrLocationShowsArgs) => {
 };
 
 /**
- * GET - /api/newshows - fwd geo then new shows
+ * Get forward geo then new shows
  */
 const getNewCityShows = (args: GetNewCityShowsArgs) => {
   const { userData, callbacks } = args;
@@ -185,7 +188,7 @@ const getNewCityShows = (args: GetNewCityShowsArgs) => {
 };
 
 /**
- * GET - /api/shows - date range rev geo shows
+ * Get date range reverse geo shows
  */
 const getNewDateRangeShows = (args: GetNewDateRangeShowsArgs) => {
   const { userData, currCity, cityQuery, callbacks } = args;

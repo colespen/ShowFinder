@@ -13,7 +13,9 @@ export const NAVIGTOR_ERROR = {
 /**
  * React hook returns user's geolocation in location state object
  */
-export default function useGeoLocation(reloadOnError = false): GeoLocationState {
+export default function useGeoLocation(
+  reloadOnError = false
+): GeoLocationState {
   const [location, setLocation] = useState<GeoLocationState>({
     loaded: false,
     coords: { lat: 0, lng: 0 },
@@ -82,7 +84,7 @@ export default function useGeoLocation(reloadOnError = false): GeoLocationState 
 
     const options = {
       enableHighAccuracy: false,
-      timeout: 10000,
+      timeout: 15000,
       maximumAge: 0,
     };
 
