@@ -7,10 +7,13 @@ import "./ShowMarkers.scss";
 const ShowMarkers = (props: ShowMarkersProps) => {
   const { shows, markerPlayback, markerRefs } = props;
 
+  console.log("markerRefs: ", markerRefs)
+
   return (
     <>
-      {(shows.data || []).map((show, index) =>
-        show.location.geo ? (
+      {(shows.data || []).map((show, index) => {
+        console.log("index: ", index)
+        return show.location.geo ? (
           <Marker
             //TODO: some repeat keys still.. fix in filter in server?
             key={show.description}
@@ -24,8 +27,8 @@ const ShowMarkers = (props: ShowMarkersProps) => {
           >
             <PopUp {...props} show={show} index={index} />
           </Marker>
-        ) : null
-      )}
+        ) : null;
+      })}
     </>
   );
 };

@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { DrawerLeftProps } from "../../datatypes/props";
 import { ShowData } from "../../datatypes/showData";
 import { artistNameFilter, convertTo12hr } from "../../helpers/utils";
 import "./DrawerLeft.scss";
 
 export default function DrawerLeft({ ...props }: DrawerLeftProps) {
+  const [startAnimation, setStartAnimation] = useState<boolean>(false);
+
   return <ShowDrawerList {...props} />;
 }
 
@@ -13,13 +16,13 @@ const ShowDrawerList = ({
   markerPlayback,
   setCenter,
 }: DrawerLeftProps) => {
-
   const openPopupFromList = (
     show: ShowData,
     index: number,
     lat: number,
     lng: number
   ) => {
+    console.log(markerRefs.current[index])
     markerRefs.current[index].openPopup();
     markerPlayback(show);
     setCenter(lat, lng);
@@ -28,8 +31,15 @@ const ShowDrawerList = ({
   const showListItem = (shows.data || []).map((show, index) => {
     const artistName = artistNameFilter(show);
     const showTime = convertTo12hr(show.startDate);
-    const lat = show.location.geo.latitude;
-    const lng = show.location.geo.longitude;
+    let lat = 0;
+    let lng = 0;
+    if (
+      show.location.geo !== undefined &&
+      Object.keys(show.location.geo).length > 1
+    ) {
+      lat = show.location.geo.latitude;
+      lng = show.location.geo.longitude;
+    }
 
     return (
       <div

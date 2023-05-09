@@ -8,9 +8,6 @@ const CurrentLocation = (props: CurrentLocationProps) => {
   const { geolocation, userData, currCity, center, isMarkerClicked } = props;
   const map = useMap();
 
-  console.log("center: ", center);
-  console.log("user: ", { lat: userData.lat, lng: userData.lng });
-
   useEffect(() => {
     if (geolocation.loaded && isMarkerClicked) {
       map.flyTo({ ...center }, 13);
