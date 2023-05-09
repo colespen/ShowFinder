@@ -90,7 +90,7 @@ app.get('/api/newshows', (req, res) => {
     `https://us1.locationiq.com/v1/search?${params.toString()}`
   )
     .then(response => {
-
+      // TODO: abstract citySort
       const citySort =
         response.data.sort((a, b) =>
           parseFloat(b.importance) - parseFloat(a.importance));
@@ -110,6 +110,7 @@ app.get('/api/newshows', (req, res) => {
       })
         .then(response => {
           // TODO: this dedupe stil retains some dupes resulting in same keys
+          // abstract dedupe
           const dedupe =
             response?.data?.data?.filter((el, index, arr) =>
               index === arr.findIndex((x) =>

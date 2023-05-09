@@ -1,6 +1,8 @@
 import { PlayPauseArgs, SetNewAudioArgs } from "../datatypes/events";
 
-// filter city name before comma for currCity
+/**
+ * filter city name before comma for currCity
+ */
 const cityFilter = (str: string) => {
   if (str) {
     const regex = new RegExp(/,/gm);
@@ -18,7 +20,9 @@ const cityFilter = (str: string) => {
   }
 };
 
-// Only display spinner if new marker (artist) and hide initial "audio unavailable"
+/**
+ * Only display spinner if new marker (artist) and hide initial "audio unavailable"
+ */
 const setNewAudioDelay = ({ setNewAudio, audioLink }: SetNewAudioArgs) => {
   setNewAudio(false);
   const setStateDelay = setTimeout(() => {
@@ -42,4 +46,17 @@ const playPause = ({ audioLink, isPlaying, audioRef }: PlayPauseArgs) => {
   }
 };
 
-export { cityFilter, playPause, setNewAudioDelay };
+/**
+ * convert 24hr to 12hr from ISO 8601 string
+ */
+const convertTo12hr = (startDate: string) => {
+  const timeString = startDate;
+  const hours24 = parseInt(timeString.slice(11, 13), 10);
+  const hours12 = (hours24 % 12 || 12).toString();
+  const minutes = timeString.slice(14, 16);
+  const amPm = hours24 < 12 ? "AM" : "PM";
+  const timeString12hr = `${hours12}:${minutes} ${amPm}`;
+  return timeString12hr;
+};
+
+export { cityFilter, playPause, setNewAudioDelay, convertTo12hr };

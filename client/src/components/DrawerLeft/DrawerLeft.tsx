@@ -1,4 +1,5 @@
 import { ShowDataState } from "../../datatypes/showData";
+import { convertTo12hr } from "../../helpers/utils";
 import "./DrawerLeft.scss";
 interface DrawerLeftProps {
   shows: ShowDataState;
@@ -7,13 +8,17 @@ interface DrawerLeftProps {
 const DrawerLeft = ({ shows }: DrawerLeftProps) => {
   return (
     // <div className="drawer-left-outer">
-      <ShowDrawerList shows={shows} />
+    <ShowDrawerList shows={shows} />
     // </div>
   );
 };
 
 const ShowDrawerList = ({ shows }: DrawerLeftProps) => {
   const showListItem = (shows.data || []).map((show, i) => {
+    
+   const showTime = convertTo12hr(show.startDate)
+    console.log(showTime);
+
     let headliner = "";
     if (show.performer.length === 0) {
       headliner = "headliner TBD";
@@ -25,7 +30,7 @@ const ShowDrawerList = ({ shows }: DrawerLeftProps) => {
         <li>{headliner}</li>
         <ul className="show-list-description">
           <li>{show.location.name}</li>
-          <li>{show.startDate}</li>
+          <li>{showTime}</li>
         </ul>
       </div>
     );
