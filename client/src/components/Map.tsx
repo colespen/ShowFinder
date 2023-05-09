@@ -6,6 +6,7 @@ import MapContainerComponent from "./MapContainer/MapContainer";
 import Title from "./Title";
 import ControlsTop from "./ControlsTop";
 import ControlsBottom from "./ControlsBottom/ControlsBottom";
+import DrawerLeft from "./DrawerLeft/DrawerLeft";
 
 import {
   getShows,
@@ -30,7 +31,7 @@ export default function Map() {
   const [cityQuery, setCityQuery] = useState<string>("");
   const [artist, setArtist] = useState<string>("");
   const [audioLink, setAudioLink] = useState<string>("");
-  const [newAudio, setNewAudio] = useState<boolean>(false); //true
+  const [newAudio, setNewAudio] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isAutoPlay, setIsAutoplay] = useState<boolean>(true);
   const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
@@ -137,9 +138,8 @@ export default function Map() {
 
   //////    GET - api/spotifysample - artist ID then get preview data
   useEffect(() => {
-    if (artist) {
-      getSpotifySample(artist, setAudioLink, setIsPlaying);
-    }
+    if (artist) getSpotifySample(artist, setAudioLink, setIsPlaying);
+    if (!artist) setAudioLink("");
   }, [artist]);
 
   //////////////////////////////////////////////////////////////////
@@ -174,6 +174,7 @@ export default function Map() {
         setNewAudio={setNewAudio}
         setIsMarkerClicked={setIsMarkerClicked}
       />
+      <DrawerLeft shows={shows} />
       <ControlsBottom
         audioRef={audioRef}
         audioLink={audioLink}

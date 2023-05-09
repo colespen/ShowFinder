@@ -14,15 +14,18 @@ const PopUp = (props: PopUpProps) => {
       // ref={popUpRef}
     >
       <ul className="artist-list">
-        {show.performer.map((artist: Performer, i: number) => (
-          <li className="artist" key={`${artist}-${i.toString()}`}>
-            <button onClick={(e) => getArtist(e, show.location.name)}>
-              {artist.name.length > 41
-                ? artist.name.substring(0, 41) + " ..."
-                : artist.name}
-            </button>
-          </li>
-        ))}
+        {show.performer.map((artist: Performer, i: number) => {
+        
+          return (
+            <li className="artist" key={`${artist}-${i.toString()}`}>
+              <button onClick={(e) => getArtist(e, show.location.name)}>
+                {artist.name.length > 41
+                  ? artist.name.substring(0, 41) + " ..."
+                  : artist.name}
+              </button>
+            </li>
+          );
+        })}
       </ul>
       <MarkerPlayer {...rest} />
       <a

@@ -19,14 +19,21 @@ const ShowMarkers = (props: ShowMarkersProps) => {
   const [lastClickedMarker, setLastClickedMarker] = useState<string | null>(
     null
   );
+  
   // currently this is doing nothing
   // const popUpRef = useRef(null);
 
   const handleMarkerClick = (show: ShowData) => {
+    let headliner = "";
+    if (show.performer.length === 0) {
+      headliner = "";
+    } else {
+      headliner = show.performer[0].name;
+    }
     setIsMarkerClicked(true);
-    handleSetArtist(show.performer[0].name, shows, setArtist);
-    setLastClickedMarker(show.performer[0].name);
-    if (show.performer[0].name !== lastClickedMarker) {
+    handleSetArtist(headliner, shows, setArtist);
+    setLastClickedMarker(headliner);
+    if (headliner !== lastClickedMarker) {
       handleSetNewAudio(setNewAudio, audioLink);
     }
   };
