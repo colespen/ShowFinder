@@ -6,9 +6,9 @@ interface DrawerLeftProps {
 
 const DrawerLeft = ({ shows }: DrawerLeftProps) => {
   return (
-    <div className="drawer-left-outer">
+    // <div className="drawer-left-outer">
       <ShowDrawerList shows={shows} />
-    </div>
+    // </div>
   );
 };
 
