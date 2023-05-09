@@ -1,5 +1,5 @@
 import { PlayPauseArgs, SetNewAudioArgs } from "../datatypes/events";
-
+import { ShowData } from "../datatypes/showData";
 /**
  * filter city name before comma for currCity
  */
@@ -19,7 +19,6 @@ const cityFilter = (str: string) => {
     return "";
   }
 };
-
 /**
  * Only display spinner if new marker (artist) and hide initial "audio unavailable"
  */
@@ -45,7 +44,6 @@ const playPause = ({ audioLink, isPlaying, audioRef }: PlayPauseArgs) => {
     }
   }
 };
-
 /**
  * convert 24hr to 12hr from ISO 8601 string
  */
@@ -58,5 +56,28 @@ const convertTo12hr = (startDate: string) => {
   const timeString12hr = `${hours12}:${minutes} ${amPm}`;
   return timeString12hr;
 };
+/**
+ * select either filtered artist from description or performer list and filter length...
+ */
+const artistNameFilter = (show: ShowData) => {
+  let headliner = "";
+  const indexOfAt = show.description.indexOf("at");
+  const headlinerFromDescription = show.description.substring(0, indexOfAt);
 
-export { cityFilter, playPause, setNewAudioDelay, convertTo12hr };
+  if (show.performer.length === 0) {
+    headliner = headlinerFromDescription;
+  } else {
+    headliner = show.performer[0].name;
+  }
+  const artistName =
+    headliner.length > 41 ? headliner.substring(0, 41) + " ..." : headliner;
+  return artistName;
+};
+
+export {
+  cityFilter,
+  playPause,
+  setNewAudioDelay,
+  convertTo12hr,
+  artistNameFilter,
+};

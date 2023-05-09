@@ -1,5 +1,5 @@
 import { ShowDataState } from "../../datatypes/showData";
-import { convertTo12hr } from "../../helpers/utils";
+import { artistNameFilter, convertTo12hr } from "../../helpers/utils";
 import "./DrawerLeft.scss";
 interface DrawerLeftProps {
   shows: ShowDataState;
@@ -15,19 +15,12 @@ const DrawerLeft = ({ shows }: DrawerLeftProps) => {
 
 const ShowDrawerList = ({ shows }: DrawerLeftProps) => {
   const showListItem = (shows.data || []).map((show, i) => {
-    
-   const showTime = convertTo12hr(show.startDate)
-    console.log(showTime);
+    const artistName = artistNameFilter(show)
+    const showTime = convertTo12hr(show.startDate);
 
-    let headliner = "";
-    if (show.performer.length === 0) {
-      headliner = "headliner TBD";
-    } else {
-      headliner = show.performer[0].name;
-    }
     return (
       <div key={show.description + i} className="show-list-item">
-        <li>{headliner}</li>
+        <li>{artistName}</li>
         <ul className="show-list-description">
           <li>{show.location.name}</li>
           <li>{showTime}</li>

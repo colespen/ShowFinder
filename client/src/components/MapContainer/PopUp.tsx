@@ -1,8 +1,7 @@
 import { Popup } from "react-leaflet";
-import getArtist from "../../helpers/getArtistHandler";
 import { PopUpProps } from "../../datatypes/props";
-import { Performer } from "../../datatypes/showData";
 
+import PerformerList from "./PerformerList";
 import MarkerPlayer from "./MarkerPlayer";
 
 const PopUp = (props: PopUpProps) => {
@@ -14,18 +13,7 @@ const PopUp = (props: PopUpProps) => {
       // ref={popUpRef}
     >
       <ul className="artist-list">
-        {show.performer.map((artist: Performer, i: number) => {
-        
-          return (
-            <li className="artist" key={`${artist}-${i.toString()}`}>
-              <button onClick={(e) => getArtist(e, show.location.name)}>
-                {artist.name.length > 41
-                  ? artist.name.substring(0, 41) + " ..."
-                  : artist.name}
-              </button>
-            </li>
-          );
-        })}
+        <PerformerList show={show} />
       </ul>
       <MarkerPlayer {...rest} />
       <a
