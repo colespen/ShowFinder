@@ -1,13 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import "./styles.scss";
-
 import useGeoLocation, { NAVIGTOR_ERROR } from "../hooks/useGeoLocation";
 import MapContainerComponent from "./MapContainer/MapContainer";
 import Title from "./Title";
 import ControlsTop from "./ControlsTop";
 import ControlsBottom from "./ControlsBottom/ControlsBottom";
 import DrawerLeft from "./DrawerLeft/DrawerLeft";
-
 import {
   getShows,
   getSpotifyToken,
@@ -16,10 +13,16 @@ import {
   getCurrLocationShows,
   getNewDateRangeShows,
 } from "../services/getApiData";
-
 import { UserDataState } from "../datatypes/userData";
-import { ShowDataState } from "../datatypes/showData";
-import { userDataInitial } from "../datatypes/initialState";
+import { ShowData, ShowDataState } from "../datatypes/showData";
+import {
+  centerStateInitial,
+  transitionInitial,
+  userDataInitial,
+} from "../datatypes/initialState";
+import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
+import "./styles.scss";
+import { Marker } from "leaflet";
 
 export default function Map() {
   const [shows, setShows] = useState<ShowDataState>({
@@ -38,15 +41,16 @@ export default function Map() {
   // this isGeoError to render text in title upon geo error
   // const [isGeoError, setIsGeoError] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserDataState>(userDataInitial);
-  const [transition, setTransition] = useState<{
-    opacity: number;
-    type: string;
-  }>({
-    opacity: 1,
-    type: "initial",
-  });
-  const isFirstRender = useRef(true);
+  const [transition, setTransition] = useState(transitionInitial);
+  const [lastClickedMarker, setLastClickedMarker] = useState<string | null>(
+    null
+  );
+  const isFirstRender = useRef<boolean>(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const markerRefs = useRef<Marker[]>([]);
+  const [center, setCenter] = useState<{ lat: number; lng: number }>(
+    centerStateInitial
+  );
 
   const geolocation = useGeoLocation();
 
@@ -146,6 +150,28 @@ export default function Map() {
   //////
   ////////////////////////////////////////////////////////////////////
 
+  /**
+   * handles audio playback when artist name is set or changes
+   */
+  const handleMarkerPlayback = (
+    show: ShowData
+    // lat?: number, lng?: number
+  ) => {
+    let headliner = "";
+    if (show.performer.length === 0) headliner = "";
+    else headliner = show.performer[0].name;
+    setIsMarkerClicked(true);
+    handleSetArtist(headliner, shows, setArtist);
+    setLastClickedMarker(headliner);
+    if (headliner !== lastClickedMarker) {
+      handleSetNewAudio(setNewAudio, audioLink);
+    }
+  };
+
+  const handleSetCenter = (lat: number, lng: number) => {
+    setCenter({ lat, lng });
+  };
+
   return (
     <div className="map-main">
       <Title
@@ -162,6 +188,7 @@ export default function Map() {
         handleDateRangeShows={handleDateRangeShows}
       />
       <MapContainerComponent
+        center={center}
         geolocation={geolocation}
         shows={shows}
         audioRef={audioRef}
@@ -173,8 +200,16 @@ export default function Map() {
         setArtist={setArtist}
         setNewAudio={setNewAudio}
         setIsMarkerClicked={setIsMarkerClicked}
+        markerRefs={markerRefs}
+        markerPlayback={handleMarkerPlayback}
+        isMarkerClicked={isMarkerClicked}
       />
-      <DrawerLeft shows={shows} />
+      <DrawerLeft
+        shows={shows}
+        setCenter={handleSetCenter}
+        markerRefs={markerRefs}
+        markerPlayback={handleMarkerPlayback}
+      />
       <ControlsBottom
         audioRef={audioRef}
         audioLink={audioLink}

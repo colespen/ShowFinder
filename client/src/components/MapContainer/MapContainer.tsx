@@ -3,17 +3,16 @@ import { ContainerProps } from "../../datatypes/props";
 
 import CurrentLocation from "./CurrentLocation";
 import ShowMarkers from "./ShowMarkers";
+import { centerInitial } from "../../datatypes/initialState";
 
 const MapContainerComponent = (props: MapContainerProps & ContainerProps) => {
-  const { geolocation, userData, currCity, ...rest } = props;
-
-  //////    Default position
-  const budapest: [number, number] = [47.51983881388099, 19.032783326057594];
+  const { isMarkerClicked, center, geolocation, userData, currCity, ...rest } =
+    props;
 
   return (
     <MapContainer
       className="map-container"
-      center={budapest}
+      center={centerInitial}
       zoom={2.5}
       scrollWheelZoom={true}
     >
@@ -27,6 +26,8 @@ const MapContainerComponent = (props: MapContainerProps & ContainerProps) => {
         geolocation={geolocation}
         userData={userData}
         currCity={currCity}
+        center={center}
+        isMarkerClicked={isMarkerClicked}
       />
     </MapContainer>
   );

@@ -19,10 +19,22 @@ export interface TitleProps {
 }
 
 export interface ContainerProps extends ShowMarkersProps {
+  center: {lat: number; lng: number}
   geolocation: GeoLocationState;
   audioRef: MutableRefObject<HTMLAudioElement | null>;
   userData: UserDataState;
   currCity: string;
+  markerRefs: any;
+  markerPlayback: (show: ShowData) => void;
+  isMarkerClicked: boolean;
+}
+
+export interface CurrentLocationProps {
+  geolocation: GeoLocationState;
+  userData: UserDataState;
+  currCity: string;
+  center: { lat: number; lng: number };
+  isMarkerClicked: boolean;
 }
 
 export interface ShowMarkersProps {
@@ -31,9 +43,11 @@ export interface ShowMarkersProps {
   audioRef: MutableRefObject<HTMLAudioElement | null>;
   newAudio: boolean;
   isPlaying: boolean;
+  markerRefs: any;
   setArtist: Dispatch<SetStateAction<string>>;
   setIsMarkerClicked: Dispatch<SetStateAction<boolean>>;
   setNewAudio: Dispatch<SetStateAction<boolean>>;
+  markerPlayback: (show: ShowData) => void;
 }
 
 export interface PopUpProps extends MarkerPlayerProps {
@@ -84,4 +98,11 @@ export interface DateRangeProps {
 export interface DateButtonInputProps {
   value?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+}
+
+export interface DrawerLeftProps {
+  shows: ShowDataState;
+  markerRefs: any;
+  markerPlayback: (show: ShowData) => void;
+  setCenter: (lat: number, lng: number) => void
 }

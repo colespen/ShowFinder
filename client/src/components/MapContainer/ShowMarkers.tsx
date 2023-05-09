@@ -1,42 +1,11 @@
-import { useState } from "react";
-import "./ShowMarkers.scss";
-
 import { Marker } from "react-leaflet";
-import {
-  handleSetArtist,
-  handleSetNewAudio,
-} from "../../helpers/eventHandlers";
-
-import { ShowData } from "../../datatypes/showData";
+import PopUp from "./PopUp";
 import { ShowMarkersProps } from "../../datatypes/props";
 
-import PopUp from "./PopUp";
+import "./ShowMarkers.scss";
 
 const ShowMarkers = (props: ShowMarkersProps) => {
-  const { shows, setArtist, setNewAudio, audioLink, setIsMarkerClicked } =
-    props;
-  //                                       was useState<string>("")
-  const [lastClickedMarker, setLastClickedMarker] = useState<string | null>(
-    null
-  );
-  
-  // currently this is doing nothing
-  // const popUpRef = useRef(null);
-
-  const handleMarkerClick = (show: ShowData) => {
-    let headliner = "";
-    if (show.performer.length === 0) {
-      headliner = "";
-    } else {
-      headliner = show.performer[0].name;
-    }
-    setIsMarkerClicked(true);
-    handleSetArtist(headliner, shows, setArtist);
-    setLastClickedMarker(headliner);
-    if (headliner !== lastClickedMarker) {
-      handleSetNewAudio(setNewAudio, audioLink);
-    }
-  };
+  const { shows, markerPlayback, markerRefs } = props;
 
   return (
     <>
@@ -48,16 +17,12 @@ const ShowMarkers = (props: ShowMarkersProps) => {
             position={[show.location.geo.latitude, show.location.geo.longitude]}
             eventHandlers={{
               click: () => {
-                handleMarkerClick(show);
+                markerPlayback(show);
               },
             }}
+            ref={(ref) => (markerRefs.current[index] = ref)}
           >
-            <PopUp
-              {...props}
-              show={show}
-              index={index}
-              // ref={popUpRef}
-            />
+            <PopUp {...props} show={show} index={index} />
           </Marker>
         ) : null
       )}

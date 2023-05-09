@@ -1,25 +1,42 @@
-import { ShowDataState } from "../../datatypes/showData";
+import { DrawerLeftProps } from "../../datatypes/props";
+import { ShowData } from "../../datatypes/showData";
 import { artistNameFilter, convertTo12hr } from "../../helpers/utils";
 import "./DrawerLeft.scss";
-interface DrawerLeftProps {
-  shows: ShowDataState;
+
+export default function DrawerLeft({ ...props }: DrawerLeftProps) {
+  return <ShowDrawerList {...props} />;
 }
 
-const DrawerLeft = ({ shows }: DrawerLeftProps) => {
-  return (
-    // <div className="drawer-left-outer">
-    <ShowDrawerList shows={shows} />
-    // </div>
-  );
-};
+const ShowDrawerList = ({
+  shows,
+  markerRefs,
+  markerPlayback,
+  setCenter,
+}: DrawerLeftProps) => {
 
-const ShowDrawerList = ({ shows }: DrawerLeftProps) => {
-  const showListItem = (shows.data || []).map((show, i) => {
-    const artistName = artistNameFilter(show)
+  const openPopupFromList = (
+    show: ShowData,
+    index: number,
+    lat: number,
+    lng: number
+  ) => {
+    markerRefs.current[index].openPopup();
+    markerPlayback(show);
+    setCenter(lat, lng);
+  };
+
+  const showListItem = (shows.data || []).map((show, index) => {
+    const artistName = artistNameFilter(show);
     const showTime = convertTo12hr(show.startDate);
+    const lat = show.location.geo.latitude;
+    const lng = show.location.geo.longitude;
 
     return (
-      <div key={show.description + i} className="show-list-item">
+      <div
+        key={show.description + index}
+        className="show-list-item"
+        onClick={() => openPopupFromList(show, index, lat, lng)}
+      >
         <li>{artistName}</li>
         <ul className="show-list-description">
           <li>{show.location.name}</li>
@@ -28,7 +45,9 @@ const ShowDrawerList = ({ shows }: DrawerLeftProps) => {
       </div>
     );
   });
-  return <ul className="drawer-left-container">{showListItem}</ul>;
+  return (
+    <div className="drawer-left-outer">
+      <ul className="drawer-left-container">{showListItem}</ul>
+    </div>
+  );
 };
-
-export default DrawerLeft;

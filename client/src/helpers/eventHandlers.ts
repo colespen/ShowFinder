@@ -2,7 +2,7 @@ import { Dispatch, MutableRefObject, SetStateAction } from "react";
 import { playPause, setNewAudioDelay } from "../helpers/utils";
 import { DateRangeType, UserDataState } from "../datatypes/userData";
 import { ChangeEvent, FocusEvent, KeyboardEvent } from "../datatypes/events";
-import { ShowDataState } from "../datatypes/showData";
+import { ShowData, ShowDataState } from "../datatypes/showData";
 
 ////    Set City Name Input
 const handleCityChange = (
@@ -30,6 +30,33 @@ const handleDateSelect = (
   setUserData: Dispatch<SetStateAction<UserDataState>>
 ) => {
   setUserData((prev) => ({ ...prev, dateRange }));
+};
+
+/**
+ * handles audio playback when artist name is set or changes
+ */
+const handleMarkerPlayback = (
+  show: ShowData,
+  shows: ShowDataState,
+  lastClickedMarker: string | null,
+  audioLink: string,
+  setIsMarkerClicked: Dispatch<SetStateAction<boolean>>,
+  setArtist: Dispatch<SetStateAction<string>>,
+  setLastClickedMarker: Dispatch<React.SetStateAction<string | null>>,
+  setNewAudio: Dispatch<SetStateAction<boolean>>
+) => {
+  let headliner = "";
+  if (show.performer.length === 0) {
+    headliner = "";
+  } else {
+    headliner = show.performer[0].name;
+  }
+  setIsMarkerClicked(true);
+  handleSetArtist(headliner, shows, setArtist);
+  setLastClickedMarker(headliner);
+  if (headliner !== lastClickedMarker) {
+    handleSetNewAudio(setNewAudio, audioLink);
+  }
 };
 
 ////    Set Artist from marker for audio src (headliner [0])
@@ -66,6 +93,7 @@ export {
   handleInputTextSelect,
   handleNewCityOnEnter,
   handleDateSelect,
+  handleMarkerPlayback,
   handleSetArtist,
   handlePlayPause,
   handleSetNewAudio,

@@ -8,10 +8,7 @@ const PopUp = (props: PopUpProps) => {
   const { index, show, ...rest } = props;
 
   return (
-    <Popup
-      key={index}
-      // ref={popUpRef}
-    >
+    <Popup key={index}>
       <ul className="artist-list">
         <PerformerList show={show} />
       </ul>
