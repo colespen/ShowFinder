@@ -1,9 +1,18 @@
 import "./DrawerLeft.scss";
 
-const SlideIn = ({children}: {children: React.ReactNode}) => {
+interface SlideInProps {
+  children: React.ReactNode;
+  startAnimation: boolean;
+}
+
+const SlideIn = ({ children, startAnimation }: SlideInProps) => {
+  const containerTransitionStyles = startAnimation
+    ? { left: "0px", opacity: "75%" }
+    : {};
+
   return (
-    <div className="drawer-slide-in">
-        {children}
+    <div className="drawer-slide-in" style={containerTransitionStyles}>
+      {children}
     </div>
   );
 };

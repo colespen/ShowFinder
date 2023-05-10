@@ -10,10 +10,12 @@ const DrawerLeft = ({ ...props }: DrawerLeftProps) => {
 
   return (
     <>
-      <SlideIn>
-        <EventsList {...props} />
+      <SlideIn startAnimation={startAnimation}>
+        <EventsList {...props} startAnimation={startAnimation}/>
         <div className="button-wrapper">
-          <button>{">"}</button>
+          <button onClick={() => setStartAnimation(!startAnimation)}>
+            {">"}
+          </button>
         </div>
       </SlideIn>
     </>

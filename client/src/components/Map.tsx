@@ -54,6 +54,8 @@ export default function Map() {
 
   const geolocation = useGeoLocation();
 
+  console.log("(shows.data.length === 0): ", (shows.data.length === 0))
+
   //////   Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
     if (geolocation.error?.code === NAVIGTOR_ERROR.PERMISSION_DENIED) {
@@ -201,12 +203,12 @@ export default function Map() {
         markerPlayback={handleMarkerPlayback}
         isMarkerClicked={isMarkerClicked}
       />
-      <DrawerLeft
+      {shows.data.length !== 0 && <DrawerLeft
         shows={shows}
         setCenter={handleSetCenter}
         markerRefs={markerRefs}
         markerPlayback={handleMarkerPlayback}
-      />
+      />}
       <ControlsBottom
         audioRef={audioRef}
         audioLink={audioLink}

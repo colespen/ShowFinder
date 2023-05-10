@@ -4,44 +4,56 @@
   // width: 90%; // mobile
   width: 35%; // desktop
   top: 46%;
-  // left: -420px;
-  left: 0px;
+  left: -465px;
+  // left: 0px; // when open
   position: fixed;
   z-index: 1000;
   border-right: 10px solid white;
-  // border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
   background-color: white;
   box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
-  opacity: 85%;
-
-  // overflow: hidden;
-  overflow: scroll;
-  overflow-x: hidden;
-
+  opacity: 55%;
+  // opacity: 85%; // when open
   display: flex;
   justify-content: space-between;
+  // overflow: hidden;
+  overflow: scroll; // TODO: FIX
+  overflow-x: hidden;
+
+  transition: left, opacity, 750ms ease;
 
   .button-wrapper {
+    opacity: 85%;
     height: 50px;
+    width: 45px;
     z-index: 1000;
-    // left: -420px;
     // margin-left: 90%; // mobile
-  margin-left: 35%; // desktop
+    margin-left: 35%; // desktop
     position: fixed;
     z-index: 3000;
+
+    animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -webkit-animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -moz-animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -o-animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -ms-animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
+
     button {
       height: 100%;
+      width: 100%;
       border: none;
       border-top-right-radius: 12px;
       border-bottom-right-radius: 12px;
       background-color: white;
+      cursor: pointer;
     }
   }
 
   .drawer-left-outer {
+    opacity: 0%;
     display: flex;
     flex-direction: column;
+    transition: opacity 250ms ease;
 
     .drawer-left-container {
       height: 100%;
@@ -73,20 +85,3 @@
     }
   }
 }
-
-// .button-wrapper {
-//   height: 50px;
-//   z-index: 1000;
-//   // left: -420px;
-//   margin-left: 90%; // mobile
-// // margin-left: 35%; // desktop
-//   position: fixed;
-//   z-index: 3000;
-//   button {
-//     height: 100%;
-//     border: none;
-//     border-top-right-radius: 12px;
-//     border-bottom-right-radius: 12px;
-//     background-color: white;
-//   }
-// }

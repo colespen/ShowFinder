@@ -106,3 +106,6 @@ export interface DrawerLeftProps {
   markerPlayback: (show: ShowData) => void;
   setCenter: (latLng: {lat: number, lng: number}) => void
 }
+export interface EventListProps extends DrawerLeftProps {
+  startAnimation: boolean;
+}

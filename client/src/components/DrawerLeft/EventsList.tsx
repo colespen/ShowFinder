@@ -1,4 +1,4 @@
-import { DrawerLeftProps } from "../../datatypes/props";
+import { EventListProps } from "../../datatypes/props";
 import { ShowData } from "../../datatypes/showData";
 import { artistNameFilter, convertTo12hr } from "../../helpers/utils";
 import "./DrawerLeft.scss";
@@ -8,8 +8,11 @@ const EventsList = ({
   markerRefs,
   markerPlayback,
   setCenter,
-}: DrawerLeftProps) => {
-
+  startAnimation,
+}: EventListProps) => {
+  const contentsTransitionStyles = startAnimation
+    ? { opacity: "100%", transition: "opacity 1.5s ease" }
+    : {};
 
   const openPopupFromList = (show: ShowData, index: number) => {
     const refLatLng = markerRefs.current[index]._latlng;
@@ -43,10 +46,8 @@ const EventsList = ({
     );
   });
   return (
-    <div className="drawer-left-outer">
-      <ul className="drawer-left-container">
-        {showListItem}
-        </ul>
+    <div className="drawer-left-outer" style={contentsTransitionStyles}>
+      <ul className="drawer-left-container">{showListItem}</ul>
     </div>
   );
 };

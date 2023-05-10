@@ -482,3 +482,77 @@
     opacity: 55%;
   }
 }
+
+////////////////////////////////
+/////  Drawer Fade
+/////////////////////////////
+
+@keyframes drawerButtonFadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  40% {
+    opacity: 15%;
+  }
+
+  100% {
+    opacity: 75%;
+  }
+}
+
+@-moz-keyframes drawerButtonFadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  40% {
+    opacity: 15%;
+  }
+
+  100% {
+    opacity: 75%;
+  }
+}
+
+@-webkit-keyframes drawerButtonFadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 15%;
+  }
+
+  100% {
+    opacity: 75%;
+  }
+}
+
+@-o-keyframes drawerButtonFadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  40% {
+    opacity: 15%;
+  }
+
+  100% {
+    opacity: 75%;
+  }
+}
+
+@-ms-keyframes drawerButtonFadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  40% {
+    opacity: 15%;
+  }
+
+  100% {
+    opacity: 75%;
+  }
+}
