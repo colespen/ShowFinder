@@ -33,21 +33,23 @@ const EventsList = ({
         className="show-list-item"
         onClick={() => openPopupFromList(show, index)}
       >
-        <li>{artistName}</li>
+        <li className="artist-name">{artistName}</li>
         <ul className="show-list-description">
           <li>
             {show.location.name.length > 41
               ? show.location.name.substring(0, 31) + " ..."
               : show.location.name}
           </li>
-          <li>{showTime}</li>
+          <li className="event-time">{showTime}</li>
         </ul>
       </div>
     );
   });
   return (
     <div className="drawer-left-outer" style={contentsTransitionStyles}>
-      <ul className="drawer-left-container">{showListItem}</ul>
+      <ul className="drawer-left-container" >
+        {showListItem}
+      </ul>
     </div>
   );
 };

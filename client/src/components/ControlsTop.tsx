@@ -8,6 +8,7 @@ import { ControlsTopProps } from "../datatypes/props";
 import DateRange from "./DateRange";
 
 import "./styles.scss";
+import useGeoLocation from "../hooks/useGeoLocation";
 
 const ControlsTop = (props: ControlsTopProps) => {
   const {
@@ -16,6 +17,10 @@ const ControlsTop = (props: ControlsTopProps) => {
     handleDateRangeShows,
     handleCurrLocation,
   } = props;
+
+  const geolocation = useGeoLocation();
+
+  console.log(geolocation.loaded)
 
   return (
     <div className="controls-top">
@@ -40,11 +45,11 @@ const ControlsTop = (props: ControlsTopProps) => {
         </button>
       </div>
       <button id="current-location" onClick={handleCurrLocation}>
-        <img
+        {geolocation.loaded && <img
           id="location-icon"
           src="./target.png"
           alt="current-location-icon"
-        />
+        />}
       </button>
     </div>
   );

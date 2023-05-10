@@ -23,8 +23,7 @@
   transition: left, opacity, 750ms ease;
 
   .button-wrapper {
-    opacity: 85%;
-    height: 50px;
+    height: 55px;
     width: 45px;
     z-index: 1000;
     // margin-left: 90%; // mobile
@@ -41,15 +40,34 @@
     button {
       height: 100%;
       width: 100%;
-      border: none;
+      border: 2px solid rgb(255, 255, 255);
       border-top-right-radius: 12px;
       border-bottom-right-radius: 12px;
-      background-color: white;
+      background-color: rgba(255, 255, 255, 0.807);
+      display: flex;
+      align-items: center;
       cursor: pointer;
+      transition: background-color 250ms ease;
+
+      // &:hover {
+      //   background-color: rgb(255, 255, 255);
+      // }
+
+      .drawer-button-icon {
+        width: 105%;
+        height: 100%;
+        margin-left: 2px;
+        filter: invert(35%);
+        &:hover {
+          filter: invert(0%);
+        }
+        transition: filter 250ms ease;
+      }
     }
   }
 
   .drawer-left-outer {
+    width: 100%;
     opacity: 0%;
     display: flex;
     flex-direction: column;
@@ -68,13 +86,37 @@
       // overflow-x: hidden;
 
       .show-list-item {
+        width: 99%;
+        // padding-left: 5px;
+        border-radius: 5px;
+        border: 2px solid rgb(243 243 254);
+        padding: 0px 2px 0px 4px;
+        margin: 4px 0px 4px 0px;
         display: flex;
-        padding-left: 5px;
-        list-style-type: none;
+        justify-content: space-between;
         cursor: pointer;
+        &:hover {
+          background-color: rgb(246 200 209);
+          border: 2px solid rgb(246 200 209);
+        }
+
+        .artist-name {
+          list-style-type: none;
+          font-weight: 600;
+        }
+
+        .event-time {
+          min-width: 35px;
+          margin-left: 4px;
+          color: rgb(228, 82, 111);
+          font-weight: 600;
+          font-size: 13px;
+          display: flex;
+          justify-content: center;
+        }
         li {
-          padding-left: 4px;
-          padding-right: 4px;
+          padding-left: 2px;
+          padding-right: 2px;
         }
         .show-list-description {
           padding-left: 5px;
