@@ -104,5 +104,5 @@ export interface DrawerLeftProps {
   shows: ShowDataState;
   markerRefs: any;
   markerPlayback: (show: ShowData) => void;
-  setCenter: (lat: number, lng: number) => void
+  setCenter: (latLng: {lat: number, lng: number}) => void
 }

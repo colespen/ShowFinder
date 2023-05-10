@@ -1,24 +1,23 @@
+import { useEffect } from "react";
 import { Marker } from "react-leaflet";
 import PopUp from "./PopUp";
 import { ShowMarkersProps } from "../../datatypes/props";
 
 import "./ShowMarkers.scss";
-import { useEffect } from "react";
 
 const ShowMarkers = (props: ShowMarkersProps) => {
   const { shows, markerPlayback, markerRefs } = props;
 
-  console.log("markerRefs: ", markerRefs)
+  console.log("in Show Markers")
 
   useEffect(() => {
-    // update markerRefs.current after all markers have been rendered
+    // update markerRefs.current after all markers are rendered
     markerRefs.current = markerRefs.current.filter(Boolean);
   }, [markerRefs, shows]);
 
   return (
     <>
       {(shows.data || []).map((show, index) => {
-        console.log("index: ", index)
         return show.location.geo ? (
           <Marker
             //TODO: some repeat keys still.. fix in filter in server?

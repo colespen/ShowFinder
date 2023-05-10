@@ -52,8 +52,6 @@ export default function Map() {
     centerStateInitial
   );
 
-  console.log("markerRefs: ", markerRefs)
-
   const geolocation = useGeoLocation();
 
   //////   Set Geo Coords State After Allow Access - First Render
@@ -170,8 +168,8 @@ export default function Map() {
     }
   };
 
-  const handleSetCenter = (lat: number, lng: number) => {
-    setCenter({ lat, lng });
+  const handleSetCenter = (latLng: {lat: number; lng: number}) => {
+    setCenter(latLng);
   };
 
   return (

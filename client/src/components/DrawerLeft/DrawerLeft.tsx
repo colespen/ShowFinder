@@ -1,11 +1,11 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { DrawerLeftProps } from "../../datatypes/props";
 import { ShowData } from "../../datatypes/showData";
 import { artistNameFilter, convertTo12hr } from "../../helpers/utils";
 import "./DrawerLeft.scss";
 
 export default function DrawerLeft({ ...props }: DrawerLeftProps) {
-  const [startAnimation, setStartAnimation] = useState<boolean>(false);
+  // const [startAnimation, setStartAnimation] = useState<boolean>(false);
 
   return <ShowDrawerList {...props} />;
 }
@@ -17,37 +17,24 @@ const ShowDrawerList = ({
   setCenter,
 }: DrawerLeftProps) => {
 
-  const openPopupFromList = (
-    show: ShowData,
-    index: number,
-    lat: number,
-    lng: number
-  ) => {
-    console.log(markerRefs.current[index]);
+  const openPopupFromList = (show: ShowData, index: number) => {
+    const refLatLng = markerRefs.current[index]._latlng;
     markerRefs.current[index].openPopup();
     markerPlayback(show);
-    setCenter(lat, lng);
+    if (refLatLng !== undefined && Object.keys(refLatLng).length !== 0) {
+      setCenter(refLatLng);
+    }
   };
 
   const showListItem = (shows.data || []).map((show, index) => {
     const artistName = artistNameFilter(show);
     const showTime = convertTo12hr(show.startDate);
-    let lat = 0;
-    let lng = 0;
-
-    if (
-      show.location.geo !== undefined &&
-      Object.keys(show.location.geo).length > 1
-    ) {
-      lat = show.location.geo.latitude;
-      lng = show.location.geo.longitude;
-    }
 
     return (
       <div
         key={show.description + index}
         className="show-list-item"
-        onClick={() => openPopupFromList(show, index, lat, lng)}
+        onClick={() => openPopupFromList(show, index)}
       >
         <li>{artistName}</li>
         <ul className="show-list-description">
