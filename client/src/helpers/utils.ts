@@ -51,9 +51,9 @@ const convertTo12hr = (startDate: string) => {
   const timeString = startDate;
   const hours24 = parseInt(timeString.slice(11, 13), 10);
   const hours12 = (hours24 % 12 || 12).toString();
-  const minutes = timeString.slice(14, 16);
+  // const minutes = timeString.slice(14, 16);
   const amPm = hours24 < 12 ? "AM" : "PM";
-  const timeString12hr = `${hours12}:${minutes} ${amPm}`;
+  const timeString12hr = `${hours12} ${amPm}`;
   return timeString12hr;
 };
 /**
@@ -70,7 +70,7 @@ const artistNameFilter = (show: ShowData) => {
     headliner = show.performer[0].name;
   }
   const artistName =
-    headliner.length > 41 ? headliner.substring(0, 41) + " ..." : headliner;
+    headliner.length > 31 ? headliner.substring(0, 25) + " ..." : headliner;
   return artistName;
 };
 

@@ -153,10 +153,7 @@ export default function Map() {
   /**
    * handles audio playback when artist name is set or changes
    */
-  const handleMarkerPlayback = (
-    show: ShowData
-    // lat?: number, lng?: number
-  ) => {
+  const handleMarkerPlayback = (show: ShowData) => {
     let headliner = "";
     if (show.performer.length === 0) headliner = "";
     else headliner = show.performer[0].name;
@@ -168,7 +165,7 @@ export default function Map() {
     }
   };
 
-  const handleSetCenter = (latLng: {lat: number; lng: number}) => {
+  const handleSetCenter = (latLng: { lat: number; lng: number }) => {
     setCenter(latLng);
   };
 

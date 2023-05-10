@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
+import { centerInitial } from "../../datatypes/initialState";
 import { CurrentLocationProps } from "../../datatypes/props";
 
 ////    Use Current Location for map Position and circle
@@ -8,8 +9,16 @@ const CurrentLocation = (props: CurrentLocationProps) => {
   const { geolocation, userData, currCity, center, isMarkerClicked } = props;
   const map = useMap();
 
+  // console.log("CurrentLocation");
+  // center on Maker when clicked from drawer
   useEffect(() => {
-    if (geolocation.loaded && isMarkerClicked) {
+    const centerVals = Object.values(center);
+    if (
+      geolocation.loaded &&
+      isMarkerClicked &&
+      centerVals[0] !== centerInitial[0] &&
+      centerVals[1] !== centerInitial[1]
+    ) {
       map.flyTo({ ...center }, 13);
     }
   }, [center, geolocation.loaded, isMarkerClicked, map]);
