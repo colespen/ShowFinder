@@ -3,11 +3,17 @@ import PopUp from "./PopUp";
 import { ShowMarkersProps } from "../../datatypes/props";
 
 import "./ShowMarkers.scss";
+import { useEffect } from "react";
 
 const ShowMarkers = (props: ShowMarkersProps) => {
   const { shows, markerPlayback, markerRefs } = props;
 
   console.log("markerRefs: ", markerRefs)
+
+  useEffect(() => {
+    // update markerRefs.current after all markers have been rendered
+    markerRefs.current = markerRefs.current.filter(Boolean);
+  }, [markerRefs, shows]);
 
   return (
     <>

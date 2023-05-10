@@ -52,6 +52,8 @@ export default function Map() {
     centerStateInitial
   );
 
+  console.log("markerRefs: ", markerRefs)
+
   const geolocation = useGeoLocation();
 
   //////   Set Geo Coords State After Allow Access - First Render

@@ -16,13 +16,14 @@ const ShowDrawerList = ({
   markerPlayback,
   setCenter,
 }: DrawerLeftProps) => {
+
   const openPopupFromList = (
     show: ShowData,
     index: number,
     lat: number,
     lng: number
   ) => {
-    console.log(markerRefs.current[index])
+    console.log(markerRefs.current[index]);
     markerRefs.current[index].openPopup();
     markerPlayback(show);
     setCenter(lat, lng);
@@ -33,6 +34,7 @@ const ShowDrawerList = ({
     const showTime = convertTo12hr(show.startDate);
     let lat = 0;
     let lng = 0;
+
     if (
       show.location.geo !== undefined &&
       Object.keys(show.location.geo).length > 1
