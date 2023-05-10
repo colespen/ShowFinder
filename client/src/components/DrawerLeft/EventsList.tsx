@@ -44,7 +44,9 @@ const EventsList = ({
   });
   return (
     <div className="drawer-left-outer">
-      <ul className="drawer-left-container">{showListItem}</ul>
+      <ul className="drawer-left-container">
+        {showListItem}
+        </ul>
     </div>
   );
 };

@@ -3,19 +3,41 @@
   max-height: 40%;
   // width: 90%; // mobile
   width: 35%; // desktop
-
   top: 46%;
+  // left: -420px;
   left: 0px;
   position: fixed;
   z-index: 1000;
-
-  border-top-right-radius: 12px;
+  border-right: 10px solid white;
+  // border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
   background-color: white;
   box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
-
   opacity: 85%;
-  overflow: hidden;
+
+  // overflow: hidden;
+  overflow: scroll;
+  overflow-x: hidden;
+
+  display: flex;
+  justify-content: space-between;
+
+  .button-wrapper {
+    height: 50px;
+    z-index: 1000;
+    // left: -420px;
+    // margin-left: 90%; // mobile
+  margin-left: 35%; // desktop
+    position: fixed;
+    z-index: 3000;
+    button {
+      height: 100%;
+      border: none;
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+      background-color: white;
+    }
+  }
 
   .drawer-left-outer {
     display: flex;
@@ -30,8 +52,8 @@
       // padding-left: 2px; // mobile
       padding-left: 15px; // desktop
 
-      overflow: scroll;
-      overflow-x: hidden;
+      // overflow: scroll;
+      // overflow-x: hidden;
 
       .show-list-item {
         display: flex;
@@ -51,3 +73,20 @@
     }
   }
 }
+
+// .button-wrapper {
+//   height: 50px;
+//   z-index: 1000;
+//   // left: -420px;
+//   margin-left: 90%; // mobile
+// // margin-left: 35%; // desktop
+//   position: fixed;
+//   z-index: 3000;
+//   button {
+//     height: 100%;
+//     border: none;
+//     border-top-right-radius: 12px;
+//     border-bottom-right-radius: 12px;
+//     background-color: white;
+//   }
+// }

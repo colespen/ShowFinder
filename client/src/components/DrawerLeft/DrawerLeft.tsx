@@ -9,9 +9,14 @@ const DrawerLeft = ({ ...props }: DrawerLeftProps) => {
   const [startAnimation, setStartAnimation] = useState<boolean>(false);
 
   return (
-    <SlideIn>
-      <EventsList {...props} />
-    </SlideIn>
+    <>
+      <SlideIn>
+        <EventsList {...props} />
+        <div className="button-wrapper">
+          <button>{">"}</button>
+        </div>
+      </SlideIn>
+    </>
   );
 };
 
