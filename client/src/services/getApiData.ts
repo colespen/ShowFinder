@@ -111,6 +111,7 @@ const getSpotifySample = (
         setAudioLink("");
         throw new Error("No tracks found");
       }
+      // take first preview_url that isn't null then exit
       for (let i = 0; i < tracks.length; i++) {
         if (tracks[i].preview_url) {
           setAudioLink(tracks[i].preview_url);

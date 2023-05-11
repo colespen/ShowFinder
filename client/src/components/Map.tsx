@@ -23,6 +23,7 @@ import {
 import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
 import "./styles.scss";
 import { Marker } from "leaflet";
+import { setArtistNameFilter } from "../helpers/utils";
 
 export default function Map() {
   const [shows, setShows] = useState<ShowDataState>({
@@ -154,19 +155,17 @@ export default function Map() {
    * handles audio playback when artist name is set or changes
    */
   const handleMarkerPlayback = (show: ShowData) => {
-    let headliner = "";
-    if (show.performer.length === 0) headliner = "";
-    else headliner = show.performer[0].name;
-    setIsMarkerClicked(true);
-    handleSetArtist(headliner, shows, setArtist);
-    setLastClickedMarker(headliner);
-    if (headliner !== lastClickedMarker) {
-      handleSetNewAudio(setNewAudio, audioLink);
+    if (show) {
+      const headliner = setArtistNameFilter(show);
+      setIsMarkerClicked(true);
+      handleSetArtist(headliner, shows, setArtist);
+      setLastClickedMarker(headliner);
+      if (headliner !== lastClickedMarker) {
+        handleSetNewAudio(setNewAudio, audioLink);
+      }
+    } else {
+      throw Error("insufficient show data!");
     }
-  };
-
-  const handleSetCenter = (latLng: { lat: number; lng: number }) => {
-    setCenter(latLng);
   };
 
   return (
@@ -204,7 +203,7 @@ export default function Map() {
       {shows.data.length !== 0 && (
         <DrawerLeft
           shows={shows}
-          setCenter={handleSetCenter}
+          setCenter={setCenter}
           markerRefs={markerRefs}
           markerPlayback={handleMarkerPlayback}
         />

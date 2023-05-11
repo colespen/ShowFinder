@@ -66,7 +66,7 @@ const handleSetArtist = (
   setArtist: Dispatch<SetStateAction<string>>
 ) => {
   // was if (shows) ***
-  if (shows.data) setArtist(artist);
+  if (shows.data && artist !== undefined) setArtist(artist);
 };
 
 const handlePlayPause = (
@@ -88,6 +88,18 @@ const handleAutoPlay = (setIsAutoplay: Dispatch<SetStateAction<boolean>>) => {
   setIsAutoplay((prev) => !prev);
 };
 
+const handleSetCenter = (
+  latLng: { lat: number; lng: number },
+  setCenter: (
+    value: SetStateAction<{
+      lat: number;
+      lng: number;
+    }>
+  ) => void
+) => {
+  setCenter(latLng);
+};
+
 export {
   handleCityChange,
   handleInputTextSelect,
@@ -98,4 +110,5 @@ export {
   handlePlayPause,
   handleSetNewAudio,
   handleAutoPlay,
+  handleSetCenter
 };

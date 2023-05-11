@@ -7,7 +7,7 @@ interface SlideInProps {
 
 const SlideIn = ({ children, startAnimation }: SlideInProps) => {
   const containerTransitionStyles = startAnimation
-    ? { left: "0px", opacity: "75%" }
+    ? { left: "0px", opacity: "85%" }
     : {};
 
   return (

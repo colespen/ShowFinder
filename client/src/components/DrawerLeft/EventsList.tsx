@@ -1,5 +1,6 @@
 import { EventListProps } from "../../datatypes/props";
 import { ShowData } from "../../datatypes/showData";
+import { handleSetCenter } from "../../helpers/eventHandlers";
 import { artistNameFilter, convertTo12hr } from "../../helpers/utils";
 import "./DrawerLeft.scss";
 
@@ -13,9 +14,8 @@ const EventsList = ({
   const contentsTransitionStyles = startAnimation
     ? { opacity: "100%", transition: "opacity 1.5s ease" }
     : {};
-
-  console.log("markerRefs.current: ", markerRefs.current);
-  console.log("shows: ", shows);
+  // console.log("markerRefs.current: ", markerRefs.current);
+  // console.log("shows: ", shows);
 
   const openPopupFromList = (show: ShowData, index: number) => {
     const showLatLng = {
@@ -30,7 +30,8 @@ const EventsList = ({
     ) {
       markerPlayback(show);
       markerRefs.current[index].openPopup();
-      setCenter(showLatLng);
+      handleSetCenter(showLatLng, setCenter)
+      // setCenter(showLatLng);
     }
   };
   //   TODO: SORT BY EVENT PROXIMITY (extra: and by time)!

@@ -47,16 +47,13 @@ app.get("/api/shows", (req, res) => {
         currentAddress.address.city,
         currentAddress.address.country
       );
-
       const params = new URLSearchParams({
         name: currentAddress.address.country
           ? currentAddress.address.city + ", " + currentAddress.address.country
           : currentAddress.address.city,
         ...req.query.dateRange,
       });
-
       // console.log("/api/shows rapidapi params: ", params);
-
       return axios
         .get(
           "https://concerts-artists-events-tracker.p.rapidapi.com/location?" +
@@ -183,23 +180,28 @@ app.get("/api/spotifysample", (req, res) => {
         market: "US",
         format: "json",
       });
-      const artistId = response.data.artists.items[0].id;
-      console.log("artistId: ", artistId);
-      return axios
-        .get(
-          `https://api.spotify.com/v1/artists/${artistId}/top-tracks?${params.toString()}`,
-          {
-            headers: {
-              Authorization: "Bearer " + spotifyToken,
-            },
-          }
-        )
-        .then((response) => {
-          const tracks = response.data.tracks;
-          return { tracks };
-        });
+      const artistsItems = response.data.artists.items;
+      if (artistsItems.length === 0 || !Array.isArray(artistsItems)) {
+        return Promise.resolve({ tracks: [] });
+      } else {
+        const artistId = artistsItems[0].id;
+        return axios
+          .get(
+            `https://api.spotify.com/v1/artists/${artistId}/top-tracks?${params.toString()}`,
+            {
+              headers: {
+                Authorization: "Bearer " + spotifyToken,
+              },
+            }
+          )
+          .then((response) => {
+            const tracks = response.data.tracks;
+            return { tracks };
+          });
+      }
     })
     .then((data) => {
+      console.log("data: ", data);
       res.send(data);
     })
     .catch((error) => {
@@ -207,14 +209,6 @@ app.get("/api/spotifysample", (req, res) => {
       console.error("Error: ", error.message);
     });
 });
-
-// get artist id
-// https://api.spotify.com/v1/search?q=deerhoof&type=artist
-// artists[0].item.id ("7AZwAitWq1KcFoIJhRWb6V")
-
-// get top single
-// https://api.spotify.com/v1/artists/7AZwAitWq1KcFoIJhRWb6V/top-tracks?market=US
-//tracks[0].preview_url
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port} `);

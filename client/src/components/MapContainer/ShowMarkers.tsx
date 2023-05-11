@@ -10,7 +10,7 @@ const ShowMarkers = (props: ShowMarkersProps) => {
 
   
   useEffect(() => {
-    console.log("ShowMarkers useEffect -- markerRefs.current: ", markerRefs.current)
+    // console.log("ShowMarkers useEffect -- markerRefs.current: ", markerRefs.current)
     // update markerRefs.current after all markers are rendered
     markerRefs.current = markerRefs.current.filter(Boolean);
   }, [markerRefs, shows]);

@@ -74,10 +74,40 @@ const artistNameFilter = (show: ShowData) => {
   return artistName;
 };
 
+const setArtistNameFilter = (show: ShowData) => {
+  let artist = "";
+  if (show.performer.length === 0 && !show.description) {
+    return artist
+  } else {
+    if (show.performer.length !== 0) {
+      if (show.performer[0].name.includes("(")) {
+        const indexOfParenthesisP = show.performer[0].name.indexOf("(");
+        artist = show.performer[0].name.substring(0, indexOfParenthesisP);
+      } else {
+        artist = show.performer[0].name;
+      }
+    } else {
+      const indexOfAt = show.description.indexOf("at");
+      artist = show.description.substring(0, indexOfAt);
+
+      if (show.description.includes(",")) {
+        const indexOfComma = show.description.indexOf(",");
+        artist = show.description.substring(0, indexOfComma);
+      }
+      if (show.description.includes("(")) {
+        const indexOfParenthesisD = show.description.indexOf("(");
+        artist = show.description.substring(0, indexOfParenthesisD);
+      }
+    }
+    return artist;
+  }
+};
+
 export {
   cityFilter,
   playPause,
   setNewAudioDelay,
   convertTo12hr,
   artistNameFilter,
+  setArtistNameFilter,
 };

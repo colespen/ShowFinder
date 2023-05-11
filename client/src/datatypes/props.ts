@@ -19,7 +19,7 @@ export interface TitleProps {
 }
 
 export interface ContainerProps extends ShowMarkersProps {
-  center: {lat: number; lng: number}
+  center: { lat: number; lng: number };
   geolocation: GeoLocationState;
   audioRef: MutableRefObject<HTMLAudioElement | null>;
   userData: UserDataState;
@@ -104,8 +104,19 @@ export interface DrawerLeftProps {
   shows: ShowDataState;
   markerRefs: any;
   markerPlayback: (show: ShowData) => void;
-  setCenter: (latLng: {lat: number, lng: number}) => void
+  setCenter: Dispatch<
+    SetStateAction<{
+      lat: number;
+      lng: number;
+    }>
+  >;
 }
 export interface EventListProps extends DrawerLeftProps {
   startAnimation: boolean;
+  setCenter: Dispatch<
+    SetStateAction<{
+      lat: number;
+      lng: number;
+    }>
+  >;
 }
