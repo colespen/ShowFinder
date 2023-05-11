@@ -1,19 +1,18 @@
 .drawer-slide-in {
   min-height: fit-content;
   max-height: 40%;
-  // width: 90%; // mobile
-  width: 35%; // desktop
+  // width: 35%; // desktop
   top: 46%;
-  left: -465px;
-  // left: 0px; // when open
+  // left: -465px;
+  // left: -45.1vw;
   position: fixed;
   z-index: 1000;
-  border-right: 10px solid white;
+  border-right: 5px solid white;
+  border-bottom: 5px solid white;
   border-bottom-right-radius: 12px;
   background-color: white;
   box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
   opacity: 55%;
-  // opacity: 85%; // when open
   display: flex;
   justify-content: space-between;
   // overflow: hidden;
@@ -26,10 +25,10 @@
     height: 55px;
     width: 45px;
     z-index: 1000;
-    // margin-left: 90%; // mobile
-    margin-left: 35%; // desktop
+    // margin-left: 35%; // desktop
     position: fixed;
     z-index: 3000;
+    transition: margin-left 750ms ease;
 
     animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
     -webkit-animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
@@ -40,7 +39,7 @@
     button {
       height: 100%;
       width: 100%;
-      border: 2px solid rgb(255, 255, 255);
+      border: 2px solid rgba(255, 255, 255, 0.963);
       border-top-right-radius: 12px;
       border-bottom-right-radius: 12px;
       background-color: rgba(255, 255, 255, 0.807);
@@ -49,19 +48,28 @@
       cursor: pointer;
       transition: background-color 250ms ease;
 
-      // &:hover {
-      //   background-color: rgb(255, 255, 255);
-      // }
-
       .drawer-button-icon {
         width: 105%;
         height: 100%;
-        margin-left: 2px;
-        filter: invert(35%);
+        // margin-left: 2px;
+        filter: invert(40%);
         &:hover {
           filter: invert(0%);
         }
-        transition: filter 250ms ease;
+        transition-property: opacity, filter;
+        transition-duration: 500ms;
+        transition-timing-function: ease-in;
+      }
+      .close-drawer-icon {
+        width: 105%;
+        height: 70%;
+        filter: invert(80%);
+        &:hover {
+          filter: invert(40%);
+        }
+        transition-property: opacity, filter;
+        transition-duration: 300ms;
+        transition-timing-function: ease;
       }
     }
   }
@@ -79,8 +87,8 @@
       font-family: Arial, Helvetica, sans-serif;
       font-size: clamp(8px, 3.25vw, 14px);
       line-height: 1.8;
+      margin: 0px;
       // padding-left: 2px; // mobile
-      padding-left: 15px; // desktop
 
       // overflow: scroll;
       // overflow-x: hidden;

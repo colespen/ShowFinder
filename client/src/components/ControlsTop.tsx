@@ -20,8 +20,6 @@ const ControlsTop = (props: ControlsTopProps) => {
 
   const geolocation = useGeoLocation();
 
-  console.log(geolocation.loaded)
-
   return (
     <div className="controls-top">
       <div className="city-input">

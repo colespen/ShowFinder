@@ -23,6 +23,8 @@ const EventsList = ({
     }
   };
 
+//   TODO: SORT BY EVENT TIME!
+
   const showListItem = (shows.data || []).map((show, index) => {
     const artistName = artistNameFilter(show);
     const showTime = convertTo12hr(show.startDate);

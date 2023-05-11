@@ -338,6 +338,25 @@
     }
   }
 }
+@media only screen and (max-width: 1000px) {
+  .drawer-slide-in {
+    width: 85%;
+    left: -85.4vw;
+    .button-wrapper {
+      margin-left: 85%;
+    }
+  }
+}
+@media only screen and (min-width: 1001px) {
+  .drawer-slide-in {
+    width: 45%;
+    left: -45.2vw;
+    .button-wrapper {
+      margin-left: 45%;
+    }
+  }
+}
+
 @media only screen and (max-width: 413px) {
   .github {
     padding-left: 4px;
@@ -352,6 +371,14 @@
 @media only screen and (max-width: 551px) {
   #author-hover {
     display: none;
+  }
+  .drawer-left-container {
+    padding-left: 2px;
+  }
+}
+@media only screen and (min-width: 552px) {
+  .drawer-left-container {
+    padding-left: 15px;
   }
 }
 
