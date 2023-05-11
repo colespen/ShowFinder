@@ -30,7 +30,9 @@ const EventsList = ({
       geolocation.coords.lat.toFixed(1) === Number(userData.lat).toFixed(1) &&
       geolocation.coords.lng.toFixed(1) === Number(userData.lng).toFixed(1)
     ) {
-      const { sortedShowsData, indexMap }: any = sortByProximity(shows.data, userData);
+      const { 
+        // sortedShowsData, 
+        indexMap }: any = sortByProximity(shows.data, userData);
       // sortedShows = sortedShowsData;
       // setSortedShows(sortedShows);
       setSortedShows(shows.data); // TODO: FIX SORT SO REFS INDEX LINE UP
