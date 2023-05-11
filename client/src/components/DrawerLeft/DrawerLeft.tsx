@@ -13,11 +13,8 @@ const DrawerLeft = ({ ...props }: DrawerLeftProps) => {
 
   useEffect(() => {
     const delayIcon = setTimeout(() => {
-      if (startAnimation) {
-        setListButton(true);
-      } else {
-        setListButton(false)
-      }
+      if (startAnimation) setListButton(true);
+      else setListButton(false);
     }, 750);
     return () => clearTimeout(delayIcon);
   }, [listButton, startAnimation]);

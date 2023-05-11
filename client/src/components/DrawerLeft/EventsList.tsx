@@ -14,19 +14,26 @@ const EventsList = ({
     ? { opacity: "100%", transition: "opacity 1.5s ease" }
     : {};
 
-console.log(markerRefs.current)
+  console.log("markerRefs.current: ", markerRefs.current);
+  console.log("shows: ", shows);
 
   const openPopupFromList = (show: ShowData, index: number) => {
-    const refLatLng = markerRefs.current[index]?._latlng;
-    // console.log("refLatLng: ", refLatLng)
-    markerRefs.current[index].openPopup();
-    markerPlayback(show);
-    if (refLatLng !== undefined && Object.keys(refLatLng).length !== 0) {
-      setCenter(refLatLng);
+    const showLatLng = {
+      lat: show.location.geo?.latitude,
+      lng: show.location.geo?.longitude,
+    };
+    // using ref for coords didn't make sense & is buggy
+    // const refLatLng = markerRefs.current[index]?._latlng;
+    if (
+      show.location.geo !== undefined &&
+      Object.keys(showLatLng).length !== 0
+    ) {
+      markerPlayback(show);
+      markerRefs.current[index].openPopup();
+      setCenter(showLatLng);
     }
   };
-// TODO : TypeError: Cannot read properties of undefined (reading '_latlng')
-//   TODO: SORT BY EVENT TIME!
+  //   TODO: SORT BY EVENT PROXIMITY (extra: and by time)!
 
   const showListItem = (shows.data || []).map((show, index) => {
     const artistName = artistNameFilter(show);
@@ -52,9 +59,7 @@ console.log(markerRefs.current)
   });
   return (
     <div className="drawer-left-outer" style={contentsTransitionStyles}>
-      <ul className="drawer-left-container" >
-        {showListItem}
-      </ul>
+      <ul className="drawer-left-container">{showListItem}</ul>
     </div>
   );
 };

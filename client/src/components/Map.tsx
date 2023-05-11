@@ -121,7 +121,7 @@ export default function Map() {
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       getSpotifyToken();
     }
-    // removed userData and shows from []
+    // removed userData and shows from // }, [...]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geolocation]);
 
