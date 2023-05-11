@@ -8,8 +8,6 @@ import "./ShowMarkers.scss";
 const ShowMarkers = (props: ShowMarkersProps) => {
   const { shows, markerPlayback, markerRefs } = props;
 
-  // console.log("in Show Markers")
-
   useEffect(() => {
     // update markerRefs.current after all markers are rendered
     markerRefs.current = markerRefs.current.filter(Boolean);

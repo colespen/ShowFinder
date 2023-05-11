@@ -14,15 +14,18 @@ const EventsList = ({
     ? { opacity: "100%", transition: "opacity 1.5s ease" }
     : {};
 
+console.log(markerRefs.current)
+
   const openPopupFromList = (show: ShowData, index: number) => {
-    const refLatLng = markerRefs.current[index]._latlng;
+    const refLatLng = markerRefs.current[index]?._latlng;
+    // console.log("refLatLng: ", refLatLng)
     markerRefs.current[index].openPopup();
     markerPlayback(show);
-    if (refLatLng && Object.keys(refLatLng).length !== 0) {
+    if (refLatLng !== undefined && Object.keys(refLatLng).length !== 0) {
       setCenter(refLatLng);
     }
   };
-
+// TODO : TypeError: Cannot read properties of undefined (reading '_latlng')
 //   TODO: SORT BY EVENT TIME!
 
   const showListItem = (shows.data || []).map((show, index) => {
