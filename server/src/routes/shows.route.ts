@@ -26,7 +26,6 @@ router.get(`${rootRoute}`, async (req, res, next) => {
       Number(req.query.lng),
       9
     );
-    console.log("geoPoint: ", geoPoint)
     const [sentDateStart, sentDateEnd, events] =
     // const all =
       await TicketMasterService.eventSearch(geoPoint, dateStart, dateEnd);

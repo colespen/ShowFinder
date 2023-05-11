@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
+import { sortByProximity } from "../../helpers/sortEventList";
 import { EventListProps } from "../../datatypes/props";
 import { ShowData } from "../../datatypes/showData";
-import { handleSetCenter } from "../../helpers/eventHandlers";
-import { artistNameFilter, convertTo12hr } from "../../helpers/utils";
+import EventListItems from "./EventListItems";
 import "./DrawerLeft.scss";
 
 const EventsList = ({
@@ -10,57 +11,48 @@ const EventsList = ({
   markerPlayback,
   setCenter,
   startAnimation,
+  userData,
+  geolocation,
 }: EventListProps) => {
+  const [sortedShows, setSortedShows] = useState<ShowData[]>([]);
+  const [indexMap, setIndexMap] = useState<number[]>([])
+
   const contentsTransitionStyles = startAnimation
     ? { opacity: "100%", transition: "opacity 1.5s ease" }
     : {};
-  // console.log("markerRefs.current: ", markerRefs.current);
-  // console.log("shows: ", shows);
 
-  const openPopupFromList = (show: ShowData, index: number) => {
-    const showLatLng = {
-      lat: show.location.geo?.latitude,
-      lng: show.location.geo?.longitude,
-    };
-    // using ref for coords didn't make sense & is buggy
-    // const refLatLng = markerRefs.current[index]?._latlng;
+  useEffect(() => {
+    // let sortedShows = [];
+    // Check if the first decimal place of latitude and longitude matches
     if (
-      show.location.geo !== undefined &&
-      Object.keys(showLatLng).length !== 0
+      userData.lat &&
+      userData.lng &&
+      geolocation.coords.lat.toFixed(1) === Number(userData.lat).toFixed(1) &&
+      geolocation.coords.lng.toFixed(1) === Number(userData.lng).toFixed(1)
     ) {
-      markerPlayback(show);
-      markerRefs.current[index].openPopup();
-      handleSetCenter(showLatLng, setCenter)
-      // setCenter(showLatLng);
+      const { sortedShowsData, indexMap }: any = sortByProximity(shows.data, userData);
+      // sortedShows = sortedShowsData;
+      // setSortedShows(sortedShows);
+      setSortedShows(shows.data); // TODO: FIX SORT SO REFS INDEX LINE UP
+      setIndexMap(indexMap)
+    } else {
+      const defaultMap = shows.data.map((_, i) => i)
+      setSortedShows(shows.data);
+      setIndexMap(defaultMap)
     }
-  };
-  //   TODO: SORT BY EVENT PROXIMITY (extra: and by time)!
+  }, [geolocation.coords.lat, geolocation.coords.lng, shows.data, userData]);
 
-  const showListItem = (shows.data || []).map((show, index) => {
-    const artistName = artistNameFilter(show);
-    const showTime = convertTo12hr(show.startDate);
-
-    return (
-      <div
-        key={show.description + index}
-        className="show-list-item"
-        onClick={() => openPopupFromList(show, index)}
-      >
-        <li className="artist-name">{artistName}</li>
-        <ul className="show-list-description">
-          <li>
-            {show.location.name.length > 41
-              ? show.location.name.substring(0, 31) + " ..."
-              : show.location.name}
-          </li>
-          <li className="event-time">{showTime}</li>
-        </ul>
-      </div>
-    );
-  });
   return (
     <div className="drawer-left-outer" style={contentsTransitionStyles}>
-      <ul className="drawer-left-container">{showListItem}</ul>
+      <ul className="drawer-left-container">
+        <EventListItems
+          sortedShows={sortedShows}
+          markerPlayback={markerPlayback}
+          markerRefs={markerRefs}
+          setCenter={setCenter}
+          indexMap={indexMap}
+        />
+      </ul>
     </div>
   );
 };

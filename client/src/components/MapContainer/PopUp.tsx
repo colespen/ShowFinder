@@ -5,12 +5,12 @@ import PerformerList from "./PerformerList";
 import MarkerPlayer from "./MarkerPlayer";
 
 const PopUp = (props: PopUpProps) => {
-  const { index, show, ...rest } = props;
+  const { index, show, spotifyUrl, ...rest } = props;
 
   return (
     <Popup key={index}>
       <ul className="artist-list">
-        <PerformerList show={show} />
+        <PerformerList show={show} spotifyUrl={spotifyUrl} />
       </ul>
       <MarkerPlayer {...rest} />
       <a

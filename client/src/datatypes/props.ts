@@ -27,6 +27,7 @@ export interface ContainerProps extends ShowMarkersProps {
   markerRefs: any;
   markerPlayback: (show: ShowData) => void;
   isMarkerClicked: boolean;
+  spotifyUrl: string;
 }
 
 export interface CurrentLocationProps {
@@ -48,11 +49,13 @@ export interface ShowMarkersProps {
   setIsMarkerClicked: Dispatch<SetStateAction<boolean>>;
   setNewAudio: Dispatch<SetStateAction<boolean>>;
   markerPlayback: (show: ShowData) => void;
+  spotifyUrl: string;
 }
 
 export interface PopUpProps extends MarkerPlayerProps {
   index: number;
   show: ShowData;
+  spotifyUrl: string;
 }
 
 export interface MarkerPlayerProps {
@@ -101,6 +104,7 @@ export interface DateButtonInputProps {
 }
 
 export interface DrawerLeftProps {
+  userData: UserDataState;
   shows: ShowDataState;
   markerRefs: any;
   markerPlayback: (show: ShowData) => void;
@@ -110,13 +114,21 @@ export interface DrawerLeftProps {
       lng: number;
     }>
   >;
+  geolocation: GeoLocationState;
 }
 export interface EventListProps extends DrawerLeftProps {
   startAnimation: boolean;
-  setCenter: Dispatch<
-    SetStateAction<{
+}
+
+export interface EventListItemsProps {
+  sortedShows: ShowData[];
+  markerPlayback: (show: ShowData) => void;
+  markerRefs: any;
+  setCenter: React.Dispatch<
+    React.SetStateAction<{
       lat: number;
       lng: number;
     }>
   >;
+  indexMap: number[];
 }

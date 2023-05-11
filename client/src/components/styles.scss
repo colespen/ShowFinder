@@ -65,6 +65,8 @@
     background-color: rgb(246 200 209);
     border-radius: 5px;
     color: rgb(0, 0, 0);
+    display: flex;
+    justify-content: space-between;
 
     &:hover {
       background-color: #83bfff56;
@@ -81,6 +83,23 @@
 
     &:hover {
       background-color: #72b6ff1f;
+    }
+  }
+  .music-link {
+    width: 13.5%;
+    margin-left: 6px;
+    padding: 0 0 0 3px;
+    align-items: center;
+    img {
+      max-width: 26px;
+    }
+  }
+  .ticket-span-icon {
+    position: relative;
+    bottom: 2px;
+    img {
+      max-width: 22px;
+      opacity: 75%;
     }
   }
 }

@@ -201,7 +201,6 @@ app.get("/api/spotifysample", (req, res) => {
       }
     })
     .then((data) => {
-      console.log("data: ", data);
       res.send(data);
     })
     .catch((error) => {

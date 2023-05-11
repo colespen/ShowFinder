@@ -8,8 +8,7 @@ import { CurrentLocationProps } from "../../datatypes/props";
 const CurrentLocation = (props: CurrentLocationProps) => {
   const { geolocation, userData, currCity, center, isMarkerClicked } = props;
   const map = useMap();
-
-  // console.log("CurrentLocation");
+  
   // center on Maker when clicked from drawer
   useEffect(() => {
     const centerVals = Object.values(center);

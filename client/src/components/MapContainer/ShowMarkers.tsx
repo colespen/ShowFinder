@@ -10,7 +10,6 @@ const ShowMarkers = (props: ShowMarkersProps) => {
 
   
   useEffect(() => {
-    // console.log("ShowMarkers useEffect -- markerRefs.current: ", markerRefs.current)
     // update markerRefs.current after all markers are rendered
     markerRefs.current = markerRefs.current.filter(Boolean);
   }, [markerRefs, shows]);
@@ -18,7 +17,6 @@ const ShowMarkers = (props: ShowMarkersProps) => {
   return (
     <>
       {(shows.data || []).map((show, index) => {
-        // console.log("index: ", index)
         return show.location.geo ? (
           <Marker
             //TODO: some repeat keys still.. fix in filter in server?

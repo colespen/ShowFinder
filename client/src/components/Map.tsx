@@ -35,6 +35,7 @@ export default function Map() {
   const [cityQuery, setCityQuery] = useState<string>("");
   const [artist, setArtist] = useState<string>("");
   const [audioLink, setAudioLink] = useState<string>("");
+  const [spotifyUrl, setSpotifyUrl] = useState<string>("");
   const [newAudio, setNewAudio] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isAutoPlay, setIsAutoplay] = useState<boolean>(true);
@@ -143,7 +144,8 @@ export default function Map() {
 
   //////    GET - api/spotifysample - artist ID then get preview data
   useEffect(() => {
-    if (artist) getSpotifySample(artist, setAudioLink, setIsPlaying);
+    if (artist)
+      getSpotifySample(artist, setAudioLink, setIsPlaying, setSpotifyUrl);
     if (!artist) setAudioLink("");
   }, [artist]);
 
@@ -188,6 +190,7 @@ export default function Map() {
         geolocation={geolocation}
         shows={shows}
         audioRef={audioRef}
+        spotifyUrl={spotifyUrl}
         userData={userData}
         currCity={currCity}
         audioLink={audioLink}
@@ -203,6 +206,8 @@ export default function Map() {
       {shows.data.length !== 0 && (
         <DrawerLeft
           shows={shows}
+          userData={userData}
+          geolocation={geolocation}
           setCenter={setCenter}
           markerRefs={markerRefs}
           markerPlayback={handleMarkerPlayback}

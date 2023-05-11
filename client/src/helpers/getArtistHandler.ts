@@ -34,3 +34,11 @@ const handleArtistLink = (artistVenueName: string) => {
     "noreferrer"
   );
 };
+
+export const handleXternalMusicLink = (url: string) => {
+  window.open(
+    url,
+    "_blank",
+    "noreferrer"
+  );
+}

@@ -101,7 +101,8 @@ const getSpotifyToken = () => {
 const getSpotifySample = (
   artist: string,
   setAudioLink: (state: string) => void,
-  setIsPlaying: (state: boolean) => void
+  setIsPlaying: (state: boolean) => void,
+  setSpotifyUrl: (state: string) => void
 ) => {
   axios
     .get("/api/spotifysample", { params: { artist } })
@@ -109,18 +110,30 @@ const getSpotifySample = (
       const tracks = response.data.tracks;
       if (tracks.length === 0) {
         setAudioLink("");
+        // setSpotifyUrl("")
         throw new Error("No tracks found");
       }
-      // take first preview_url that isn't null then exit
+      let foundPreview = false;
+      let foundUrl = false;
+      // take first preview_url and external_url that isn't null then exit
       for (let i = 0; i < tracks.length; i++) {
-        if (tracks[i].preview_url) {
+        if (!foundPreview && tracks[i].preview_url) {
           setAudioLink(tracks[i].preview_url);
           setIsPlaying(false);
-          break;
-        } else {
-          setAudioLink("");
-          // setIsPlaying(false);
+          foundPreview = true;
         }
+        if (!foundUrl && tracks[i].artists[0].external_urls.spotify) {
+          setSpotifyUrl(tracks[i].artists[0].external_urls.spotify);
+          foundUrl = true;
+        }
+        if (foundPreview && foundUrl) break;
+      }
+      if (!foundPreview) {
+        setAudioLink("");
+        setIsPlaying(false);
+      }
+      if (!foundUrl) {
+        setSpotifyUrl("");
       }
     })
     .catch((err) => console.log(err.message));
