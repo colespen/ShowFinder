@@ -13,12 +13,13 @@ https://www.showfinder.ninja/
 - Current shows dates with link to venues, artists and tickets
 - artist top track audio preview
 - Specify any city and date range
+- event-list drawer for easy lookup
 - fully responsive
 
 ## Stack:
 
-- React Leaflet
 - React.js
+- React Leaflet
 - Node.js
 - Express
 
