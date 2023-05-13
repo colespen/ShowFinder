@@ -32,8 +32,8 @@ const EventsList = ({
     ) {
       const { sortedShowsData, indexMap }: any = sortByProximity(shows.data, userData);
       // sortedShows = sortedShowsData;
-      // setSortedShows(sortedShows);
-      setSortedShows(shows.data); // TODO: FIX SORT SO REFS INDEX LINE UP
+      // setSortedShows(sortedShows); // TODO: FIX SORT SO REFS INDEX LINE UP
+      setSortedShows(shows.data); 
       setIndexMap(indexMap)
     } else {
       const defaultMap = shows.data.map((_, i) => i)

@@ -8,7 +8,7 @@ import { CurrentLocationProps } from "../../datatypes/props";
 const CurrentLocation = (props: CurrentLocationProps) => {
   const { geolocation, userData, currCity, center, isMarkerClicked } = props;
   const map = useMap();
-  
+
   // center on Maker when clicked from drawer
   useEffect(() => {
     const centerVals = Object.values(center);
@@ -18,6 +18,7 @@ const CurrentLocation = (props: CurrentLocationProps) => {
       centerVals[0] !== centerInitial[0] &&
       centerVals[1] !== centerInitial[1]
     ) {
+      center.lat -= 0.005; // offset space for drawer
       map.flyTo({ ...center }, 13);
     }
   }, [center, geolocation.loaded, isMarkerClicked, map]);
