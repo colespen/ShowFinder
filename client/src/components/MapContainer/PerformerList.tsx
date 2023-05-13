@@ -26,7 +26,10 @@ const PerformerList = ({ show, spotifyUrl }: PerformerListProps) => {
               <img src="./ticket-icon.png" alt="get tickets" />
             </span>
           </button>
-          <button className="music-link">
+          <button
+            className="music-link"
+            onClick={() => handleXternalMusicLink(spotifyUrl)}
+          >
             <img src="./spotify-logo.png" alt="external music link" />
           </button>
         </li>
