@@ -15,11 +15,9 @@ const EventsList = ({
   geolocation,
 }: EventListProps) => {
   const [sortedShows, setSortedShows] = useState<ShowData[]>([]);
-  const [indexMap, setIndexMap] = useState<number[]>([])
+  const [indexMap, setIndexMap] = useState<number[]>([]);
 
-  const contentsTransitionStyles = startAnimation
-    ? { opacity: "100%", transition: "opacity 1.5s ease" }
-    : {};
+  const contentsTransitionStyles = startAnimation ? { opacity: "100%" } : {};
 
   useEffect(() => {
     // let sortedShows = [];
@@ -30,15 +28,18 @@ const EventsList = ({
       geolocation.coords.lat.toFixed(1) === Number(userData.lat).toFixed(1) &&
       geolocation.coords.lng.toFixed(1) === Number(userData.lng).toFixed(1)
     ) {
-      const { sortedShowsData, indexMap }: any = sortByProximity(shows.data, userData);
+      const { sortedShowsData, indexMap }: any = sortByProximity(
+        shows.data,
+        userData
+      );
       // sortedShows = sortedShowsData;
       // setSortedShows(sortedShows); // TODO: FIX SORT SO REFS INDEX LINE UP
-      setSortedShows(shows.data); 
-      setIndexMap(indexMap)
-    } else {
-      const defaultMap = shows.data.map((_, i) => i)
       setSortedShows(shows.data);
-      setIndexMap(defaultMap)
+      setIndexMap(indexMap);
+    } else {
+      const defaultMap = shows.data.map((_, i) => i);
+      setSortedShows(shows.data);
+      setIndexMap(defaultMap);
     }
   }, [geolocation.coords.lat, geolocation.coords.lng, shows.data, userData]);
 

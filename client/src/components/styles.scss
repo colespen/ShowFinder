@@ -42,67 +42,8 @@
   padding-left: 3px;
 }
 
-.artist-list {
-  width: 100%;
-  padding-left: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 
-  .artist {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-
-  li:first-child button {
-    height: 30px;
-    font-size: 14px;
-    // background-color: rgb(240, 240, 240);
-    background-color: rgb(246 200 209);
-    border-radius: 5px;
-    color: rgb(0, 0, 0);
-    display: flex;
-    justify-content: space-between;
-
-    &:hover {
-      background-color: #83bfff56;
-    }
-  }
-
-  button {
-    width: 100%;
-    background-color: white;
-    border: none;
-    padding: 6px 10px;
-    margin-top: 5px;
-    text-align: start;
-
-    &:hover {
-      background-color: #72b6ff1f;
-    }
-  }
-  .music-link {
-    width: 13.5%;
-    margin-left: 6px;
-    padding: 0 0 0 3px;
-    align-items: center;
-    img {
-      max-width: 26px;
-    }
-  }
-  .ticket-span-icon {
-    position: relative;
-    bottom: 2px;
-    img {
-      max-width: 22px;
-      opacity: 75%;
-    }
-  }
-}
+//
 
 .controls-top {
   display: flex;
@@ -359,20 +300,22 @@
 }
 @media only screen and (max-width: 1000px) {
   .drawer-slide-in {
-    width: 85%;
-    left: -85.4vw;
+    width: 87%;
+    left: -87.5vw;
     .button-wrapper {
-      margin-left: 85%;
+      margin-left: 87%;
+      width: 45px;
     }
   }
 }
 @media only screen and (min-width: 1001px) {
   .drawer-slide-in {
     width: 45%;
-    left: -45.2vw;
+    left: -45.1vw;
     .button-wrapper {
       // margin-left: 45%;
       margin-left: 44.8%;
+      width: 50px;
     }
   }
 }
@@ -386,6 +329,9 @@
 @media only screen and (max-width: 480px) {
   .map-main {
     height: 91vh;
+  }
+  .leaflet-control-container {
+    visibility: hidden;
   }
 }
 @media only screen and (max-width: 551px) {
@@ -401,6 +347,8 @@
     padding-left: 15px;
   }
 }
+
+
 
 ////////////////////////////////
 /////  Title Fade

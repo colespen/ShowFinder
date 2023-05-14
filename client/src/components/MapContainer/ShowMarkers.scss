@@ -1,3 +1,66 @@
+.artist-list {
+  width: 100%;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .artist {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  li:first-child button {
+    height: 30px;
+    font-size: 14px;
+    // background-color: rgb(240, 240, 240);
+    background-color: rgb(246 200 209);
+    border-radius: 5px;
+    color: rgb(0, 0, 0);
+    display: flex;
+    justify-content: space-between;
+
+    &:hover {
+      background-color: #83bfff56;
+    }
+  }
+
+  button {
+    width: 100%;
+    background-color: white;
+    border: none;
+    padding: 6px 10px;
+    margin-top: 5px;
+    text-align: start;
+
+    &:hover {
+      background-color: #72b6ff1f;
+    }
+  }
+  .music-link {
+    width: 13.5%;
+    margin-left: 6px;
+    padding: 0 0 0 3px;
+    align-items: center;
+    cursor: pointer;
+    img {
+      max-width: 26px;
+    }
+  }
+  .ticket-span-icon {
+    position: relative;
+    bottom: 2px;
+    img {
+      max-width: 22px;
+      opacity: 75%;
+    }
+  }
+}
+
 .marker-player-controls {
   height: 30px;
   width: 275px;

@@ -1,6 +1,6 @@
-import getArtist, {
+import getArtistTickets, {
   handleXternalMusicLink,
-} from "../../helpers/getArtistHandler";
+} from "../../helpers/getArtistLinkHandler";
 import { Performer, ShowData } from "../../datatypes/showData";
 
 import { artistNameFilter } from "../../helpers/utils";
@@ -19,10 +19,11 @@ const PerformerList = ({ show, spotifyUrl }: PerformerListProps) => {
         <li className="artist">
           <button
             className="artist-button"
-            onClick={(e) => getArtist(e, show.location.name)}
+            // onClick={(e) => getArtistTickets(e, show.location.name)}
+            onClick={() => getArtistTickets(artistName, show.location.name)}
           >
             <span>{artistName}</span>
-            <span>
+            <span className="ticket-span-icon">
               <img src="./ticket-icon.png" alt="get tickets" />
             </span>
           </button>
@@ -41,11 +42,11 @@ const PerformerList = ({ show, spotifyUrl }: PerformerListProps) => {
             <li className="artist" key={`${artist.name}-${i.toString()}`}>
               <button
                 className="artist-button"
-                onClick={(e) => getArtist(e, show.location.name)}
+                onClick={() => getArtistTickets(artist.name, show.location.name)}
               >
                 <span>
-                  {artist.name.length > 41
-                    ? artist.name.substring(0, 41) + " ..."
+                  {artist.name.length > 31
+                    ? artist.name.substring(0, 31) + " ..."
                     : artist.name}
                 </span>
                 {i === 0 && (

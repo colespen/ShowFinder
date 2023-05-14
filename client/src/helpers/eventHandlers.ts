@@ -59,7 +59,9 @@ const handleMarkerPlayback = (
   }
 };
 
-////    Set Artist from marker for audio src (headliner [0])
+/** 
+ * Set Artist from marker for audio src (headliner [0])
+ * */
 const handleSetArtist = (
   artist: string,
   shows: ShowDataState,

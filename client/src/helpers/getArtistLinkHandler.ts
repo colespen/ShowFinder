@@ -1,13 +1,16 @@
-//////    Artist Name Open Link - async
-export default async function getArtist(
-  e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
+/**
+ * handle artist and venue name and open songkick link - async
+ *  */ 
+export default async function getArtistTickets(
+  // e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
+  artistName: string,
   venue: string
 ) {
   try {
     await new Promise((resolve) => {
       setTimeout(resolve, 0);
     });
-    const artistVenueName: string = handleArtistName(e, venue);
+    const artistVenueName: string = handleArtistName(artistName, venue);
     handleArtistLink(artistVenueName);
     
   } catch (err: unknown) {
@@ -17,11 +20,13 @@ export default async function getArtist(
 
 //////    Set artist name onClick
 const handleArtistName = (
-  e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
+  // e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
+  artistName: string,
   venue: string
 ) => {
-  const target = e.target as HTMLButtonElement;
-  const artistVenue = target.innerText + " " + venue;
+  // const target = e.target as HTMLButtonElement;
+  // const artistVenue = target.innerText + " " + venue;
+  const artistVenue = artistName + " " + venue;
   return artistVenue.split(" ").join("+");
 };
 

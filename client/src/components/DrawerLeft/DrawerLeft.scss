@@ -1,40 +1,36 @@
 .drawer-slide-in {
-  min-height: fit-content;
+  // min-height: fit-content;
+  min-height: 60px;
   max-height: 40%;
-  // width: 35%; // desktop
   top: 46%;
-  // left: -465px;
-  // left: -45.1vw;
   position: fixed;
   z-index: 1000;
   border-right: 5px solid white;
   border-bottom: 5px solid white;
-  border-bottom-right-radius: 12px;
+  border-bottom-right-radius: 5px;
   background-color: white;
   box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
   opacity: 55%;
   display: flex;
   justify-content: space-between;
-  // overflow: hidden;
-  overflow: scroll; // TODO: FIX
+  overflow: scroll;
   overflow-x: hidden;
 
-  transition: left, opacity, 750ms ease;
+  transition: opacity, left, 750ms ease; // two commas
 
   .button-wrapper {
     height: 55px;
-    width: 45px;
+    // width: 45px;
     z-index: 1000;
-    // margin-left: 35%; // desktop
     position: fixed;
     z-index: 3000;
     transition: margin-left 750ms ease;
 
-    animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -webkit-animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -moz-animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -o-animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -ms-animation: 6s ease 0s normal forwards 1 drawerButtonFadeIn;
+    animation: 5s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -webkit-animation: 5s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -moz-animation: 5s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -o-animation: 5s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -ms-animation: 5s ease 0s normal forwards 1 drawerButtonFadeIn;
 
     button {
       height: 100%;
@@ -51,7 +47,6 @@
       .drawer-button-icon {
         width: 105%;
         height: 100%;
-        // margin-left: 2px;
         filter: invert(40%);
         &:hover {
           filter: invert(0%);
@@ -63,9 +58,9 @@
       .close-drawer-icon {
         width: 105%;
         height: 70%;
-        filter: invert(80%);
+        filter: invert(90%);
         &:hover {
-          filter: invert(40%);
+          filter: invert(70%);
         }
         transition-property: opacity, filter;
         transition-duration: 300ms;
@@ -79,7 +74,7 @@
     opacity: 0%;
     display: flex;
     flex-direction: column;
-    transition: opacity 250ms ease;
+    transition: opacity 500ms ease; // was 1.5s on startAnimation style
 
     .drawer-left-container {
       height: 100%;
@@ -129,6 +124,36 @@
           padding-left: 5px;
           list-style-type: none;
           display: flex;
+          align-items: center;
+
+          .drawer-ticket-span-icon {
+            width: 24px;
+            display: flex;
+            align-items: center;
+            height: 22px;
+            background-color: rgb(255, 233, 208);
+            border-radius: 50%;
+            border: none;
+            padding: 0;
+            &:hover {
+              background-color: rgb(255, 181, 96);
+            }
+            img {
+              width: 22px;
+              opacity: 75%;
+              cursor: pointer;
+              &:hover {
+                opacity: 100%;
+              }
+            }
+          }
+          a {
+            margin-left: 6px;
+            color: #124e83;
+            // &:hover {
+            //   color:#0088ff;
+            // }
+          }
         }
       }
     }

@@ -70,10 +70,13 @@ const artistNameFilter = (show: ShowData) => {
     headliner = show.performer[0].name;
   }
   const artistName =
-    headliner.length > 31 ? headliner.substring(0, 30) + " ..." : headliner;
+    headliner.length > 31 ? headliner.substring(0, 31) + " ..." : headliner;
   return artistName;
 };
 
+/**
+ * extract artist name, filter out special charaters and return
+ */
 const setArtistNameFilter = (show: ShowData) => {
   let artist = "";
   if (show.performer.length === 0 && !show.description) {

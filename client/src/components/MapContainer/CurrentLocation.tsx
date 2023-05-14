@@ -18,7 +18,7 @@ const CurrentLocation = (props: CurrentLocationProps) => {
       centerVals[0] !== centerInitial[0] &&
       centerVals[1] !== centerInitial[1]
     ) {
-      center.lat -= 0.005; // offset space for drawer
+      center.lat -= 0.007; // offset space for drawer
       map.flyTo({ ...center }, 13);
     }
   }, [center, geolocation.loaded, isMarkerClicked, map]);
