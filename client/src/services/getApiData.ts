@@ -11,6 +11,7 @@ import {
 } from "../datatypes/apiDataArgs";
 import { Coords } from "../datatypes/locationData";
 import { UserDataState } from "../datatypes/userData";
+import { matchArtistSetAudioPlaying } from "../helpers/spotifyUtils";
 
 ////// use Render.com server ******
 // axios.defaults.baseURL = "https://showfinder-server.onrender.com/";
@@ -108,33 +109,13 @@ const getSpotifySample = (
     .get("/api/spotifysample", { params: { artist } })
     .then((response) => {
       const tracks = response.data.tracks;
-      if (tracks.length === 0) {
-        setAudioLink("");
-        // setSpotifyUrl("")
-        throw new Error("No tracks found");
-      }
-      let foundPreview = false;
-      let foundUrl = false;
-      // take first preview_url and external_url that isn't null then exit
-      for (let i = 0; i < tracks.length; i++) {
-        if (!foundPreview && tracks[i].preview_url) {
-          setAudioLink(tracks[i].preview_url);
-          setIsPlaying(false);
-          foundPreview = true;
-        }
-        if (!foundUrl && tracks[i].artists[0].external_urls.spotify) {
-          setSpotifyUrl(tracks[i].artists[0].external_urls.spotify);
-          foundUrl = true;
-        }
-        if (foundPreview && foundUrl) break;
-      }
-      if (!foundPreview) {
-        setAudioLink("");
-        setIsPlaying(false);
-      }
-      if (!foundUrl) {
-        setSpotifyUrl("");
-      }
+      matchArtistSetAudioPlaying({
+        tracks,
+        artist,
+        setAudioLink,
+        setIsPlaying,
+        setSpotifyUrl,
+      });
     })
     .catch((err) => console.log(err.message));
 };

@@ -70,7 +70,7 @@ const artistNameFilter = (show: ShowData) => {
     headliner = show.performer[0].name;
   }
   const artistName =
-    headliner.length > 31 ? headliner.substring(0, 31) + " ..." : headliner;
+    headliner.length > 30 ? headliner.substring(0, 30) + " ..." : headliner;
   return artistName;
 };
 

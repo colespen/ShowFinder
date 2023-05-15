@@ -26,11 +26,11 @@
     z-index: 3000;
     transition: margin-left 750ms ease;
 
-    animation: 5s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -webkit-animation: 5s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -moz-animation: 5s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -o-animation: 5s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -ms-animation: 5s ease 0s normal forwards 1 drawerButtonFadeIn;
+    animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -webkit-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -moz-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -o-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
+    -ms-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
 
     button {
       height: 100%;
@@ -41,11 +41,12 @@
       background-color: rgba(255, 255, 255, 0.807);
       display: flex;
       align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: background-color 250ms ease;
 
       .drawer-button-icon {
-        width: 105%;
+        // width: 105%;
         height: 100%;
         filter: invert(40%);
         &:hover {
@@ -56,8 +57,8 @@
         transition-timing-function: ease-in;
       }
       .close-drawer-icon {
-        width: 105%;
-        height: 70%;
+        width: 80%;
+        height: 60%;
         filter: invert(90%);
         &:hover {
           filter: invert(70%);
@@ -127,10 +128,10 @@
           align-items: center;
 
           .drawer-ticket-span-icon {
-            width: 24px;
+            width: 20px;
             display: flex;
             align-items: center;
-            height: 22px;
+            height: 20px;
             background-color: rgb(255, 233, 208);
             border-radius: 50%;
             border: none;
@@ -139,7 +140,7 @@
               background-color: rgb(255, 181, 96);
             }
             img {
-              width: 22px;
+              width: 18px;
               opacity: 75%;
               cursor: pointer;
               &:hover {
@@ -148,7 +149,7 @@
             }
           }
           a {
-            margin-left: 6px;
+            margin-left: 4px;
             color: #124e83;
             // &:hover {
             //   color:#0088ff;

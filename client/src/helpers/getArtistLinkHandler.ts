@@ -1,6 +1,6 @@
 /**
  * handle artist and venue name and open songkick link - async
- *  */ 
+ *  */
 export default async function getArtistTickets(
   // e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
   artistName: string,
@@ -12,7 +12,6 @@ export default async function getArtistTickets(
     });
     const artistVenueName: string = handleArtistName(artistName, venue);
     handleArtistLink(artistVenueName);
-    
   } catch (err: unknown) {
     console.error((err as Error).message);
   }
@@ -32,6 +31,7 @@ const handleArtistName = (
 
 //////    Open artist name onClick
 const handleArtistLink = (artistVenueName: string) => {
+  if (!artistVenueName) return;
   window.open(
     `https://www.songkick.com/search?utf8=&type=initial&query=
       ${artistVenueName}&commit=`,
@@ -41,9 +41,6 @@ const handleArtistLink = (artistVenueName: string) => {
 };
 
 export const handleXternalMusicLink = (url: string) => {
-  window.open(
-    url,
-    "_blank",
-    "noreferrer"
-  );
-}
+  if (!url) return;
+  window.open(url, "_blank", "noreferrer");
+};

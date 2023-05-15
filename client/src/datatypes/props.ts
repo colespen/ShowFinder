@@ -132,3 +132,7 @@ export interface EventListItemsProps {
   >;
   indexMap: number[];
 }
+export interface EventListItemProps {
+  sortedShows: ShowData[];
+  openPopupFromList: (show: ShowData, index: number) => void;
+}

@@ -142,7 +142,7 @@ export default function Map() {
       callbacks: { ...callbacks, handleNewCityShows },
     });
 
-  //////    GET - api/spotifysample - artist ID then get preview data
+  //////    GET - api/spotifysample - artist ID then get preview data when arist change
   useEffect(() => {
     if (artist)
       getSpotifySample(artist, setAudioLink, setIsPlaying, setSpotifyUrl);

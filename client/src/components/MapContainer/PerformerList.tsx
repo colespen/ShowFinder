@@ -45,8 +45,8 @@ const PerformerList = ({ show, spotifyUrl }: PerformerListProps) => {
                 onClick={() => getArtistTickets(artist.name, show.location.name)}
               >
                 <span>
-                  {artist.name.length > 31
-                    ? artist.name.substring(0, 31) + " ..."
+                  {artist.name.length > 30
+                    ? artist.name.substring(0, 30) + "..."
                     : artist.name}
                 </span>
                 {i === 0 && (
