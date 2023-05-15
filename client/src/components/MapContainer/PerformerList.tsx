@@ -10,6 +10,9 @@ interface PerformerListProps {
   spotifyUrl: string;
 }
 
+// TODO: some xternalSpotfyLinks are wrong artist name, 
+// must match by name first
+
 const PerformerList = ({ show, spotifyUrl }: PerformerListProps) => {
   const artistName = artistNameFilter(show);
 
