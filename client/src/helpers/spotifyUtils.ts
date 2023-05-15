@@ -34,7 +34,7 @@ const matchArtistSetAudioPlaying = ({
         const stripSpotArtist = stripDiacriticalMarks(artistEl.name);
         const stripRapidArist = stripDiacriticalMarks(artist);
         if (
-          stripRapidArist.toUpperCase().includes(stripSpotArtist.toUpperCase())
+            stripSpotArtist.toUpperCase().includes(stripRapidArist.toUpperCase())
         ) {
           matchIndex = index;
           return true;
