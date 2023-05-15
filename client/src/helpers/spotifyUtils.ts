@@ -6,6 +6,11 @@ interface matchArtistSetAudioPlayingArgs {
   setSpotifyUrl: (state: string) => void;
 }
 
+interface SpotifyTracksParams {
+  name: string;
+  [key: string]: any;
+}
+
 const matchArtistSetAudioPlaying = ({
   tracks,
   artist,
@@ -23,13 +28,19 @@ const matchArtistSetAudioPlaying = ({
   let foundUrl = false;
   // take first preview_url and external_url that isn't null then exit
   for (let i = 0; i < tracks.length; i++) {
+    let matchIndex = 0;
     const isArtistFound = tracks[i].artists.some(
-      (artistEl: { name: string }) => {
+      (artistEl: SpotifyTracksParams, index: number) => {
         const stripSpotArtist = stripDiacriticalMarks(artistEl.name);
         const stripRapidArist = stripDiacriticalMarks(artist);
-        return stripRapidArist
-          .toUpperCase()
-          .includes(stripSpotArtist.toUpperCase());
+        if (
+          stripRapidArist.toUpperCase().includes(stripSpotArtist.toUpperCase())
+        ) {
+          matchIndex = index;
+          return true;
+        } else {
+          return false;
+        }
       }
     );
     if (!foundPreview && tracks[i].preview_url && isArtistFound) {
@@ -39,10 +50,11 @@ const matchArtistSetAudioPlaying = ({
     }
     if (
       !foundUrl &&
-      tracks[i].artists[0].external_urls.spotify &&
+      matchIndex !== -1 &&
+      tracks[i].artists[matchIndex].external_urls.spotify &&
       isArtistFound
     ) {
-      setSpotifyUrl(tracks[i].artists[0].external_urls.spotify);
+      setSpotifyUrl(tracks[i].artists[matchIndex].external_urls.spotify);
       foundUrl = true;
     }
     if (foundPreview && foundUrl) break;
@@ -59,10 +71,13 @@ const matchArtistSetAudioPlaying = ({
 export { matchArtistSetAudioPlaying };
 
 const stripDiacriticalMarks = (str: string) => {
-  return str.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
-  // .replace(/[\u0300-\u036f]/g, "")
-  // .replace(/[\u1AB0-\u1AFF]/g, "")
-  // .replace(/[\u1DC0-\u1DFF]/g, "")
-  // .replace(/[\u20D0-\u20FF]/g, "")
-  // .replace(/[\uFE20-\uFE2F]/g, "");
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace("&", "And");
+  //   .replace(/[\u0300-\u036f]/g, "")
+  //   .replace(/[\u1AB0-\u1AFF]/g, "")
+  //   .replace(/[\u1DC0-\u1DFF]/g, "")
+  //   .replace(/[\u20D0-\u20FF]/g, "")
+  //   .replace(/[\uFE20-\uFE2F]/g, "");
 };
