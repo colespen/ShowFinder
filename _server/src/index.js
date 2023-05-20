@@ -53,7 +53,6 @@ app.get("/api/shows", (req, res) => {
           : currentAddress.address.city,
         ...req.query.dateRange,
       });
-      // console.log("/api/shows rapidapi params: ", params);
       return axios
         .get(
           "https://concerts-artists-events-tracker.p.rapidapi.com/location?" +

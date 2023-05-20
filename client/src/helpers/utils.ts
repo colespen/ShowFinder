@@ -9,7 +9,11 @@ const cityFilter = (str: string) => {
     const upperStr = str
       .toLowerCase()
       .split(" ")
-      .map((el) => el[0].toUpperCase() + el.substring(1))
+      .filter((el) => el !== "")
+      .map((el) => {
+        el.trim();
+        return el[0].toUpperCase() + el.substring(1);
+      })
       .join(" ");
     if (!regex.test(str)) return upperStr;
 
@@ -80,7 +84,7 @@ const artistNameFilter = (show: ShowData) => {
 const setArtistNameFilter = (show: ShowData) => {
   let artist = "";
   if (show.performer.length === 0 && !show.description) {
-    return artist
+    return artist;
   } else {
     if (show.performer.length !== 0) {
       if (show.performer[0].name.includes("(")) {

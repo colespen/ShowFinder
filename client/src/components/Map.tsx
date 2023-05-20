@@ -203,7 +203,7 @@ export default function Map() {
         markerPlayback={handleMarkerPlayback}
         isMarkerClicked={isMarkerClicked}
       />
-      {shows.data.length !== 0 && (
+      {Array.isArray(shows.data) && shows.data.length !== 0 && (
         <DrawerLeft
           shows={shows}
           userData={userData}

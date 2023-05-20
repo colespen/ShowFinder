@@ -34,6 +34,7 @@ const matchArtistSetAudioPlaying = ({
         const stripSpotArtist = stripDiacriticalMarks(artistEl.name);
         const stripRapidArist = stripDiacriticalMarks(artist);
         if (
+            // TODO: compare so at least two words match (not just one)
             stripSpotArtist.toUpperCase().includes(stripRapidArist.toUpperCase())
         ) {
           matchIndex = index;
