@@ -327,18 +327,22 @@
   }
 }
 
-@media only screen and (max-width: 413px) {
-  .github {
-    padding-left: 4px;
-    scale: 0.9;
-  }
-}
+// @media only screen and (max-width: 413px) {
+//   .github {
+//     padding-left: 4px;
+//     scale: 0.9;
+//   }
+// }
 @media only screen and (max-width: 480px) {
   .map-main {
     height: 91vh;
   }
   .leaflet-control-container {
     visibility: hidden;
+  }
+  .github {
+    padding-left: 6px;
+    scale: 0.9;
   }
 }
 @media only screen and (max-width: 551px) {
