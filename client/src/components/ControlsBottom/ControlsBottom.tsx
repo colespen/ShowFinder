@@ -25,12 +25,16 @@ const ControlsBottom = (props: ControlsBottomProps) => {
         </a>
         <span id="author-hover">Spencer Cole</span>
       </div>
-      <BottomPlayer {...rest} />
-      <div className="date-location" id="date-bottom">
-        <DateRange setUserData={setUserData} />
-        <button id="go-button-bottom" onClick={handleDateRangeShows}>
-          GO
-        </button>
+      <div className="controls-bottom-inner">
+        
+          <BottomPlayer {...rest} />
+          <div className="date-location" id="date-bottom">
+            <DateRange setUserData={setUserData} />
+            <button id="go-button-bottom" onClick={handleDateRangeShows}>
+              GO
+            </button>
+          </div>
+        
       </div>
     </div>
   );

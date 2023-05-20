@@ -108,7 +108,10 @@ export default function Title(props: TitleProps) {
           }
           style={{ opacity: showOpacity }}
         >
-          {"shows in " + currCity}
+          {"shows in " +
+            (currCity.length > 18
+              ? currCity.substring(0, 18) + "..."
+              : currCity)}
         </h1>
       )}
     </>

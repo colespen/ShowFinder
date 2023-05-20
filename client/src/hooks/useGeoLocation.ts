@@ -48,10 +48,10 @@ export default function useGeoLocation(
         loaded: true,
         accuracy: location.coords.accuracy,
         coords: {
-          // lat: location.coords.latitude,
-          // lng: location.coords.longitude,
-          lat: -33.91824527265862,
-          lng: 18.48709739770547,
+          lat: location.coords.latitude,
+          lng: location.coords.longitude,
+          // lat: -33.949654900814316,
+          // lng: 18.86221026346713,
           //might need to change .toString() and above Interface
         },
       }));

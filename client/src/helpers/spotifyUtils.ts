@@ -18,12 +18,12 @@ const matchArtistSetAudioPlaying = ({
   setIsPlaying,
   setSpotifyUrl,
 }: matchArtistSetAudioPlayingArgs) => {
+  console.log("tracks: ", tracks);
   if (tracks.length === 0) {
     setAudioLink("");
-    // setSpotifyUrl("")
+    setSpotifyUrl("");
     throw new Error("No tracks found");
   }
-
   let foundPreview = false;
   let foundUrl = false;
   // take first preview_url and external_url that isn't null then exit
@@ -34,8 +34,8 @@ const matchArtistSetAudioPlaying = ({
         const stripSpotArtist = stripDiacriticalMarks(artistEl.name);
         const stripRapidArist = stripDiacriticalMarks(artist);
         if (
-            // TODO: compare so at least two words match (not just one)
-            stripSpotArtist.toUpperCase().includes(stripRapidArist.toUpperCase())
+          // TODO: compare so at least two words match (not just one)
+          stripSpotArtist.toUpperCase().includes(stripRapidArist.toUpperCase())
         ) {
           matchIndex = index;
           return true;
@@ -46,7 +46,7 @@ const matchArtistSetAudioPlaying = ({
     );
     if (!foundPreview && tracks[i].preview_url && isArtistFound) {
       setAudioLink(tracks[i].preview_url);
-      setIsPlaying(false);
+      // setIsPlaying(false);
       foundPreview = true;
     }
     if (
@@ -60,15 +60,17 @@ const matchArtistSetAudioPlaying = ({
     }
     if (foundPreview && foundUrl) break;
   }
+
   if (!foundPreview) {
     setAudioLink("");
-    setIsPlaying(false);
+    setIsPlaying(false); // TODO : this doesnt work to use play/pause if no audio preview found 
   }
   if (!foundUrl) {
     setSpotifyUrl("");
   }
   return;
 };
+
 export { matchArtistSetAudioPlaying };
 
 const stripDiacriticalMarks = (str: string) => {

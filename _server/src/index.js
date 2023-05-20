@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.resolve(__dirname, "../../_client/build")));
 
 const dedupe = require("./utils/dedupe");
+const filterCurrentAddress = require("./utils/currAddressFilter");
 
 let port = process.env.PORT || 8001;
 const iqToken = process.env.IQ_TOKEN;
@@ -47,12 +48,13 @@ app.get("/api/shows", (req, res) => {
         currentAddress.address.city,
         currentAddress.address.country
       );
+      // TODO: fix bug, of no matches for rapid api data then nothign return.
+      const filteredAddress = filterCurrentAddress(currentAddress);
       const params = new URLSearchParams({
-        name: currentAddress.address.country
-          ? currentAddress.address.city + ", " + currentAddress.address.country
-          : currentAddress.address.city,
+        name: filteredAddress,
         ...req.query.dateRange,
       });
+      console.log("params:", params);
       return axios
         .get(
           "https://concerts-artists-events-tracker.p.rapidapi.com/location?" +

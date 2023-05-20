@@ -11,7 +11,7 @@ const MarkerControls = (props: MarkerPlayerProps) => {
         {audioLink && newAudio && (
           <button
             className="play-pause media-buttons"
-            onClick={()=>handlePlayPause(audioLink, isPlaying, audioRef)}
+            onClick={() => handlePlayPause(audioLink, isPlaying, audioRef)}
           >
             {!isPlaying ? (
               <img src="./play.svg" alt="play button"></img>
@@ -20,9 +20,10 @@ const MarkerControls = (props: MarkerPlayerProps) => {
             )}
           </button>
         )}
-                      {/* artist && */}
+                    {/* artist && */}
         {!newAudio && <Spinner size="md" />}
-        {!audioLink && newAudio && (
+                    {/* newAudio && */}
+        {!audioLink && (
           <button className="play-pause media-buttons disabled" disabled>
             <img src="./link-slash.svg" alt="no audio link"></img>
           </button>

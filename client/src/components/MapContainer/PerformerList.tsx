@@ -10,19 +10,15 @@ interface PerformerListProps {
   spotifyUrl: string;
 }
 
-// TODO: some xternalSpotfyLinks are wrong artist name, 
-// must match by name first
-
 const PerformerList = ({ show, spotifyUrl }: PerformerListProps) => {
   const artistName = artistNameFilter(show);
 
-  const ArtistList = ({ show, spotifyUrl }: PerformerListProps) => {
-    if (show.performer.length === 0) {
-      return (
+  return (
+    <>
+      {show.performer.length === 0 ? (
         <li className="artist">
           <button
             className="artist-button"
-            // onClick={(e) => getArtistTickets(e, show.location.name)}
             onClick={() => getArtistTickets(artistName, show.location.name)}
           >
             <span>{artistName}</span>
@@ -31,50 +27,46 @@ const PerformerList = ({ show, spotifyUrl }: PerformerListProps) => {
             </span>
           </button>
           <button
+            disabled
             className="music-link"
             onClick={() => handleXternalMusicLink(spotifyUrl)}
           >
             <img src="./spotify-logo.png" alt="external music link" />
           </button>
         </li>
-      );
-    } else {
-      return (
-        <>
-          {show.performer.map((artist: Performer, i: number) => (
-            <li className="artist" key={`${artist.name}-${i.toString()}`}>
-              <button
-                className="artist-button"
-                onClick={() => getArtistTickets(artist.name, show.location.name)}
-              >
-                <span>
-                  {artist.name.length > 30
-                    ? artist.name.substring(0, 30) + "..."
-                    : artist.name}
-                </span>
-                {i === 0 && (
-                  <span className="ticket-span-icon">
-                    <img src="./ticket-icon.png" alt="get tickets" />
-                  </span>
-                )}
-              </button>
-
+      ) : (
+        show.performer.map((artist: Performer, i: number) => (
+          <li className="artist" key={`${artist.name}-${i.toString()}`}>
+            <button
+              className="artist-button"
+              onClick={() => getArtistTickets(artist.name, show.location.name)}
+            >
+              <span>
+                {artist.name.length > 30
+                  ? artist.name.substring(0, 30) + "..."
+                  : artist.name}
+              </span>
               {i === 0 && (
-                <button
-                  className="music-link"
-                  onClick={() => handleXternalMusicLink(spotifyUrl)}
-                >
-                  <img src="./spotify-logo.png" alt="external music link" />
-                </button>
+                <span className="ticket-span-icon">
+                  <img src="./ticket-icon.png" alt="get tickets" />
+                </span>
               )}
-            </li>
-          ))}
-        </>
-      );
-    }
-  };
+            </button>
 
-  return <ArtistList show={show} spotifyUrl={spotifyUrl} />;
+            {i === 0 && (
+              <button
+                disabled={!spotifyUrl}
+                className="music-link"
+                onClick={() => handleXternalMusicLink(spotifyUrl)}
+              >
+                <img src="./spotify-logo.png" alt="external music link" />
+              </button>
+            )}
+          </li>
+        ))
+      )}
+    </>
+  );
 };
 
 export default PerformerList;

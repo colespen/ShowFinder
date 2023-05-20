@@ -10,7 +10,7 @@ const PopUp = (props: PopUpProps) => {
   return (
     <Popup key={index}>
       <ul className="artist-list">
-        <PerformerList show={show} spotifyUrl={spotifyUrl} />
+        <PerformerList  show={show} spotifyUrl={spotifyUrl} />
       </ul>
       <MarkerPlayer {...rest} />
       <a

@@ -47,6 +47,16 @@
     padding: 0 0 0 3px;
     align-items: center;
     cursor: pointer;
+    &:disabled {
+      background-color: rgb(240, 240, 240);
+      cursor:auto;
+      &:hover {
+        background-color: rgb(240, 240, 240);
+      }
+      img {
+        opacity: 65%;
+      }
+    }
     img {
       max-width: 26px;
     }
