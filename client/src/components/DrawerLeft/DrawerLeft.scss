@@ -1,5 +1,4 @@
 .drawer-slide-in {
-  // min-height: fit-content;
   min-height: 60px;
   max-height: 40%;
   top: 46%;
@@ -15,60 +14,7 @@
   justify-content: space-between;
   overflow: scroll;
   overflow-x: hidden;
-
   transition: opacity, left, 750ms ease; // two commas
-
-  .button-wrapper {
-    height: 55px;
-    // width: 45px;
-    z-index: 1000;
-    position: fixed;
-    z-index: 3000;
-    transition: margin-left 750ms ease;
-
-    animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -webkit-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -moz-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -o-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
-    -ms-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
-
-    button {
-      height: 100%;
-      width: 100%;
-      border: 2px solid rgb(255, 255, 255);
-      border-top-right-radius: 12px;
-      border-bottom-right-radius: 12px;
-      background-color: rgba(255, 255, 255, 0.807);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background-color 250ms ease;
-
-      .drawer-button-icon {
-        // width: 105%;
-        height: 100%;
-        filter: invert(40%);
-        &:hover {
-          filter: invert(0%);
-        }
-        transition-property: opacity, filter;
-        transition-duration: 500ms;
-        transition-timing-function: ease-in;
-      }
-      .close-drawer-icon {
-        width: 80%;
-        height: 60%;
-        filter: invert(90%);
-        &:hover {
-          filter: invert(70%);
-        }
-        transition-property: opacity, filter;
-        transition-duration: 300ms;
-        transition-timing-function: ease;
-      }
-    }
-  }
 
   .drawer-left-outer {
     width: 100%;
@@ -85,12 +31,9 @@
       line-height: 1.8;
       padding-top: 5px;
       margin: 0px;
-      // overflow: scroll;
-      // overflow-x: hidden;
 
       .show-list-item {
         width: 99%;
-        // padding-left: 5px;
         border-radius: 5px;
         border: 2px solid rgb(243 243 254);
         padding: 0px 2px 0px 4px;
@@ -157,6 +100,58 @@
           }
         }
       }
+    }
+  }
+}
+
+.button-wrapper {
+  opacity: 55%;
+  top: 46%;
+  height: 55px;
+  position: fixed;
+  z-index: 3000;
+  transition: left 750ms ease;
+
+  animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
+  -webkit-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
+  -moz-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
+  -o-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
+  -ms-animation: 4s ease 0s normal forwards 1 drawerButtonFadeIn;
+
+  button {
+    height: 100%;
+    width: 100%;
+    border: 2px solid rgb(255, 255, 255);
+    border-left: none;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.807);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 250ms ease;
+
+    .drawer-button-icon {
+      height: 100%;
+      filter: invert(40%);
+      &:hover {
+        filter: invert(0%);
+      }
+      transition-property: opacity, filter;
+      transition-duration: 300ms;
+      transition-timing-function: ease-in;
+    }
+    .close-drawer-icon {
+      width: 80%;
+      height: 60%;
+      filter: invert(90%);
+      &:hover {
+        filter: invert(70%);
+      }
+      transition-property: opacity, filter;
+      transition-duration: 300ms;
+      transition-timing-function: ease;
     }
   }
 }

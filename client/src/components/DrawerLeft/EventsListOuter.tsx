@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import EventListItems from "./EventListItems";
 import { sortByProximity } from "../../helpers/sortEventList";
 import { EventListProps } from "../../datatypes/props";
 import { ShowData } from "../../datatypes/showData";
-import EventListItems from "./EventListItems";
 import "./DrawerLeft.scss";
 
 const EventsList = ({
@@ -28,10 +28,10 @@ const EventsList = ({
       geolocation.coords.lat.toFixed(1) === Number(userData.lat).toFixed(1) &&
       geolocation.coords.lng.toFixed(1) === Number(userData.lng).toFixed(1)
     ) {
-      const { sortedShowsData, indexMap }: any = sortByProximity(
-        shows.data,
-        userData
-      );
+      const {
+        // sortedShowsData,
+        indexMap,
+      }: any = sortByProximity(shows.data, userData);
       // sortedShows = sortedShowsData;
       // setSortedShows(sortedShows); // TODO: FIX SORT SO REFS INDEX LINE UP
       setSortedShows(shows.data);
@@ -44,7 +44,9 @@ const EventsList = ({
   }, [geolocation.coords.lat, geolocation.coords.lng, shows.data, userData]);
 
   return (
-    <div className="drawer-left-outer" style={contentsTransitionStyles}>
+    <div className="drawer-left-outer" 
+    style={contentsTransitionStyles}
+    >
       <ul className="drawer-left-container">
         <EventListItems
           sortedShows={sortedShows}

@@ -42,7 +42,6 @@
   padding-left: 3px;
 }
 
-
 //
 
 .controls-top {
@@ -303,12 +302,12 @@
   .drawer-slide-in {
     width: 90%;
     left: -90.2vw;
-    .button-wrapper {
-      margin-left: 90%;
-      width: 35px;
-      .drawer-button-icon {
-        width: 150%;
-      }
+  }
+  .button-wrapper {
+    left: 90vw;
+    width: 35px;
+    .drawer-button-icon {
+      width: 150%;
     }
   }
 }
@@ -316,23 +315,15 @@
   .drawer-slide-in {
     width: 45%;
     left: -45.1vw;
-    .button-wrapper {
-      // margin-left: 45%;
-      margin-left: 44.8%;
-      width: 50px;
-      .drawer-button-icon {
-        width: 105%;
-      }
+  }
+  .button-wrapper {
+    left: 44.9vw;
+    width: 50px;
+    .drawer-button-icon {
+      width: 105%;
     }
   }
 }
-
-// @media only screen and (max-width: 413px) {
-//   .github {
-//     padding-left: 4px;
-//     scale: 0.9;
-//   }
-// }
 @media only screen and (max-width: 480px) {
   .map-main {
     height: 91vh;
@@ -358,8 +349,6 @@
     padding-left: 15px;
   }
 }
-
-
 
 ////////////////////////////////
 /////  Title Fade

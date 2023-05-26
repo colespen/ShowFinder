@@ -1,7 +1,7 @@
+import EventListItem from "./EventListItem";
 import { handleSetCenter } from "../../helpers/eventHandlers";
 import { EventListItemsProps } from "../../datatypes/props";
 import { ShowData } from "../../datatypes/showData";
-import EventListItem from "./EventListItem";
 import "./DrawerLeft.scss";
 
 const EventListItems = ({

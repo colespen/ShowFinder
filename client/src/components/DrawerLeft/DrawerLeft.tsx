@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+
 import SlideIn from "./SlideIn";
-import EventsList from "./EventsListOuter";
+import ButtonWrapper from "./ButtonWrapper";
+import EventsListOuter from "./EventsListOuter";
 
 import { DrawerLeftProps } from "../../datatypes/props";
 import "./DrawerLeft.scss";
@@ -8,9 +10,6 @@ import "./DrawerLeft.scss";
 const DrawerLeft = ({ ...props }: DrawerLeftProps) => {
   const [startAnimation, setStartAnimation] = useState<boolean>(false);
   const [listButton, setListButton] = useState(false);
-  const openTransitionStyles = startAnimation ? { opacity: "0" } : {};
-  const closeTransitionStyles = !startAnimation ? { opacity: "0" } : {};
-  const btnTransitionStyles = startAnimation ? { padding: "0" } : {};
 
   useEffect(() => {
     const delayIcon = setTimeout(() => {
@@ -23,30 +22,13 @@ const DrawerLeft = ({ ...props }: DrawerLeftProps) => {
   return (
     <>
       <SlideIn startAnimation={startAnimation}>
-        <EventsList {...props} startAnimation={startAnimation} />
-        <div className="button-wrapper">
-          <button
-            style={btnTransitionStyles}
-            onClick={() => setStartAnimation(!startAnimation)}
-          >
-            {listButton ? (
-              <img
-                style={closeTransitionStyles}
-                className="close-drawer-icon"
-                src="./close-arrow.png"
-                alt="events list close"
-              ></img>
-            ) : (
-              <img
-                style={openTransitionStyles}
-                className="drawer-button-icon"
-                src="./list-icon.png"
-                alt="events list open"
-              ></img>
-            )}
-          </button>
-        </div>
+        <EventsListOuter {...props} startAnimation={startAnimation} />
       </SlideIn>
+      <ButtonWrapper
+        listButton={listButton}
+        startAnimation={startAnimation}
+        setStartAnimation={setStartAnimation}
+      />
     </>
   );
 };

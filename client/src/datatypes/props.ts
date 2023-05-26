@@ -136,3 +136,9 @@ export interface EventListItemProps {
   sortedShows: ShowData[];
   openPopupFromList: (show: ShowData, index: number) => void;
 }
+
+export interface ButtonWrapperProps {
+  listButton: boolean;
+  startAnimation: boolean;
+  setStartAnimation: React.Dispatch<React.SetStateAction<boolean>>;
+}

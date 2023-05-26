@@ -18,7 +18,6 @@ const matchArtistSetAudioPlaying = ({
   setIsPlaying,
   setSpotifyUrl,
 }: matchArtistSetAudioPlayingArgs) => {
-  console.log("tracks: ", tracks);
   if (tracks.length === 0) {
     setAudioLink("");
     setSpotifyUrl("");
