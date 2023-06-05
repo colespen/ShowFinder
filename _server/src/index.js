@@ -8,7 +8,7 @@ const path = require("path");
 const app = express();
 
 var corsOptions = {
-  origin: "https://showfinder.ninja",
+  origin: "https://www.showfinder.ninja",
   optionsSuccessStatus: 200 
 }
 ////   (cors w no config accepts all origins/headers)
