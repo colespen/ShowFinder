@@ -6,8 +6,13 @@ const axios = require("axios");
 const path = require("path");
 
 const app = express();
+
+var corsOptions = {
+  origin: "https://showfinder.ninja",
+  optionsSuccessStatus: 200 
+}
 ////   (cors w no config accepts all origins/headers)
-app.use(cors());
+app.use(cors(corsOptions));
 
 dotenv.config();
 
