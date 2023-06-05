@@ -5,10 +5,10 @@ import CurrentLocation from "./CurrentLocation";
 import ShowMarkers from "./ShowMarkers";
 import { centerInitial } from "../../datatypes/initialState";
 
+
 const MapContainerComponent = (props: MapContainerProps & ContainerProps) => {
   const { isMarkerClicked, center, geolocation, userData, currCity, ...rest } =
-    props;
-
+  props;
   return (
     <MapContainer
       className="map-container"

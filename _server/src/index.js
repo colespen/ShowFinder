@@ -6,8 +6,13 @@ const axios = require("axios");
 const path = require("path");
 
 const app = express();
-////    cors no config accepts all origins/headers
-app.use(cors());
+
+var corsOptions = {
+  origin: 'https://showfinder-server.onrender.com/',
+  optionsSuccessStatus: 200 
+}
+////   (cors w no config accepts all origins/headers)
+app.use(cors(corsOptions));
 
 dotenv.config();
 
