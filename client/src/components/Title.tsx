@@ -19,8 +19,6 @@ export default function Title(props: TitleProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [text, setText] = useState("locating shows near you");
 
-  console.log(isPlaying);
-
   useEffect(() => {
     if (transition.type === "shows") setText("grabbing shows");
     if (transition.type === "dates") setText("grabbing dates");
@@ -130,8 +128,9 @@ export default function Title(props: TitleProps) {
               className="title-now-playing"
               style={isPlaying ? { opacity: 1 } : { opacity: 0 }}
             >
-              <div className="scroll-text">{artist} - {nowPlaying}</div>
-              
+              <div className="scroll-text">
+                {artist} - {nowPlaying}
+              </div>
             </h1>
           )}
         </>

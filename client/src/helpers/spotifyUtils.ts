@@ -47,7 +47,6 @@ const matchArtistSetAudioPlaying = ({
     );
     if (!foundPreview && tracks[i].preview_url && isArtistFound) {
       setAudioLink(tracks[i].preview_url);
-      console.log(tracks[i].name)
       setNowPlaying(tracks[i].name)
       // setIsPlaying(false);
       foundPreview = true;
