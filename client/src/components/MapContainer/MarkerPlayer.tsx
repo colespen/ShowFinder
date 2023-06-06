@@ -20,10 +20,10 @@ const MarkerControls = (props: MarkerPlayerProps) => {
             )}
           </button>
         )}
-                    {/* artist && */}
+                   {/* artist && */}
         {!newAudio && <Spinner size="md" />}
-                    {/* newAudio && */}
-        {!audioLink && (
+             {/* added newAudio && */}
+        {!audioLink && newAudio && (
           <button className="play-pause media-buttons disabled" disabled>
             <img src="./link-slash.svg" alt="no audio link"></img>
           </button>

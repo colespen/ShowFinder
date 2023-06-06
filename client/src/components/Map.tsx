@@ -39,6 +39,7 @@ export default function Map() {
   const [newAudio, setNewAudio] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isAutoPlay, setIsAutoplay] = useState<boolean>(true);
+  const [nowPlaying, setNowPlaying] = useState<string>("");
   const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
   // this isGeoError to render text in title upon geo error
   // const [isGeoError, setIsGeoError] = useState<boolean>(false);
@@ -145,7 +146,13 @@ export default function Map() {
   //////    GET - api/spotifysample - artist ID then get preview data when arist change
   useEffect(() => {
     if (artist)
-      getSpotifySample(artist, setAudioLink, setIsPlaying, setSpotifyUrl);
+      getSpotifySample(
+        artist,
+        setAudioLink,
+        setIsPlaying,
+        setSpotifyUrl,
+        setNowPlaying
+      );
     if (!artist) setAudioLink("");
   }, [artist]);
 
@@ -177,6 +184,9 @@ export default function Map() {
         isFirstRender={isFirstRender.current}
         transition={transition}
         geolocation={geolocation}
+        isPlaying={isPlaying}
+        nowPlaying={nowPlaying}
+        artist={artist}
         // isGeoError={isGeoError}
       />
       <ControlsTop

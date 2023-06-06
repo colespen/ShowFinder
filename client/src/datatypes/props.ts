@@ -16,6 +16,9 @@ export interface TitleProps {
   };
   isFirstRender: boolean;
   geolocation: GeoLocationState;
+  isPlaying: boolean;
+  nowPlaying: string;
+  artist: string
 }
 
 export interface ContainerProps extends ShowMarkersProps {

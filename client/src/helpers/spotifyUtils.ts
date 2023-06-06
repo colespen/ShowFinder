@@ -4,6 +4,7 @@ interface matchArtistSetAudioPlayingArgs {
   setAudioLink: (state: string) => void;
   setIsPlaying: (state: boolean) => void;
   setSpotifyUrl: (state: string) => void;
+  setNowPlaying: (state: string) => void;
 }
 
 interface SpotifyTracksParams {
@@ -17,6 +18,7 @@ const matchArtistSetAudioPlaying = ({
   setAudioLink,
   setIsPlaying,
   setSpotifyUrl,
+  setNowPlaying
 }: matchArtistSetAudioPlayingArgs) => {
   if (tracks.length === 0) {
     setAudioLink("");
@@ -45,6 +47,8 @@ const matchArtistSetAudioPlaying = ({
     );
     if (!foundPreview && tracks[i].preview_url && isArtistFound) {
       setAudioLink(tracks[i].preview_url);
+      console.log(tracks[i].name)
+      setNowPlaying(tracks[i].name)
       // setIsPlaying(false);
       foundPreview = true;
     }
@@ -62,7 +66,7 @@ const matchArtistSetAudioPlaying = ({
 
   if (!foundPreview) {
     setAudioLink("");
-    setIsPlaying(false); // TODO : this doesnt work to use play/pause if no audio preview found 
+    setIsPlaying(false); // TODO : this doesnt work to use play/pause if no audio preview found
   }
   if (!foundUrl) {
     setSpotifyUrl("");

@@ -5,11 +5,21 @@ import { TitleProps } from "../datatypes/props";
 import "./styles.scss";
 
 export default function Title(props: TitleProps) {
-  const { currCity, transition, isFirstRender, geolocation } = props;
+  const {
+    currCity,
+    transition,
+    isFirstRender,
+    geolocation,
+    isPlaying,
+    nowPlaying,
+    artist,
+  } = props;
   const [waitOpacity, setWaitOpacity] = useState(0);
   const [showOpacity, setShowOpacity] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [text, setText] = useState("locating shows near you");
+
+  console.log(isPlaying);
 
   useEffect(() => {
     if (transition.type === "shows") setText("grabbing shows");
@@ -102,17 +112,29 @@ export default function Title(props: TitleProps) {
           {geolocation.access && <Loading />}
         </div>
       ) : (
-        <h1
-          className={
-            currCity.length > 17 ? "title-show long-entry" : "title-show"
-          }
-          style={{ opacity: showOpacity }}
-        >
-          {"shows in " +
-            (currCity.length > 18
-              ? currCity.substring(0, 18) + "..."
-              : currCity)}
-        </h1>
+        <>
+          {!isPlaying ? (
+            <h1
+              className={
+                currCity.length > 17 ? "title-show long-entry" : "title-show"
+              }
+              style={{ opacity: showOpacity }}
+            >
+              {"shows in " +
+                (currCity.length > 18
+                  ? currCity.substring(0, 18) + "..."
+                  : currCity)}
+            </h1>
+          ) : (
+            <h1
+              className="title-now-playing"
+              style={isPlaying ? { opacity: 1 } : { opacity: 0 }}
+            >
+              <div className="scroll-text">{artist} - {nowPlaying}</div>
+              
+            </h1>
+          )}
+        </>
       )}
     </>
   );
