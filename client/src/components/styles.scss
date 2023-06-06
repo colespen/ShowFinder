@@ -48,9 +48,9 @@
   transition: opacity 500ms ease-out;
 }
 .scroll-text {
-  -moz-transform: translateX(100%);
-  -webkit-transform: translateX(100%);
-  transform: translateX(100%);
+  // -moz-transform: translateX(100%);
+  // -webkit-transform: translateX(100%);
+  // transform: translateX(100%);
 
   -moz-animation: slideLeft 13s linear infinite;
   -webkit-animation: slideLeft 13s linear infinite;
@@ -593,8 +593,8 @@
     transform: translateX(100%);
   }
   to {
-    -moz-transform: translateX(-100%);
-    -webkit-transform: translateX(-100%);
-    transform: translateX(-100%);
+    -moz-transform: translateX(-160%); // -125% for desktop
+    -webkit-transform: translateX(-160%);
+    transform: translateX(-160%);
   }
 }
