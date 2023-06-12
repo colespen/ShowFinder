@@ -21,8 +21,8 @@ app.use(morgan("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/////   serve static files for build ******
-app.use(express.static(path.resolve(__dirname, "../../_client/build")));
+/////   serve static build files: dev ******
+// app.use(express.static(path.resolve(__dirname, "../../_client/build")));
 
 const dedupe = require("./utils/dedupe");
 const filterCurrentAddress = require("./utils/currAddressFilter");
