@@ -30,11 +30,13 @@ const handleArtistName = (
 };
 
 //////    Open artist name onClick
-const handleArtistLink = (artistVenueName: string) => {
-  if (!artistVenueName) return;
+const handleArtistLink = (artistPlusVenueName: string) => {
+  if (!artistPlusVenueName) {
+    return
+  }
   window.open(
     `https://www.songkick.com/search?utf8=&type=initial&query=
-      ${artistVenueName}&commit=`,
+      ${artistPlusVenueName}&type=upcoming`,
     "_blank",
     "noreferrer"
   );
