@@ -1,9 +1,9 @@
 .drawer-slide-in {
   min-height: 60px;
   max-height: 40%;
-  top: 46%;
+  top: 44%;
   position: fixed;
-  z-index: 1000;
+  z-index: 2000;
   border-right: 5px solid white;
   border-bottom: 5px solid white;
   border-bottom-right-radius: 5px;
@@ -106,7 +106,7 @@
 
 .button-wrapper {
   opacity: 55%;
-  top: 46%;
+  top: 44%;
   height: 55px;
   position: fixed;
   z-index: 3000;
