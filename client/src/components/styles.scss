@@ -18,6 +18,7 @@
 }
 
 .title-container {
+  width: 100%;
   padding: 38px 0;
   h1 {
     display: flex;
@@ -35,7 +36,6 @@
   .loading-dots {
     font-style: italic;
     font-weight: 100;
-    width: 100%;
   }
   .pls-allow {
     opacity: 0.6;
@@ -50,7 +50,6 @@
 }
 
 .title-now-playing {
-  width: 90%;
   font-weight: 100;
   white-space: nowrap;
   overflow-x: clip;
@@ -60,7 +59,6 @@
   // -moz-transform: translateX(100%);
   // -webkit-transform: translateX(100%);
   // transform: translateX(100%);
-
   -moz-animation: slideLeft 13s linear infinite;
   -webkit-animation: slideLeft 13s linear infinite;
   animation: slideLeft 13s linear infinite;
