@@ -235,7 +235,7 @@
 }
 
 .react-datepicker-popper {
-  opacity: 75%;
+  opacity: 85%;
   transition: opacity 150ms ease;
 
   &:hover {
@@ -245,6 +245,14 @@
   .react-datepicker {
     border-color: rgb(103, 103, 123);
     right: 18px;
+  }
+
+  .react-datepicker__day--keyboard-selected {
+    background-color: #90cbff;
+  }
+
+  .react-datepicker__day--range-end {
+    background-color: #53abf8;
   }
 
   .react-datepicker__month-container {
