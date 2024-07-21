@@ -16,7 +16,8 @@ h1 {
   width: 90%;
   font-family: "Montserrat", sans-serif, "Courier New", Courier, monospace;
   // margin: 2.6vh 0 3.3vh 0;
-  margin: 1.9vh 0 2.8vh 0;
+  // margin: 1.9vh 0 2.8vh 0;
+  margin: 0;
   color: whitesmoke;
   text-align: center;
   font-size: clamp(26px, 6.8vw, 62px);
@@ -44,5 +45,10 @@ h1 {
   .long-entry {
     font-size: clamp(26px, 5vw, 62px);
     margin: 3.2vh 0 2.75vh 0;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .leaflet-container {
+    width: 100%;
   }
 }
