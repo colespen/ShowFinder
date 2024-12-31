@@ -153,7 +153,9 @@ export default function Map() {
         setSpotifyUrl,
         setNowPlaying
       );
-    if (!artist) setAudioLink("");
+    if (!artist) {
+      setAudioLink("");
+    }
   }, [artist]);
 
   //////////////////////////////////////////////////////////////////
