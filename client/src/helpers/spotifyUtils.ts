@@ -18,7 +18,7 @@ const matchArtistSetAudioPlaying = ({
   setAudioLink,
   setIsPlaying,
   setSpotifyUrl,
-  setNowPlaying
+  setNowPlaying,
 }: matchArtistSetAudioPlayingArgs) => {
   if (tracks.length === 0) {
     setAudioLink("");
@@ -45,9 +45,10 @@ const matchArtistSetAudioPlaying = ({
         }
       }
     );
+
     if (!foundPreview && tracks[i].preview_url && isArtistFound) {
       setAudioLink(tracks[i].preview_url);
-      setNowPlaying(tracks[i].name)
+      setNowPlaying(tracks[i].name);
       // setIsPlaying(false);
       foundPreview = true;
     }
@@ -60,7 +61,9 @@ const matchArtistSetAudioPlaying = ({
       setSpotifyUrl(tracks[i].artists[matchIndex].external_urls.spotify);
       foundUrl = true;
     }
-    if (foundPreview && foundUrl) break;
+    if (foundPreview && foundUrl) {
+      break;
+    }
   }
 
   if (!foundPreview) {

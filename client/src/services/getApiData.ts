@@ -13,9 +13,8 @@ import { Coords } from "../datatypes/locationData";
 import { UserDataState } from "../datatypes/userData";
 import { matchArtistSetAudioPlaying } from "../helpers/spotifyUtils";
 
-////// use Render.com server ******
-// axios.defaults.baseURL = "https://showfinder-server.onrender.com/";
-axios.defaults.baseURL = "http://localhost:8001/"; // for dev
+axios.defaults.baseURL = "https://showfinder-server.onrender.com/";
+// axios.defaults.baseURL = "http://localhost:8001/"; // for dev
 
 /**
  * helper - set state in setShows, setCurrCity and setUserData
@@ -106,6 +105,7 @@ const getSpotifySample = (
   setSpotifyUrl: (state: string) => void,
   setNowPlaying: (state: string) => void
 ) => {
+  console.log("IN GET SPOTIFY SAMPLE");
   axios
     .get("/api/spotifysample", { params: { artist } })
     .then((response) => {
@@ -116,7 +116,7 @@ const getSpotifySample = (
         setAudioLink,
         setIsPlaying,
         setSpotifyUrl,
-        setNowPlaying
+        setNowPlaying,
       });
     })
     .catch((err) => console.log(err.message));

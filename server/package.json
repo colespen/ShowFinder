@@ -1,48 +1,36 @@
 {
-  "name": "showfinder-api",
-  "version": "0.0.1",
-  "description": "ShowFinder API server",
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "start": "DEBUG=sf-api:* nodemon ./src/app.ts --config nodemon.json",
-    "test": "test"
-  },
-  "author": "Marcus Ragaller",
-  "license": "ISC",
-  "dependencies": {
-    "axios": "^1.3.5",
-    "bcrypt": "^5.1.0",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "debug": "^4.3.4",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "helmet": "^6.0.1",
-    "http-errors": "^2.0.0",
-    "latlon-geohash": "^2.0.0",
-    "lodash": "^4.17.21",
-    "moment": "^2.29.4",
-    "mongoose": "^7.0.2",
-    "morgan": "^1.10.0",
-    "validator": "^13.9.0"
-  },
-  "devDependencies": {
-    "@types/bcrypt": "^5.0.0",
-    "@types/cookie-parser": "^1.4.3",
-    "@types/cors": "^2.8.13",
-    "@types/debug": "^4.1.7",
-    "@types/express": "^4.17.17",
-    "@types/http-errors": "^2.0.1",
-    "@types/latlon-geohash": "^2.0.0",
-    "@types/lodash": "^4.14.192",
-    "@types/mongoose": "^5.11.97",
-    "@types/morgan": "^1.9.4",
-    "@types/node": "^18.15.5",
-    "@types/validator": "^13.7.14",
-    "nodemon": "^2.0.22",
-    "ts-node": "^10.9.1",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.0.2"
-  }
+    "name": "server",
+    "version": "1.0.0",
+    "description": "ShowFinder-API",
+    "main": "src/index.js",
+    "scripts": {
+        "server": "nodemon ./src/index.js",
+        "start": "node ./src/index.js",
+        "local": "./node_modules/.bin/nodemon -L --ignore public/",
+        "test": "NODE_ENV=test jest",
+        "db:reset": "NODE_ENV=development node ./src/bin/resetdb.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^1.10.0",
+        "body-parser": "^1.18.3",
+        "chalk": "^2.4.2",
+        "cors": "^2.8.5",
+        "dotenv": "^7.0.0",
+        "express": "^4.18.2",
+        "morgan": "^1.9.1"
+    },
+    "devDependencies": {
+        "@types/dotenv": "^8.2.0",
+        "jest": "^29.3.1",
+        "nodemon": "^2.0.10",
+        "supertest": "^6.3.2"
+    },
+    "jest": {
+        "setupFilesAfterEnv": [
+            "<rootDir>/src/setupTest.js"
+        ]
+    },
+    "proxy": "http://localhost:8001"
 }

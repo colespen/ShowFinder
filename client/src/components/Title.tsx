@@ -92,7 +92,7 @@ export default function Title(props: TitleProps) {
   }, [currCity]);
 
   return (
-    <>
+    <div className="title-container">
       {!currCity ? (
         <div className="wait-container" style={{ opacity: waitOpacity }}>
           <h1
@@ -135,6 +135,6 @@ export default function Title(props: TitleProps) {
           )}
         </>
       )}
-    </>
+    </div>
   );
 }
