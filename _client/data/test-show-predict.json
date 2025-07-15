@@ -1,0 +1,656 @@
+{
+  "count": 3309,
+  "overflow": false,
+  "next": "https://api.predicthq.com/v1/events/?%3Factive.gte=2022-12-10&Authorization=MIUlzyESU3Uvf_ZUQxzFzM0C3vae40bPOYJSMPsN&active.gte=2023-03-01&category=concerts&decay=40km&limit=10&location_around.offset=15km&location_around.origin=40.7492045258231%2C+-73.98581460369992&location_around.scale=10km&offset=10",
+  "previous": null,
+  "results": [
+      {
+          "relevance": 1.0,
+          "id": "6xqZx9Czxa8XQ3qtxj",
+          "title": "Joshua Ray Walker with Vandoliers",
+          "description": "",
+          "category": "concerts",
+          "labels": [
+              "concert",
+              "music"
+          ],
+          "rank": 43,
+          "local_rank": 46,
+          "aviation_rank": null,
+          "phq_attendance": 463,
+          "entities": [
+              {
+                  "entity_id": "3BMJ8Fug32KanbD2ADTv4vG",
+                  "name": "Brooklyn Made",
+                  "type": "venue",
+                  "formatted_address": "240 Bedford Avenue\nBrooklyn, 11237\nUnited States of America"
+              }
+          ],
+          "duration": 0,
+          "start": "2023-03-09T00:00:00Z",
+          "end": "2023-03-09T00:00:00Z",
+          "updated": "2022-11-27T02:17:17Z",
+          "first_seen": "2022-11-17T01:11:28Z",
+          "timezone": "America/New_York",
+          "location": [
+              -73.9599,
+              40.7162
+          ],
+          "geo": {
+              "geometry": {
+                  "coordinates": [
+                      -73.9599,
+                      40.7162
+                  ],
+                  "type": "Point"
+              },
+              "placekey": "22h@627-s96-z9f"
+          },
+          "scope": "locality",
+          "country": "US",
+          "place_hierarchies": [
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "6941775",
+                  "6332023"
+              ],
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128581"
+              ]
+          ],
+          "state": "active",
+          "brand_safe": true,
+          "private": false
+      },
+      {
+          "relevance": 1.0,
+          "id": "6HdFgEEFipimtUdNwg",
+          "title": "Hilary Hahn",
+          "description": "",
+          "category": "concerts",
+          "labels": [
+              "concert",
+              "music"
+          ],
+          "rank": 59,
+          "local_rank": 58,
+          "aviation_rank": null,
+          "phq_attendance": 2732,
+          "entities": [
+              {
+                  "entity_id": "z9pAMWTRF9eEGgTmLTLSxw",
+                  "name": "Lincoln Centre - David Geffen Hall",
+                  "type": "venue",
+                  "formatted_address": "10 Lincoln Center Plaza\nNew York, NY 10023\nUnited States of America"
+              }
+          ],
+          "duration": 0,
+          "start": "2023-03-08T00:30:00Z",
+          "end": "2023-03-08T00:30:00Z",
+          "updated": "2022-11-11T00:55:50Z",
+          "first_seen": "2022-11-11T00:41:08Z",
+          "timezone": "America/New_York",
+          "location": [
+              -73.98301429999998,
+              40.772822
+          ],
+          "geo": {
+              "geometry": {
+                  "coordinates": [
+                      -73.98301429999998,
+                      40.772822
+                  ],
+                  "type": "Point"
+              },
+              "placekey": "zzw-222@627-s4r-4sq"
+          },
+          "scope": "locality",
+          "country": "US",
+          "place_hierarchies": [
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128594",
+                  "7250946",
+                  "5125771"
+              ]
+          ],
+          "state": "active",
+          "brand_safe": true,
+          "private": false
+      },
+      {
+          "relevance": 1.0,
+          "id": "AV3nvkxddz5Xp9QAds",
+          "title": "Colony House",
+          "description": "",
+          "category": "concerts",
+          "labels": [
+              "concert",
+              "music"
+          ],
+          "rank": 46,
+          "local_rank": 44,
+          "aviation_rank": 0,
+          "phq_attendance": 613,
+          "entities": [
+              {
+                  "entity_id": "Vai8D58ZYXU69Vpc3WJwQu",
+                  "name": "Irving Plaza",
+                  "type": "venue",
+                  "formatted_address": "17 Irving Place\nNew York, NY 10003\nUnited States of America"
+              }
+          ],
+          "duration": 0,
+          "start": "2023-03-08T00:00:00Z",
+          "end": "2023-03-08T00:00:00Z",
+          "updated": "2022-11-03T22:45:14Z",
+          "first_seen": "2022-10-24T22:44:52Z",
+          "timezone": "America/New_York",
+          "location": [
+              -73.988448,
+              40.734929
+          ],
+          "geo": {
+              "geometry": {
+                  "coordinates": [
+                      -73.988448,
+                      40.734929
+                  ],
+                  "type": "Point"
+              },
+              "placekey": "22g-223@627-s8j-2x5"
+          },
+          "scope": "locality",
+          "country": "US",
+          "place_hierarchies": [
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128594",
+                  "7310138"
+              ],
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128581"
+              ]
+          ],
+          "state": "active",
+          "brand_safe": true,
+          "private": false
+      },
+      {
+          "relevance": 1.0,
+          "id": "HdQG8ksicLpVwkYuCk",
+          "title": "JP Cooper",
+          "description": "",
+          "category": "concerts",
+          "labels": [
+              "concert",
+              "music"
+          ],
+          "rank": 44,
+          "local_rank": 42,
+          "aviation_rank": 0,
+          "phq_attendance": 478,
+          "entities": [
+              {
+                  "entity_id": "YkiqbvJbwqfsNXVsm6qRnh",
+                  "name": "The Bowery Ballroom",
+                  "type": "venue",
+                  "formatted_address": "6 Delancey Street\nNew York, NY 10002\nUnited States of America"
+              }
+          ],
+          "duration": 0,
+          "start": "2023-03-08T00:00:00Z",
+          "end": "2023-03-08T00:00:00Z",
+          "updated": "2022-12-09T12:18:31Z",
+          "first_seen": "2022-09-14T06:27:07Z",
+          "timezone": "America/New_York",
+          "location": [
+              -73.9933583,
+              40.7204065
+          ],
+          "geo": {
+              "geometry": {
+                  "coordinates": [
+                      -73.9933583,
+                      40.7204065
+                  ],
+                  "type": "Point"
+              },
+              "placekey": "22h-222@627-wc7-y35"
+          },
+          "scope": "locality",
+          "country": "US",
+          "place_hierarchies": [
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128594",
+                  "5124703"
+              ],
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128581"
+              ]
+          ],
+          "state": "active",
+          "brand_safe": true,
+          "private": false
+      },
+      {
+          "relevance": 1.0,
+          "id": "7cbbYSqYrTnA3SAenN",
+          "title": "Hiromi and Michel Camilo",
+          "description": "",
+          "category": "concerts",
+          "labels": [
+              "concert",
+              "music"
+          ],
+          "rank": 42,
+          "local_rank": 41,
+          "aviation_rank": 0,
+          "phq_attendance": 384,
+          "entities": [
+              {
+                  "entity_id": "7JA9az5WNxteQDanTJdveb",
+                  "name": "Blue Note",
+                  "type": "venue",
+                  "formatted_address": "131 West 3rd Street\nNew York, NY 10012\nUnited States of America"
+              }
+          ],
+          "duration": 0,
+          "start": "2023-03-06T03:30:00Z",
+          "end": "2023-03-06T03:30:00Z",
+          "updated": "2022-11-08T06:01:31Z",
+          "first_seen": "2022-07-19T02:10:37Z",
+          "timezone": "America/New_York",
+          "location": [
+              -74.000703,
+              40.7308943
+          ],
+          "geo": {
+              "geometry": {
+                  "coordinates": [
+                      -74.000703,
+                      40.7308943
+                  ],
+                  "type": "Point"
+              },
+              "placekey": "22v-222@627-wc8-6tv"
+          },
+          "scope": "locality",
+          "country": "US",
+          "place_hierarchies": [
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128594",
+                  "5119418"
+              ],
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128581"
+              ]
+          ],
+          "state": "active",
+          "brand_safe": true,
+          "private": false
+      },
+      {
+          "relevance": 1.0,
+          "id": "3CEJmR9KMCpoVvA4tP",
+          "title": "Grateful Shred",
+          "description": "",
+          "category": "concerts",
+          "labels": [
+              "concert",
+              "music"
+          ],
+          "rank": 42,
+          "local_rank": 45,
+          "aviation_rank": 0,
+          "phq_attendance": 383,
+          "entities": [
+              {
+                  "entity_id": "ZPiEgELhzMpKE5Sukm6vDu",
+                  "name": "Brooklyn Bowl",
+                  "type": "venue",
+                  "formatted_address": "61 Wythe Avenue\nNY 11249\nUnited States of America"
+              }
+          ],
+          "duration": 0,
+          "start": "2023-03-06T01:00:00Z",
+          "end": "2023-03-06T01:00:00Z",
+          "updated": "2022-12-08T00:25:54Z",
+          "first_seen": "2022-12-06T18:23:15Z",
+          "timezone": "America/New_York",
+          "location": [
+              -73.9573947,
+              40.7218813
+          ],
+          "geo": {
+              "geometry": {
+                  "coordinates": [
+                      -73.9573947,
+                      40.7218813
+                  ],
+                  "type": "Point"
+              },
+              "placekey": "zzw-222@627-s8m-c89"
+          },
+          "scope": "locality",
+          "country": "US",
+          "place_hierarchies": [
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "6941775",
+                  "6332023"
+              ],
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128581"
+              ]
+          ],
+          "state": "active",
+          "brand_safe": true,
+          "private": false
+      },
+      {
+          "relevance": 1.0,
+          "id": "3g3Yn6mLoXQJ7pSukM",
+          "title": "iLe",
+          "description": "",
+          "category": "concerts",
+          "labels": [
+              "concert",
+              "music"
+          ],
+          "rank": 50,
+          "local_rank": 52,
+          "aviation_rank": 0,
+          "phq_attendance": 1044,
+          "entities": [
+              {
+                  "entity_id": "GMP979N4q8GJ2yXmpPneqN",
+                  "name": "Sony Hall",
+                  "type": "venue",
+                  "formatted_address": "235 West 46th Street\nNew York, NY 10036\nUnited States of America"
+              }
+          ],
+          "duration": 0,
+          "start": "2023-03-06T01:00:00Z",
+          "end": "2023-03-06T01:00:00Z",
+          "updated": "2022-11-13T23:38:39Z",
+          "first_seen": "2022-10-22T00:53:33Z",
+          "timezone": "America/New_York",
+          "location": [
+              -73.98719539999999,
+              40.759608
+          ],
+          "geo": {
+              "geometry": {
+                  "coordinates": [
+                      -73.98719539999999,
+                      40.759608
+                  ],
+                  "type": "Point"
+              },
+              "placekey": "224-225@627-s8r-7wk"
+          },
+          "scope": "locality",
+          "country": "US",
+          "place_hierarchies": [
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128594",
+                  "6332416"
+              ],
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128594",
+                  "7250946",
+                  "5125771"
+              ]
+          ],
+          "state": "active",
+          "brand_safe": true,
+          "private": false
+      },
+      {
+          "relevance": 1.0,
+          "id": "4WqB5mXwnZ9S9sKLqV",
+          "title": "Steve Poltz",
+          "description": "",
+          "category": "concerts",
+          "labels": [
+              "concert",
+              "music"
+          ],
+          "rank": 33,
+          "local_rank": 33,
+          "aviation_rank": 0,
+          "phq_attendance": 134,
+          "entities": [
+              {
+                  "entity_id": "MMkUGNfVNH2fBk9dzt8K8X",
+                  "name": "City Winery",
+                  "type": "venue",
+                  "formatted_address": "155 Varick Street\nNew York, NY 10013\nUnited States of America"
+              }
+          ],
+          "duration": 0,
+          "start": "2023-03-06T01:00:00Z",
+          "end": "2023-03-06T01:00:00Z",
+          "updated": "2022-11-02T06:10:52Z",
+          "first_seen": "2022-08-24T22:56:55Z",
+          "timezone": "America/New_York",
+          "location": [
+              -74.0060077,
+              40.726232
+          ],
+          "geo": {
+              "geometry": {
+                  "coordinates": [
+                      -74.0060077,
+                      40.726232
+                  ],
+                  "type": "Point"
+              },
+              "placekey": "228-222@627-wc7-49z"
+          },
+          "scope": "locality",
+          "country": "US",
+          "place_hierarchies": [
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128594",
+                  "5119418"
+              ],
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128581"
+              ]
+          ],
+          "state": "active",
+          "brand_safe": true,
+          "private": false
+      },
+      {
+          "relevance": 1.0,
+          "id": "5jwWV9EBwY9Z5BNx33",
+          "title": "Fit For A King with Northlane",
+          "description": "",
+          "category": "concerts",
+          "labels": [
+              "concert",
+              "music"
+          ],
+          "rank": 48,
+          "local_rank": 45,
+          "aviation_rank": 0,
+          "phq_attendance": 753,
+          "entities": [
+              {
+                  "entity_id": "Vai8D58ZYXU69Vpc3WJwQu",
+                  "name": "Irving Plaza",
+                  "type": "venue",
+                  "formatted_address": "17 Irving Place\nNew York, NY 10003\nUnited States of America"
+              }
+          ],
+          "duration": 0,
+          "start": "2023-03-05T23:00:00Z",
+          "end": "2023-03-05T23:00:00Z",
+          "updated": "2022-12-07T18:38:54Z",
+          "first_seen": "2022-12-07T01:02:01Z",
+          "timezone": "America/New_York",
+          "location": [
+              -73.988448,
+              40.734929
+          ],
+          "geo": {
+              "geometry": {
+                  "coordinates": [
+                      -73.988448,
+                      40.734929
+                  ],
+                  "type": "Point"
+              },
+              "placekey": "22g-223@627-s8j-2x5"
+          },
+          "scope": "locality",
+          "country": "US",
+          "place_hierarchies": [
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128594",
+                  "7310138"
+              ],
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128581"
+              ]
+          ],
+          "state": "active",
+          "brand_safe": true,
+          "private": false
+      },
+      {
+          "relevance": 1.0,
+          "id": "HZvP9s7V8JRkpsk6iv",
+          "title": "Vienna Philharmonic Orchestra",
+          "description": "",
+          "category": "concerts",
+          "labels": [
+              "concert",
+              "music"
+          ],
+          "rank": 59,
+          "local_rank": 60,
+          "aviation_rank": null,
+          "phq_attendance": 2804,
+          "entities": [
+              {
+                  "entity_id": "LNMjDpyCuCVSZNHysxfjX7",
+                  "name": "Carnegie Hall - Stern Auditorium / Perelman Stage",
+                  "type": "venue",
+                  "formatted_address": "881 7th Avenue\nNew York, NY 10019\nUnited States of America"
+              }
+          ],
+          "duration": 0,
+          "start": "2023-03-05T19:00:00Z",
+          "end": "2023-03-05T19:00:00Z",
+          "updated": "2022-11-08T01:28:34Z",
+          "first_seen": "2022-08-16T22:48:41Z",
+          "timezone": "America/New_York",
+          "location": [
+              -73.9799236,
+              40.7651258
+          ],
+          "geo": {
+              "geometry": {
+                  "coordinates": [
+                      -73.9799236,
+                      40.7651258
+                  ],
+                  "type": "Point"
+              },
+              "placekey": "zzw-22f@627-s8r-9fz"
+          },
+          "scope": "locality",
+          "country": "US",
+          "place_hierarchies": [
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128594",
+                  "6332416"
+              ],
+              [
+                  "6295630",
+                  "6255149",
+                  "6252001",
+                  "5128638",
+                  "5128594",
+                  "7250946",
+                  "5125771"
+              ]
+          ],
+          "state": "active",
+          "brand_safe": true,
+          "private": false
+      }
+  ]
+}

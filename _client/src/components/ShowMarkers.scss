@@ -1,0 +1,62 @@
+.marker-player-controls {
+  height: 30px;
+  width: 275px;
+  margin-bottom: 10px;
+
+  .chakra-spinner {
+    height: 25px;
+    width: 25px;
+    margin-left: 5px;
+    color: rgb(167, 167, 167);
+  }
+
+  button {
+    height: 100%;
+    width: 100%;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(240, 240, 240);
+    display: flex;
+    align-items: center;
+    &:hover {
+      background-color: #83bfff56;
+      .media-buttons,
+      img {
+        opacity: 100%;
+        filter: invert(1);
+      }
+    }
+    .media-buttons,
+    img {
+      height: 20px;
+      width: 20px;
+      opacity: 75%;
+      animation: 150ms ease-in fadeIn;
+      -webkit-animation: 150ms ease-in fadeIn;
+      -moz-animation: 150ms ease-in fadeIn;
+      -o-animation: 150ms ease-in fadeIn;
+      -ms-animation: 150ms ease-in fadeIn;
+      filter: invert(0.2);
+      &:hover {
+        opacity: 100%;
+        filter: invert(0);
+      }
+    }
+    &:disabled {
+      height: 100%;
+      width: 100%;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      background-color: rgb(240, 240, 240);
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+      .media-buttons,
+      img {
+        filter: invert(0.6);
+      }
+    }
+  }
+}
