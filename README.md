@@ -29,16 +29,16 @@ https://www.showfinder.ninja/
 - LocationIQ: forward and reverse geocoding
 - RapidAPI: artists events tracker by location
 - SpotifyAPI: audio samples
-- tried: PredictHQ, Songkick, Zyla
+- tried: PredictHQ, Songkick, Zyla, Ticketmaster Discovery
 <br>
 
 ### Developed & Designed by Spencer Cole
 
 
-![grabbing_location](_client/docs/1_grabbing_location.png)
+![grabbing_location](docs/1_grabbing_location.png)
 
-![shows_&_date_range](_client/docs/2_shows_date_range.png)
+![shows_&_date_range](docs/2_shows_date_range.png)
 
-![select_artist_&_venue](_client/docs/3_select_artist.png)
+![select_artist_&_venue](docs/3_select_artist.png)
 
-![fully_responsive](_client/docs/4_mobile_responsive.png)
+![fully_responsive](docs/4_mobile_responsive.png)

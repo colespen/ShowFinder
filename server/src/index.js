@@ -21,8 +21,8 @@ app.use(morgan("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/////   serve static files for build ******
-app.use(express.static(path.resolve(__dirname, "../../_client/build")));
+/////   serve static build files: dev ******
+// app.use(express.static(path.resolve(__dirname, "../../client/build")));
 
 const dedupe = require("./utils/dedupe");
 const filterCurrentAddress = require("./utils/currAddressFilter");
@@ -60,7 +60,7 @@ app.get("/api/shows", (req, res) => {
         name: filteredAddress,
         ...req.query.dateRange,
       });
-      console.log("params:", params);
+      console.log({ params });
       return axios
         .get(
           "https://concerts-artists-events-tracker.p.rapidapi.com/location?" +
@@ -154,7 +154,6 @@ app.post("/api/spotifyauth", (req, res) => {
     .then((response) => {
       spotifyToken = response.data.access_token;
       res.sendStatus(200);
-      console.log("*** spotifyToken: ", spotifyToken);
     })
     .catch((error) => {
       res.status(500).send("Error: " + error.message);
@@ -166,54 +165,80 @@ app.post("/api/spotifyauth", (req, res) => {
 ////    Get - Artist ID -> Top Single
 ////////////////////////////////////////////////////////
 
-app.get("/api/spotifysample", (req, res) => {
-  console.log(
-    "********* /api/spotifysample req.query.artist: ",
-    req.query.artist
-  );
-  const params = new URLSearchParams({
-    q: req.query.artist,
-    type: "artist",
-    format: "json",
-  });
-  axios
-    .get(`https://api.spotify.com/v1/search?${params.toString()}`, {
-      headers: {
-        Authorization: "Bearer " + spotifyToken,
-      },
-    })
-    .then((response) => {
-      const params = new URLSearchParams({
-        market: "US",
-        format: "json",
-      });
-      const artistsItems = response.data.artists.items;
-      if (artistsItems.length === 0 || !Array.isArray(artistsItems)) {
-        return Promise.resolve({ tracks: [] });
-      } else {
-        const artistId = artistsItems[0].id;
-        return axios
-          .get(
-            `https://api.spotify.com/v1/artists/${artistId}/top-tracks?${params.toString()}`,
-            {
-              headers: {
-                Authorization: "Bearer " + spotifyToken,
-              },
-            }
-          )
-          .then((response) => {
-            const tracks = response.data.tracks;
-            return { tracks };
-          });
-      }
-    })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((error) => {
-      res.status(500).send("Error: " + error.message);
-      console.error("Error: ", error.message);
+app.get("/api/spotifysample", async (req, res) => {
+  try {
+    // search for artist
+    const searchParams = new URLSearchParams({
+      q: req.query.artist,
+      type: "artist",
+      format: "json",
     });
+
+    const searchResponse = await axios.get(
+      `https://api.spotify.com/v1/search?${searchParams.toString()}`,
+      { headers: { Authorization: "Bearer " + spotifyToken } }
+    );
+
+    const artistsItems = searchResponse.data.artists.items;
+    if (!artistsItems?.length || !Array.isArray(artistsItems)) {
+      return res.send({ tracks: [] });
+    }
+
+    // get top tracks
+    const topTracksParams = new URLSearchParams({
+      market: "US",
+      format: "json",
+    });
+
+    const artistId = artistsItems[0].id;
+    const topTracksResponse = await axios.get(
+      `https://api.spotify.com/v1/artists/${artistId}/top-tracks?${topTracksParams.toString()}`,
+      { headers: { Authorization: "Bearer " + spotifyToken } }
+    );
+
+    const tracks = topTracksResponse.data.tracks;
+    if (!tracks?.length) {
+      return res.send({ tracks: [] });
+    }
+
+    // process first three tracks - get preview URLs
+    // need this hack now that preview_url is null with latest Spotify api changes
+    const MAX_TRACKS = 3;
+    const slicedTracks = tracks.slice(0, MAX_TRACKS);
+
+    for (let i = 0; i < slicedTracks.length; i++) {
+      const trackId = slicedTracks[i].id;
+      try {
+        const embedResponse = await axios.get(
+          `https://open.spotify.com/embed/track/${trackId}`,
+          { headers: { "Content-Type": "application/json" } }
+        );
+
+        const regex =
+          /<script id="__NEXT_DATA__" type="application\/json">(.+?)<\/script>/s;
+        const match = embedResponse.data.match(regex);
+
+        if (match) {
+          const jsonData = JSON.parse(match[1]);
+          if (jsonData?.props?.pageProps?.state?.data?.entity?.audioPreview) {
+            slicedTracks[i].preview_url =
+              jsonData.props.pageProps.state.data.entity.audioPreview.url;
+          }
+        }
+      } catch (embedError) {
+        // log but continue processing other tracks
+        console.error(
+          `Error fetching embed data for track ${i + 1}:`,
+          embedError.message
+        );
+      }
+    }
+
+    return res.send({ tracks: slicedTracks });
+  } catch (error) {
+    console.error("Spotify API Error:", error.message);
+    return res.status(500).send("Error: " + error.message);
+  }
 });
 
 app.listen(port, () => {

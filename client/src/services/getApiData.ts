@@ -106,6 +106,7 @@ const getSpotifySample = (
   setSpotifyUrl: (state: string) => void,
   setNowPlaying: (state: string) => void
 ) => {
+  console.log("IN GET SPOTIFY SAMPLE");
   axios
     .get("/api/spotifysample", { params: { artist } })
     .then((response) => {
@@ -116,7 +117,7 @@ const getSpotifySample = (
         setAudioLink,
         setIsPlaying,
         setSpotifyUrl,
-        setNowPlaying
+        setNowPlaying,
       });
     })
     .catch((err) => console.log(err.message));
