@@ -3,15 +3,15 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const cors = require("cors");
 const axios = require("axios");
-const path = require("path");
+// const path = require("path");
 
 const app = express();
 
 var corsOptions = {
   origin: "https://www.showfinder.ninja",
   // origin: "http://localhost:3000", // for dev
-  optionsSuccessStatus: 200,
-};
+  optionsSuccessStatus: 200 
+}
 ////   (cors w no config accepts all origins/headers)
 app.use(cors(corsOptions));
 
