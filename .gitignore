@@ -23,5 +23,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# deprecated
 _client
+# still building
 _new_server
