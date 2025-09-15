@@ -27,3 +27,6 @@ yarn-error.log*
 _client
 # still building
 _new_server
+
+# Claude Code configuration
+CLAUDE.md

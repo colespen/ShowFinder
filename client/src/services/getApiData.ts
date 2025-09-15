@@ -56,6 +56,7 @@ const fetchShows = (
   axios
     .get("/api/shows", { params })
     .then((res) => {
+      // console.log(res.data);
       setShowCityUserData({
         data: res.data,
         callbacks,

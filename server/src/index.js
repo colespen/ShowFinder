@@ -10,8 +10,8 @@ const app = express();
 var corsOptions = {
   origin: "https://www.showfinder.ninja",
   // origin: "http://localhost:3000", // for dev
-  optionsSuccessStatus: 200 
-}
+  optionsSuccessStatus: 200,
+};
 ////   (cors w no config accepts all origins/headers)
 app.use(cors(corsOptions));
 
@@ -49,13 +49,10 @@ app.get("/api/shows", (req, res) => {
     .get(`https://us1.locationiq.com/v1/reverse?${params.toString()}`)
     .then((response) => {
       const currentAddress = response.data;
-      console.log(
-        "api/shows - currentAddress.address: ",
-        currentAddress.address.city,
-        currentAddress.address.country
-      );
+
       // TODO: fix bug, of no matches for rapid api data then nothign return.
       const filteredAddress = filterCurrentAddress(currentAddress);
+
       const params = new URLSearchParams({
         name: filteredAddress,
         ...req.query.dateRange,
@@ -76,6 +73,7 @@ app.get("/api/shows", (req, res) => {
         .then((response) => ({ ...response.data, currentAddress }));
     })
     .then((data) => {
+      // console.log("api/shows - data: ", data);
       res.send(data);
     })
     .catch((error) => {
