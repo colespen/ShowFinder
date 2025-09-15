@@ -369,8 +369,8 @@
   /* target Chrome on iOS specifically */
   @supports (-webkit-appearance: none) and (not (-moz-appearance: none)) {
     .map-main {
-      height: calc(100vh - 115px); /* more space for Chrome's UI */
-      min-height: calc(100vh - 115px);
+      height: calc(100vh - 140px); /* increased by 25px for Chrome's more persistent UI */
+      min-height: calc(100vh - 140px);
     }
   }
 }
