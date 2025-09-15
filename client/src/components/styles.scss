@@ -356,10 +356,29 @@
     }
   }
 }
+/* iPhone 12 Mini and smaller devices - Default Safari optimization */
+@media only screen and (max-width: 390px) {
+  .map-main {
+    height: calc(100vh - 105px); /* reduce by 5px */
+    min-height: calc(100vh - 105px);
+  }
+}
+
+/* Chrome-specific adjustments for iPhone 12 Mini */
+@media only screen and (max-width: 390px) {
+  /* target Chrome on iOS specifically */
+  @supports (-webkit-appearance: none) and (not (-moz-appearance: none)) {
+    .map-main {
+      height: calc(100vh - 115px); /* more space for Chrome's UI */
+      min-height: calc(100vh - 115px);
+    }
+  }
+}
+
 @media only screen and (max-width: 480px) {
   .map-main {
-    // height: 91vh;
-    height: 88%;
+    height: calc(100vh - 90px); /* reduce by 5px */
+    min-height: calc(100vh - 90px);
   }
   .leaflet-control-container {
     visibility: hidden;

@@ -134,9 +134,12 @@
     justify-content: center;
     cursor: pointer;
     transition: background-color 250ms ease;
+    padding-left: 4px;
+    padding-right: 6px;
 
     .drawer-button-icon {
       height: 100%;
+      max-width: 100%;
       filter: invert(40%);
       &:hover {
         filter: invert(0%);
