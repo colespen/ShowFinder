@@ -14,7 +14,7 @@ export const NAVIGTOR_ERROR = {
  * React hook returns user's geolocation in location state object
  */
 export default function useGeoLocation(
-  reloadOnError = false
+  reloadOnError = false,
 ): GeoLocationState {
   const [location, setLocation] = useState<GeoLocationState>({
     loaded: false,
@@ -60,7 +60,7 @@ export default function useGeoLocation(
         //default value
         code: 0,
         message: "Unknown error",
-      }
+      },
     ) => {
       // if (error.code === NAVIGTOR_ERROR.PERMISSION_DENIED) {
       //   alert("please allow location in settings to continue.");

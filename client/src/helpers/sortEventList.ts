@@ -21,7 +21,7 @@ function sortByProximity(shows: ShowData[], userData: UserDataState) {
     uLat: number,
     uLng: number,
     evLat: number,
-    evLng: number
+    evLng: number,
   ) {
     const R = 6371; // radius of the earth in km
     const dLat = ((evLat - uLat) * Math.PI) / 180;

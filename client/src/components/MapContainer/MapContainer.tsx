@@ -1,4 +1,9 @@
-import { MapContainer, TileLayer, MapContainerProps, useMapEvents } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  MapContainerProps,
+  useMapEvents,
+} from "react-leaflet";
 import { useEffect, useCallback } from "react";
 import { ContainerProps } from "../../datatypes/props";
 
@@ -17,7 +22,7 @@ const MapSizeHandler = () => {
     resize: () => {
       // built-in resize event handler
       map.invalidateSize();
-    }
+    },
   });
 
   const handleResize = useCallback(() => {
@@ -43,12 +48,14 @@ const MapSizeHandler = () => {
     });
 
     // handle browser-level resize and orientation events
-    window.addEventListener('resize', handleResize, { passive: true });
-    window.addEventListener('orientationchange', handleOrientationChange, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
+    window.addEventListener("orientationchange", handleOrientationChange, {
+      passive: true,
+    });
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleOrientationChange);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleOrientationChange);
     };
   }, [map, handleResize, handleOrientationChange]);
 
@@ -57,7 +64,7 @@ const MapSizeHandler = () => {
 
 const MapContainerComponent = (props: MapContainerProps & ContainerProps) => {
   const { isMarkerClicked, center, geolocation, userData, currCity, ...rest } =
-  props;
+    props;
   return (
     <MapContainer
       className="map-container"

@@ -49,7 +49,7 @@
     cursor: pointer;
     &:disabled {
       background-color: rgb(240, 240, 240);
-      cursor:auto;
+      cursor: auto;
       &:hover {
         background-color: rgb(240, 240, 240);
       }

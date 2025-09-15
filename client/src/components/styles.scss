@@ -294,7 +294,9 @@
     opacity: 0;
   }
   &:hover span {
-    transition: 3s opacity ease-out, 3s filter ease-out 2.1s;
+    transition:
+      3s opacity ease-out,
+      3s filter ease-out 2.1s;
     opacity: 100%;
     filter: blur(100px);
   }

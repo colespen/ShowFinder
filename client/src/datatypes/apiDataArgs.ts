@@ -15,7 +15,6 @@ export interface GetShowsArgs {
   callbacks: ShowCallbackArgs;
 }
 
-
 export interface SetShowCityUserDataArgs {
   data: {
     currentAddress: CurrentAddress;
@@ -30,10 +29,12 @@ export interface SetNewShowCityUserDataArgs {
     currentAddress: CurrentAddress;
     data: ShowData[];
     page: number;
-    latLng: [{
-      lat: number, 
-      lon: number
-    }]
+    latLng: [
+      {
+        lat: number;
+        lon: number;
+      },
+    ];
   };
   cityQuery: string;
   callbacks: ShowCallbackArgs;

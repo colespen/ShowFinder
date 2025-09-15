@@ -43,11 +43,13 @@ const ControlsTop = (props: ControlsTopProps) => {
         </button>
       </div>
       <button id="current-location" onClick={handleCurrLocation}>
-        {geolocation.loaded && <img
-          id="location-icon"
-          src="./target.png"
-          alt="current-location-icon"
-        />}
+        {geolocation.loaded && (
+          <img
+            id="location-icon"
+            src="./target.png"
+            alt="current-location-icon"
+          />
+        )}
       </button>
     </div>
   );

@@ -1,11 +1,10 @@
-import Map from './components/Map';
-import './styles.scss';
+import Map from "./components/Map";
+import "./styles.scss";
 
 function App() {
-
   return (
     <div className="App">
-      <Map/>
+      <Map />
     </div>
   );
 }

@@ -43,7 +43,7 @@ const matchArtistSetAudioPlaying = ({
         } else {
           return false;
         }
-      }
+      },
     );
 
     if (!foundPreview && tracks[i].preview_url && isArtistFound) {
