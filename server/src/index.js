@@ -8,8 +8,8 @@ const axios = require("axios");
 const app = express();
 
 var corsOptions = {
-  origin: "https://www.showfinder.ninja",
-  // origin: "http://localhost:3000", // for dev
+  // origin: "https://www.showfinder.ninja",
+  origin: "http://localhost:3000", // for dev
   optionsSuccessStatus: 200,
 };
 ////   (cors w no config accepts all origins/headers)

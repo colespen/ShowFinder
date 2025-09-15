@@ -7,7 +7,7 @@
         "-y",
         "@upstash/context7-mcp",
         "--api-key",
-        "ctx7sk-53bf40bf-34ba-403a-aa5e-f593a7f5c179"
+        "YOUR_CONTEXT7_API_KEY"
       ],
       "env": {}
     }
