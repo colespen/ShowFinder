@@ -6,22 +6,22 @@ import CurrentLocation from "./CurrentLocation";
 import ShowMarkers from "./ShowMarkers";
 import { centerInitial } from "../../datatypes/initialState";
 
-// Production-ready iOS Safari fix component
+// iOS Safari fix component
 const MapSizeHandler = () => {
   const map = useMapEvents({
-    // Use Leaflet's native load event for proper initialization
+    // use Leaflet native load event for proper init
     load: () => {
-      // Map is fully initialized, safe to invalidate size
+      // map is fully initialized, safe to invalidate size
       map.invalidateSize();
     },
     resize: () => {
-      // Built-in resize event handler
+      // built-in resize event handler
       map.invalidateSize();
     }
   });
 
   const handleResize = useCallback(() => {
-    // Use requestAnimationFrame for better performance
+    // use requestAnimationFrame for better performance
     requestAnimationFrame(() => {
       map.invalidateSize();
     });
@@ -37,12 +37,12 @@ const MapSizeHandler = () => {
   }, [map]);
 
   useEffect(() => {
-    // Use Leaflet's whenReady for proper initialization timing
+    // use Leaflet whenReady() for proper init timing
     map.whenReady(() => {
       map.invalidateSize();
     });
 
-    // Handle browser-level resize and orientation events
+    // handle browser-level resize and orientation events
     window.addEventListener('resize', handleResize, { passive: true });
     window.addEventListener('orientationchange', handleOrientationChange, { passive: true });
 
