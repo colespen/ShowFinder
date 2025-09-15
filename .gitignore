@@ -30,3 +30,5 @@ _new_server
 
 # Claude Code configuration
 CLAUDE.md
+# MCP config
+.mcp.json
