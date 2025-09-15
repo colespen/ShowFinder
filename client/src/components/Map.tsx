@@ -46,13 +46,13 @@ export default function Map() {
   const [userData, setUserData] = useState<UserDataState>(userDataInitial);
   const [transition, setTransition] = useState(transitionInitial);
   const [lastClickedMarker, setLastClickedMarker] = useState<string | null>(
-    null
+    null,
   );
   const isFirstRender = useRef<boolean>(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const markerRefs = useRef<Marker[]>([]);
   const [center, setCenter] = useState<{ lat: number; lng: number }>(
-    centerStateInitial
+    centerStateInitial,
   );
 
   const geolocation = useGeoLocation();
@@ -151,7 +151,7 @@ export default function Map() {
         setAudioLink,
         setIsPlaying,
         setSpotifyUrl,
-        setNowPlaying
+        setNowPlaying,
       );
     if (!artist) {
       setAudioLink("");

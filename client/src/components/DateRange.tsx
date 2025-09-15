@@ -52,7 +52,7 @@ export default function DateRange({ setUserData }: DateRangeProps) {
       <button className="date-button-input" onClick={onClick} ref={ref}>
         {value ? value : currDate + " - set range"}
       </button>
-    )
+    ),
   );
 
   return (

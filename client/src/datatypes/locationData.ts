@@ -1,7 +1,7 @@
 export type Coords = {
-  lat: number; 
+  lat: number;
   lng: number;
-}
+};
 
 export interface GeoLocationState {
   loaded: boolean;

@@ -7,7 +7,7 @@ import "./ShowMarkers.scss";
 
 const ShowMarkers = (props: ShowMarkersProps) => {
   const { shows, markerPlayback, markerRefs } = props;
-  
+
   useEffect(() => {
     // update markerRefs.current after all markers are rendered
     // Boolean obj coerces each el to true or false. Keepy truthy el's

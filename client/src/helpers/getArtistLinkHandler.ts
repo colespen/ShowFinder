@@ -4,7 +4,7 @@
 export default async function getArtistTickets(
   // e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
   artistName: string,
-  venue: string
+  venue: string,
 ) {
   try {
     await new Promise((resolve) => {
@@ -21,7 +21,7 @@ export default async function getArtistTickets(
 const handleArtistName = (
   // e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
   artistName: string,
-  venue: string
+  venue: string,
 ) => {
   // const target = e.target as HTMLButtonElement;
   // const artistVenue = target.innerText + " " + venue;
@@ -32,13 +32,13 @@ const handleArtistName = (
 //////    Open artist name onClick
 const handleArtistLink = (artistPlusVenueName: string) => {
   if (!artistPlusVenueName) {
-    return
+    return;
   }
   window.open(
     `https://www.songkick.com/search?utf8=&type=initial&query=
       ${artistPlusVenueName}&type=upcoming`,
     "_blank",
-    "noreferrer"
+    "noreferrer",
   );
 };
 

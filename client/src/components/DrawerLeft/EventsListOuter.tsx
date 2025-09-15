@@ -44,9 +44,7 @@ const EventsList = ({
   }, [geolocation.coords.lat, geolocation.coords.lng, shows.data, userData]);
 
   return (
-    <div className="drawer-left-outer" 
-    style={contentsTransitionStyles}
-    >
+    <div className="drawer-left-outer" style={contentsTransitionStyles}>
       <ul className="drawer-left-container">
         <EventListItems
           sortedShows={sortedShows}

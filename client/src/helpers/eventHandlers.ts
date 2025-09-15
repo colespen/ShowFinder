@@ -7,7 +7,7 @@ import { ShowData, ShowDataState } from "../datatypes/showData";
 ////    Set City Name Input
 const handleCityChange = (
   e: ChangeEvent,
-  setUserData: Dispatch<SetStateAction<UserDataState>>
+  setUserData: Dispatch<SetStateAction<UserDataState>>,
 ) => {
   setUserData((prev) => ({ ...prev, newCity: e.target.value }));
 };
@@ -19,7 +19,7 @@ const handleInputTextSelect = (e: FocusEvent) => e.target.select();
 ////    Submit City on Enter
 const handleNewCityOnEnter = (
   e: KeyboardEvent,
-  handleNewCityShows: () => void
+  handleNewCityShows: () => void,
 ) => {
   if (e.key === "Enter") handleNewCityShows();
 };
@@ -27,7 +27,7 @@ const handleNewCityOnEnter = (
 ////    Set Date Range to State
 const handleDateSelect = (
   dateRange: DateRangeType,
-  setUserData: Dispatch<SetStateAction<UserDataState>>
+  setUserData: Dispatch<SetStateAction<UserDataState>>,
 ) => {
   setUserData((prev) => ({ ...prev, dateRange }));
 };
@@ -43,7 +43,7 @@ const handleMarkerPlayback = (
   setIsMarkerClicked: Dispatch<SetStateAction<boolean>>,
   setArtist: Dispatch<SetStateAction<string>>,
   setLastClickedMarker: Dispatch<React.SetStateAction<string | null>>,
-  setNewAudio: Dispatch<SetStateAction<boolean>>
+  setNewAudio: Dispatch<SetStateAction<boolean>>,
 ) => {
   let headliner = "";
   if (show.performer.length === 0) {
@@ -59,13 +59,13 @@ const handleMarkerPlayback = (
   }
 };
 
-/** 
+/**
  * Set Artist from marker for audio src (headliner [0])
  * */
 const handleSetArtist = (
   artist: string,
   shows: ShowDataState,
-  setArtist: Dispatch<SetStateAction<string>>
+  setArtist: Dispatch<SetStateAction<string>>,
 ) => {
   // was if (shows) ***
   if (shows.data && artist !== undefined) setArtist(artist);
@@ -74,14 +74,14 @@ const handleSetArtist = (
 const handlePlayPause = (
   audioLink: string,
   isPlaying: boolean,
-  audioRef: MutableRefObject<HTMLAudioElement | null>
+  audioRef: MutableRefObject<HTMLAudioElement | null>,
 ) => {
   playPause({ audioLink, isPlaying, audioRef });
 };
 
 const handleSetNewAudio = (
   setNewAudio: Dispatch<SetStateAction<boolean>>,
-  audioLink: string
+  audioLink: string,
 ) => {
   setNewAudioDelay({ setNewAudio, audioLink });
 };
@@ -96,8 +96,8 @@ const handleSetCenter = (
     value: SetStateAction<{
       lat: number;
       lng: number;
-    }>
-  ) => void
+    }>,
+  ) => void,
 ) => {
   setCenter(latLng);
 };
@@ -112,5 +112,5 @@ export {
   handlePlayPause,
   handleSetNewAudio,
   handleAutoPlay,
-  handleSetCenter
+  handleSetCenter,
 };

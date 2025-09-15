@@ -51,11 +51,12 @@ const setNewShowCityUserData = (args: SetNewShowCityUserDataArgs) => {
  */
 const fetchShows = (
   params: UserDataState & (Coords | undefined),
-  callbacks: ShowCallbackArgs
+  callbacks: ShowCallbackArgs,
 ) => {
   axios
     .get("/api/shows", { params })
     .then((res) => {
+      // console.log(res.data);
       setShowCityUserData({
         data: res.data,
         callbacks,
@@ -70,7 +71,7 @@ const fetchShows = (
 const fetchNewShows = (
   userData: UserDataState,
   cityQuery: string,
-  callbacks: ShowCallbackArgs
+  callbacks: ShowCallbackArgs,
 ) => {
   axios
     .get("/api/newshows", { params: { ...userData, newCity: cityQuery } })
@@ -103,7 +104,7 @@ const getSpotifySample = (
   setAudioLink: (state: string) => void,
   setIsPlaying: (state: boolean) => void,
   setSpotifyUrl: (state: string) => void,
-  setNowPlaying: (state: string) => void
+  setNowPlaying: (state: string) => void,
 ) => {
   console.log("IN GET SPOTIFY SAMPLE");
   axios
@@ -136,7 +137,7 @@ const getShows = (args: GetShowsArgs) => {
       ...userData,
       ...geolocation.coords,
     },
-    { setShows, setCurrCity, setUserData }
+    { setShows, setCurrCity, setUserData },
   );
 };
 
@@ -158,7 +159,7 @@ const getCurrLocationShows = (args: GetCurrLocationShowsArgs) => {
         ...userData,
         ...geolocation.coords,
       },
-      { setShows, setCurrCity, setUserData }
+      { setShows, setCurrCity, setUserData },
     );
   }
 };

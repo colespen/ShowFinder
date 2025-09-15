@@ -11,4 +11,4 @@ export interface UserDataState {
 export type DateRangeType = {
   maxDate: string;
   minDate: string;
-}
+};

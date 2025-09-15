@@ -14,7 +14,10 @@
   justify-content: space-between;
   overflow: scroll;
   overflow-x: hidden;
-  transition: opacity, left, 750ms ease; // two commas
+  transition:
+    opacity,
+    left,
+    750ms ease; // two commas
 
   .drawer-left-outer {
     width: 100%;

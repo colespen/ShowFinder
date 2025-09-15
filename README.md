@@ -1,8 +1,9 @@
 # ShowFinder
 
-Simple SPA to find local shows surrounding the user. Maps nearby concerts and gives complete information regarding artists, track previews, venues and showtimes. Focusing on ease-of-use in a clean interface. 
+Simple SPA to find local shows surrounding the user. Maps nearby concerts and gives complete information regarding artists, track previews, venues and showtimes. Focusing on ease-of-use in a clean interface.
 
 ## It's Live -- Go Find Shows!:
+
 https://www.showfinder.ninja/
 
 - backend deployed with Render
@@ -26,14 +27,14 @@ https://www.showfinder.ninja/
 ## APIs:
 
 ### utilizes free APIs!
+
 - LocationIQ: forward and reverse geocoding
 - RapidAPI: artists events tracker by location
 - SpotifyAPI: audio samples
 - tried: PredictHQ, Songkick, Zyla, Ticketmaster Discovery
-<br>
+  <br>
 
 ### Developed & Designed by Spencer Cole
-
 
 ![grabbing_location](docs/1_grabbing_location.png)
 

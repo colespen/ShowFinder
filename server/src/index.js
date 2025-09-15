@@ -10,8 +10,8 @@ const app = express();
 var corsOptions = {
   origin: "https://www.showfinder.ninja",
   // origin: "http://localhost:3000", // for dev
-  optionsSuccessStatus: 200 
-}
+  optionsSuccessStatus: 200,
+};
 ////   (cors w no config accepts all origins/headers)
 app.use(cors(corsOptions));
 
@@ -49,13 +49,10 @@ app.get("/api/shows", (req, res) => {
     .get(`https://us1.locationiq.com/v1/reverse?${params.toString()}`)
     .then((response) => {
       const currentAddress = response.data;
-      console.log(
-        "api/shows - currentAddress.address: ",
-        currentAddress.address.city,
-        currentAddress.address.country
-      );
+
       // TODO: fix bug, of no matches for rapid api data then nothign return.
       const filteredAddress = filterCurrentAddress(currentAddress);
+
       const params = new URLSearchParams({
         name: filteredAddress,
         ...req.query.dateRange,
@@ -71,11 +68,12 @@ app.get("/api/shows", (req, res) => {
               "X-RapidAPI-Host":
                 "concerts-artists-events-tracker.p.rapidapi.com",
             },
-          }
+          },
         )
         .then((response) => ({ ...response.data, currentAddress }));
     })
     .then((data) => {
+      // console.log("api/shows - data: ", data);
       res.send(data);
     })
     .catch((error) => {
@@ -99,7 +97,7 @@ app.get("/api/newshows", (req, res) => {
     .then((response) => {
       // TODO: abstract citySort
       const citySort = response.data.sort(
-        (a, b) => parseFloat(b.importance) - parseFloat(a.importance)
+        (a, b) => parseFloat(b.importance) - parseFloat(a.importance),
       );
       const latLng = citySort;
 
@@ -117,7 +115,7 @@ app.get("/api/newshows", (req, res) => {
               "X-RapidAPI-Host":
                 "concerts-artists-events-tracker.p.rapidapi.com",
             },
-          }
+          },
         )
         .then((response) => {
           const deduped = dedupe(response);
@@ -139,7 +137,7 @@ app.get("/api/newshows", (req, res) => {
 
 app.post("/api/spotifyauth", (req, res) => {
   const base64ID = new Buffer.from(client_id + ":" + client_secret).toString(
-    "base64"
+    "base64",
   );
   const config = {
     headers: {
@@ -176,7 +174,7 @@ app.get("/api/spotifysample", async (req, res) => {
 
     const searchResponse = await axios.get(
       `https://api.spotify.com/v1/search?${searchParams.toString()}`,
-      { headers: { Authorization: "Bearer " + spotifyToken } }
+      { headers: { Authorization: "Bearer " + spotifyToken } },
     );
 
     const artistsItems = searchResponse.data.artists.items;
@@ -193,7 +191,7 @@ app.get("/api/spotifysample", async (req, res) => {
     const artistId = artistsItems[0].id;
     const topTracksResponse = await axios.get(
       `https://api.spotify.com/v1/artists/${artistId}/top-tracks?${topTracksParams.toString()}`,
-      { headers: { Authorization: "Bearer " + spotifyToken } }
+      { headers: { Authorization: "Bearer " + spotifyToken } },
     );
 
     const tracks = topTracksResponse.data.tracks;
@@ -211,7 +209,7 @@ app.get("/api/spotifysample", async (req, res) => {
       try {
         const embedResponse = await axios.get(
           `https://open.spotify.com/embed/track/${trackId}`,
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "Content-Type": "application/json" } },
         );
 
         const regex =
@@ -229,7 +227,7 @@ app.get("/api/spotifysample", async (req, res) => {
         // log but continue processing other tracks
         console.error(
           `Error fetching embed data for track ${i + 1}:`,
-          embedError.message
+          embedError.message,
         );
       }
     }
