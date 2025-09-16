@@ -24,6 +24,7 @@ import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
 import "./styles.scss";
 import { Marker } from "leaflet";
 import { setArtistNameFilter } from "../helpers/utils";
+import { useViewportHeight } from "../hooks/useViewportHeight";
 
 export default function Map() {
   const [shows, setShows] = useState<ShowDataState>({
@@ -46,16 +47,18 @@ export default function Map() {
   const [userData, setUserData] = useState<UserDataState>(userDataInitial);
   const [transition, setTransition] = useState(transitionInitial);
   const [lastClickedMarker, setLastClickedMarker] = useState<string | null>(
-    null,
+    null
   );
   const isFirstRender = useRef<boolean>(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const markerRefs = useRef<Marker[]>([]);
   const [center, setCenter] = useState<{ lat: number; lng: number }>(
-    centerStateInitial,
+    centerStateInitial
   );
 
   const geolocation = useGeoLocation();
+
+  useViewportHeight();
 
   //////   Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
@@ -151,7 +154,7 @@ export default function Map() {
         setAudioLink,
         setIsPlaying,
         setSpotifyUrl,
-        setNowPlaying,
+        setNowPlaying
       );
     if (!artist) {
       setAudioLink("");
