@@ -24,6 +24,7 @@ import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
 import "./styles.scss";
 import { Marker } from "leaflet";
 import { setArtistNameFilter } from "../helpers/utils";
+import { useChromeIOSAdjustment } from "../hooks/useChromeIOSAdjustment";
 
 export default function Map() {
   const [shows, setShows] = useState<ShowDataState>({
@@ -57,19 +58,7 @@ export default function Map() {
 
   const geolocation = useGeoLocation();
 
-  // Chrome iOS detection and map adjustment
-  useEffect(() => {
-    const userAgent = navigator.userAgent;
-    const isChromeIOS = /CriOS/.test(userAgent);
-    const isIPhone12Mini = window.innerWidth <= 375 && window.innerHeight <= 812;
-
-    // apply adjustment if it's iPhone 12 Mini and Chrome iOS
-    if (isIPhone12Mini && isChromeIOS) {
-      document.documentElement.style.setProperty('--chrome-ios-adjustment', '30px');
-    } else {
-      document.documentElement.style.setProperty('--chrome-ios-adjustment', '0px');
-    }
-  }, []);
+  useChromeIOSAdjustment();
 
   //////   Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
