@@ -24,7 +24,6 @@ import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
 import "./styles.scss";
 import { Marker } from "leaflet";
 import { setArtistNameFilter } from "../helpers/utils";
-import { useViewportHeight } from "../hooks/useViewportHeight";
 
 export default function Map() {
   const [shows, setShows] = useState<ShowDataState>({
@@ -57,8 +56,6 @@ export default function Map() {
   );
 
   const geolocation = useGeoLocation();
-
-  useViewportHeight();
 
   //////   Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
