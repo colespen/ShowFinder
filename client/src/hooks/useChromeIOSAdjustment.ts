@@ -11,11 +11,11 @@ export const useChromeIOSAdjustment = (): void => {
     const isIPhone12Mini =
       window.innerWidth <= 375 && window.innerHeight <= 812;
 
-    // apply 15px adjustment if it's iPhone 12 Mini and Chrome iOS
+    // apply 10px adjustment if it's iPhone 12 Mini and Chrome iOS
     if (isIPhone12Mini && isChromeIOS) {
       document.documentElement.style.setProperty(
         "--chrome-ios-adjustment",
-        "15px"
+        "10px"
       );
     } else {
       document.documentElement.style.setProperty(
