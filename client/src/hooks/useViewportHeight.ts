@@ -1,9 +1,8 @@
 import { useEffect, useCallback } from 'react';
 
 /**
- * custom hook for viewport height handling on mobile browsers
- * industry standard 2025 approach: CSS dvh units with React fallback
- * addresses iOS Chrome/Safari toolbar overlap issues
+ * viewport height handling on mobile browsers
+ * CSS dvh units with React fallback (addresses iOS Chrome/Safari toolbar overlap issues)
  */
 export const useViewportHeight = (): void => {
   const updateViewportHeight = useCallback((): void => {
