@@ -6,4 +6,9 @@ body {
   height: 100vh;
   background-color: rgb(27, 27, 32);
   margin: 0;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+html {
+  overflow: hidden; /* Prevent scrolling on html as well */
 }
