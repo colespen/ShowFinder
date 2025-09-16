@@ -57,6 +57,18 @@ export default function Map() {
 
   const geolocation = useGeoLocation();
 
+  // Chrome iOS detection and map adjustment
+  useEffect(() => {
+    const isChromeIOS = /CriOS/.test(navigator.userAgent);
+    const isIPhone12Mini = window.innerWidth <= 375 && window.innerHeight <= 812;
+
+    if (isChromeIOS && isIPhone12Mini) {
+      document.documentElement.style.setProperty('--chrome-ios-adjustment', '30px');
+    } else {
+      document.documentElement.style.setProperty('--chrome-ios-adjustment', '0px');
+    }
+  }, []);
+
   //////   Set Geo Coords State After Allow Access - First Render
   useEffect(() => {
     if (geolocation.error?.code === NAVIGTOR_ERROR.PERMISSION_DENIED) {
