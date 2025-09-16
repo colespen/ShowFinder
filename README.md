@@ -6,16 +6,16 @@ Simple SPA to find local shows surrounding the user. Maps nearby concerts and gi
 
 https://www.showfinder.ninja/
 
-- backend deployed with Render
-- frontend with AWS Amplify
+- Backend deployed with Render
+- Frontend with AWS Amplify
 
 ## Features:
 
 - Current shows dates with link to venues, artists and tickets
-- artist top track audio preview
+- Audio preview of artist top track
 - Specify any city and date range
-- event-list drawer for easy lookup
-- fully responsive
+- Event-list drawer for easy lookup
+- Fully responsive
 
 ## Stack:
 
