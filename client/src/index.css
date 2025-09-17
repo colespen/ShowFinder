@@ -6,9 +6,11 @@ body {
   height: 100vh;
   background-color: rgb(27, 27, 32);
   margin: 0;
-  overflow: hidden; /* prevent scrolling */
+  overflow-y: auto; /* allow vertical scrolling for Safari tab restoration bug recovery */
+  overflow-x: hidden; /* prevent horizontal scrolling */
 }
 
 html {
-  overflow: hidden; /* prevent scrolling on html as well */
+  overflow-y: auto; /* allow vertical scrolling for Safari tab restoration bug recovery */
+  overflow-x: hidden; /* prevent horizontal scrolling */
 }

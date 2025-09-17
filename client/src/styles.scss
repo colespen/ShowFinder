@@ -3,6 +3,9 @@
 .App {
   height: 100vh;
   width: 100vw;
+  /* Re-enable scrolling to recover from Safari tab restoration bugs */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .leaflet-container {

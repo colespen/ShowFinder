@@ -8,7 +8,10 @@ export const useChromeIOSAdjustment = (): void => {
   useEffect(() => {
     const userAgent = navigator.userAgent;
     const isChromeIOS = /CriOS/.test(userAgent);
-    const isSafariIOS = /iPad|iPhone|iPod/.test(userAgent) && /Safari/.test(userAgent) && !isChromeIOS;
+    const isSafariIOS =
+      /iPad|iPhone|iPod/.test(userAgent) &&
+      /Safari/.test(userAgent) &&
+      !isChromeIOS;
     const isIPhone12Mini =
       window.innerWidth <= 375 && window.innerHeight <= 812;
 
