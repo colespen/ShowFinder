@@ -43,9 +43,13 @@ const EventsList = ({
     }
   }, [geolocation.coords.lat, geolocation.coords.lng, shows.data, userData]);
 
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <div className="drawer-left-outer" style={contentsTransitionStyles}>
-      <ul className="drawer-left-container">
+      <ul className="drawer-left-container" onTouchMove={handleTouchMove}>
         <EventListItems
           sortedShows={sortedShows}
           markerPlayback={markerPlayback}
