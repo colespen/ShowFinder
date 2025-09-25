@@ -19,6 +19,10 @@ build
 .env.test.local
 .env.production.local
 
+# Environment files (but keep example files)
+.env*
+!.env.example
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -4,8 +4,8 @@
   "description": "ShowFinder-API",
   "main": "src/index.js",
   "scripts": {
-    "server": "nodemon ./src/index.js",
-    "start": "node ./src/index.js",
+    "server": "NODE_ENV=development nodemon ./src/index.js",
+    "start": "NODE_ENV=production node ./src/index.js",
     "local": "./node_modules/.bin/nodemon -L --ignore public/",
     "test": "NODE_ENV=test jest",
     "db:reset": "NODE_ENV=development node ./src/bin/resetdb.js"
