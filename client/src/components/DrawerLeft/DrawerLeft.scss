@@ -14,6 +14,9 @@
   justify-content: space-between;
   overflow: scroll;
   overflow-x: hidden;
+  /* Prevent scroll chaining to parent container */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   transition:
     opacity,
     left,

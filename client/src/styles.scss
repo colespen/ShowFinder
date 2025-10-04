@@ -1,11 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400&display=swap");
 
+/* iOS Safari fix: ensure height chain is unbroken for proper tile rendering */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .App {
-  height: 100vh;
+  /* Modern dynamic viewport for iOS Safari toolbar handling */
+  height: 100vh; /* Fallback for older browsers */
+  height: 100dvh; /* Dynamic viewport - adjusts for iOS Safari toolbar */
   width: 100vw;
-  /* Re-enable scrolling to recover from Safari tab restoration bugs */
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden; /* No scroll needed with dvh */
 }
 
 .leaflet-container {
