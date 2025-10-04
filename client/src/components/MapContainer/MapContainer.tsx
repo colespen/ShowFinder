@@ -4,7 +4,7 @@ import {
   MapContainerProps,
   useMapEvents,
 } from "react-leaflet";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { ContainerProps } from "../../datatypes/props";
 
 import CurrentLocation from "./CurrentLocation";
@@ -13,49 +13,48 @@ import { centerInitial } from "../../datatypes/initialState";
 
 // iOS Safari fix component
 const MapSizeHandler = () => {
+  const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const map = useMapEvents({
     resize: () => {
-      // built-in resize event handler
-      map.invalidateSize();
+      // debounce resize to avoid excessive invalidateSize calls
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+      resizeTimeoutRef.current = setTimeout(() => {
+        console.log("Map resize event - invalidating map size");
+        map.invalidateSize();
+      }, 150);
     },
   });
 
-  const handleResize = useCallback(() => {
-    // use requestAnimationFrame for better performance
-    requestAnimationFrame(() => {
-      map.invalidateSize();
-    });
-  }, [map]);
-
   const handleOrientationChange = useCallback(() => {
-    // Slight delay for orientation change to complete
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 100);
-    });
+    // delay for orientation change to complete
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
   }, [map]);
 
   useEffect(() => {
-    // Delay invalidateSize until Safari finishes initial layout
-    // This prevents the "top rectangle only" tile bug on iOS Safari
+    // delay invalidateSize until Safari finishes initial layout - prevents "top rectangle only" tile bug on iOS Safari
     requestAnimationFrame(() => {
       setTimeout(() => {
         map.invalidateSize();
       }, 0);
     });
 
-    // handle browser-level resize and orientation events
-    window.addEventListener("resize", handleResize, { passive: true });
+    // only handle orientation change (resize is handled by Leaflet's resize event)
     window.addEventListener("orientationchange", handleOrientationChange, {
       passive: true,
     });
 
     return () => {
-      window.removeEventListener("resize", handleResize);
       window.removeEventListener("orientationchange", handleOrientationChange);
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
     };
-  }, [map, handleResize, handleOrientationChange]);
+  }, [map, handleOrientationChange]);
 
   return null;
 };
