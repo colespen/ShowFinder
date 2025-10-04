@@ -22,7 +22,6 @@ const MapSizeHandler = () => {
         clearTimeout(resizeTimeoutRef.current);
       }
       resizeTimeoutRef.current = setTimeout(() => {
-        console.log("Map resize event - invalidating map size");
         map.invalidateSize();
       }, 150);
     },
