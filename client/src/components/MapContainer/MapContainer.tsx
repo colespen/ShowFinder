@@ -2,58 +2,26 @@ import {
   MapContainer,
   TileLayer,
   MapContainerProps,
-  useMapEvents,
+  useMap,
 } from "react-leaflet";
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect } from "react";
 import { ContainerProps } from "../../datatypes/props";
 
 import CurrentLocation from "./CurrentLocation";
 import ShowMarkers from "./ShowMarkers";
 import { centerInitial } from "../../datatypes/initialState";
 
-// iOS Safari fix component
+// iOS Safari fix component - Leaflet 1.9.4+ handles resize automatically
 const MapSizeHandler = () => {
-  const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const map = useMapEvents({
-    resize: () => {
-      // debounce resize to avoid excessive invalidateSize calls
-      if (resizeTimeoutRef.current) {
-        clearTimeout(resizeTimeoutRef.current);
-      }
-      resizeTimeoutRef.current = setTimeout(() => {
-        map.invalidateSize();
-      }, 150);
-    },
-  });
-
-  const handleOrientationChange = useCallback(() => {
-    // delay for orientation change to complete
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 100);
-  }, [map]);
+  const map = useMap();
 
   useEffect(() => {
-    // delay invalidateSize until Safari finishes initial layout - prevents "top rectangle only" tile bug on iOS Safari
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 0);
+    // Ensure map size is correct after initial render
+    map.whenReady(() => {
+      console.log("Map is ready, invalidating size...");
+      map.invalidateSize();
     });
-
-    // only handle orientation change (resize is handled by Leaflet's resize event)
-    window.addEventListener("orientationchange", handleOrientationChange, {
-      passive: true,
-    });
-
-    return () => {
-      window.removeEventListener("orientationchange", handleOrientationChange);
-      if (resizeTimeoutRef.current) {
-        clearTimeout(resizeTimeoutRef.current);
-      }
-    };
-  }, [map, handleOrientationChange]);
+  }, [map]);
 
   return null;
 };
