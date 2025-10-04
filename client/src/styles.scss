@@ -8,11 +8,16 @@ html, body, #root {
 }
 
 .App {
-  /* Modern dynamic viewport for iOS Safari toolbar handling */
-  height: 100vh; /* Fallback for older browsers */
-  height: 100dvh; /* Dynamic viewport - adjusts for iOS Safari toolbar */
+  /* Stable height strategy for iOS Safari */
+  min-height: 100vh;
+  height: 100%;
   width: 100vw;
-  overflow: hidden; /* No scroll needed with dvh */
+  overflow: hidden;
+
+  /* iOS-specific height fix using -webkit-fill-available */
+  @supports (-webkit-touch-callout: none) {
+    min-height: -webkit-fill-available;
+  }
 }
 
 .leaflet-container {
