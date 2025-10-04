@@ -14,11 +14,6 @@ import { centerInitial } from "../../datatypes/initialState";
 // iOS Safari fix component
 const MapSizeHandler = () => {
   const map = useMapEvents({
-    // use Leaflet native load event for proper init
-    load: () => {
-      // map is fully initialized, safe to invalidate size
-      map.invalidateSize();
-    },
     resize: () => {
       // built-in resize event handler
       map.invalidateSize();
