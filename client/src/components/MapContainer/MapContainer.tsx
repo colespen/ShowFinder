@@ -37,9 +37,12 @@ const MapSizeHandler = () => {
   }, [map]);
 
   useEffect(() => {
-    // use Leaflet whenReady() for proper init timing
-    map.whenReady(() => {
-      map.invalidateSize();
+    // Delay invalidateSize until Safari finishes initial layout
+    // This prevents the "top rectangle only" tile bug on iOS Safari
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 0);
     });
 
     // handle browser-level resize and orientation events
