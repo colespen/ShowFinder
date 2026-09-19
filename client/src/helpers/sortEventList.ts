@@ -1,5 +1,6 @@
 import { ShowData } from "../datatypes/showData";
 import { UserDataState } from "../datatypes/userData";
+import { hasVenueCoords } from "./utils";
 
 /**
  * returns sorted shows by geographical proximity to user
@@ -12,18 +13,16 @@ function sortByProximity(shows: ShowData[], userData: UserDataState) {
   const userLng = Number(userData.lng);
 
   if (!userLat || !userLng) {
-    // if user coords unavailable, return original  shows
     return shows;
   }
 
-  // calculate distance between two sets of coordinates using the Haversine formula
   function getDistance(
     uLat: number,
     uLng: number,
     evLat: number,
     evLng: number,
   ) {
-    const R = 6371; // radius of the earth in km
+    const R = 6371;
     const dLat = ((evLat - uLat) * Math.PI) / 180;
     const dLng = ((evLng - uLng) * Math.PI) / 180;
     const a =
@@ -33,21 +32,25 @@ function sortByProximity(shows: ShowData[], userData: UserDataState) {
         Math.sin(dLng / 2) *
         Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // distance in km
-    return d;
+    return R * c;
   }
 
-  // sort list of shows b distance to user's coordinates
   const sortedShowsData = shows.slice().sort((a, b) => {
-    const aLat = a.location.geo?.latitude;
-    const aLng = a.location.geo?.longitude;
-    const bLat = b.location.geo?.latitude;
-    const bLng = b.location.geo?.longitude;
-    if (!aLat || !aLng || !bLat || !bLng) {
+    if (!hasVenueCoords(a) || !hasVenueCoords(b)) {
       return 0;
     }
-    const distanceA = getDistance(userLat, userLng, aLat, aLng);
-    const distanceB = getDistance(userLat, userLng, bLat, bLng);
+    const distanceA = getDistance(
+      userLat,
+      userLng,
+      Number(a.venue.latitude),
+      Number(a.venue.longitude),
+    );
+    const distanceB = getDistance(
+      userLat,
+      userLng,
+      Number(b.venue.latitude),
+      Number(b.venue.longitude),
+    );
     return distanceA - distanceB;
   });
 

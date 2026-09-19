@@ -1,4 +1,4 @@
-import { artistNameFilter, convertTo12hr } from "../../helpers/utils";
+import { artistNameFilter, convertTo12hr, hasVenueCoords } from "../../helpers/utils";
 import getArtistTickets from "../../helpers/getArtistLinkHandler";
 import { EventListItemProps } from "../../datatypes/props";
 
@@ -9,7 +9,7 @@ const EventListItem = ({
   const EventList = (sortedShows || []).map((show, index) => {
     const artistName = artistNameFilter(show);
     const showTime = convertTo12hr(show.startDate);
-    const isShowGeoStyles = !show.location.geo
+    const isShowGeoStyles = !hasVenueCoords(show)
       ? {
           border: "2px solid rgb(243, 243, 254)",
           backgroundColor: "rgb(243, 236, 247)",
@@ -17,15 +17,16 @@ const EventListItem = ({
           cursor: "default",
         }
       : {};
-    const isShowLocationHref = !show.location.sameAs
+    const isShowLocationHref = !show.venue.url
       ? {
           cursor: "default",
         }
       : {};
+    const venueName = show.venue?.name || "";
 
     return (
       <div
-        key={show.description + index}
+        key={show.id || `${venueName}-${index}`}
         className="show-list-item"
         style={isShowGeoStyles}
         onClick={() => openPopupFromList(show, index)}
@@ -36,23 +37,23 @@ const EventListItem = ({
             className="drawer-ticket-span-icon"
             onClick={(e) => {
               e.stopPropagation();
-              getArtistTickets(artistName, show.location.name);
+              getArtistTickets(show.ticketUrl);
             }}
           >
             <img src="./ticket-icon.png" alt="get tickets" />
           </button>
           <a
             id="venue-name"
-            href={show.location.sameAs}
+            href={show.venue.url || undefined}
             target="_blank"
             rel="noreferrer"
             style={isShowLocationHref}
             onClick={(e) => e.stopPropagation()}
           >
             <li>
-              {show.location.name.length > 29
-                ? show.location.name.substring(0, 29) + " ..."
-                : show.location.name}
+              {venueName.length > 29
+                ? venueName.substring(0, 29) + " ..."
+                : venueName}
             </li>
           </a>
           <li className="event-time">{showTime}</li>

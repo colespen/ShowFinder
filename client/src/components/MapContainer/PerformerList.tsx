@@ -12,14 +12,16 @@ interface PerformerListProps {
 
 const PerformerList = ({ show, spotifyUrl }: PerformerListProps) => {
   const artistName = artistNameFilter(show);
+  const ticketUrl = show.ticketUrl;
+  const performers = show.performers || [];
 
   return (
     <>
-      {show.performer.length === 0 ? (
+      {performers.length === 0 ? (
         <li className="artist">
           <button
             className="artist-button"
-            onClick={() => getArtistTickets(artistName, show.location.name)}
+            onClick={() => getArtistTickets(ticketUrl)}
           >
             <span>{artistName}</span>
             <span className="ticket-span-icon">
@@ -27,7 +29,7 @@ const PerformerList = ({ show, spotifyUrl }: PerformerListProps) => {
             </span>
           </button>
           <button
-            disabled
+            disabled={!spotifyUrl}
             className="music-link"
             onClick={() => handleXternalMusicLink(spotifyUrl)}
           >
@@ -35,11 +37,11 @@ const PerformerList = ({ show, spotifyUrl }: PerformerListProps) => {
           </button>
         </li>
       ) : (
-        show.performer.map((artist: Performer, i: number) => (
+        performers.map((artist: Performer, i: number) => (
           <li className="artist" key={`${artist.name}-${i.toString()}`}>
             <button
               className="artist-button"
-              onClick={() => getArtistTickets(artist.name, show.location.name)}
+              onClick={() => getArtistTickets(ticketUrl)}
             >
               <span>
                 {artist.name.length > 30

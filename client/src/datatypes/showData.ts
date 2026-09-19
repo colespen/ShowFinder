@@ -1,22 +1,35 @@
-// this will change if API endpoint changes
-// (curretnly LocationIQ + RapidApi
-
 export type Performer = {
-  "@type": string;
   name: string;
+  ticketmasterId?: string;
+  spotifyArtistId?: string;
+  spotifyUrl?: string;
+  website?: string;
 };
 
-export interface ShowData {
-  "@context": string;
-  "@type": string;
-  description: string;
-  endDate: string;
-  eventStatus: string;
-  image: string;
-  location: { [key: string]: any };
+export interface Venue {
   name: string;
-  performer: Performer[];
+  url?: string;
+  city?: string;
+  latitude: number | null;
+  longitude: number | null;
+}
+
+export interface ShowPage {
+  number: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  fetched: number;
+}
+
+export interface ShowData {
+  id: string;
+  name: string;
   startDate: string;
+  image?: string;
+  ticketUrl?: string;
+  venue: Venue;
+  performers: Performer[];
 }
 
 export interface CurrentAddress {
@@ -35,5 +48,5 @@ export interface CurrentAddress {
 export interface ShowDataState {
   currentAddress: CurrentAddress | {};
   data: ShowData[];
-  page: number;
+  page: ShowPage | number;
 }

@@ -7,8 +7,7 @@ import ControlsBottom from "./ControlsBottom/ControlsBottom";
 import DrawerLeft from "./DrawerLeft/DrawerLeft";
 import {
   getShows,
-  getSpotifyToken,
-  getSpotifySample,
+  getArtistPreview,
   getNewCityShows,
   getCurrLocationShows,
   getNewDateRangeShows,
@@ -23,7 +22,7 @@ import {
 import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
 import "./styles.scss";
 import { Marker } from "leaflet";
-import { setArtistNameFilter } from "../helpers/utils";
+import { setArtistNameFilter, hasValidCoords } from "../helpers/utils";
 import { useChromeIOSAdjustment } from "../hooks/useChromeIOSAdjustment";
 
 export default function Map() {
@@ -41,6 +40,7 @@ export default function Map() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isAutoPlay, setIsAutoplay] = useState<boolean>(true);
   const [nowPlaying, setNowPlaying] = useState<string>("");
+  const [itunesUrl, setItunesUrl] = useState<string>("");
   const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
   // this isGeoError to render text in title upon geo error
   // const [isGeoError, setIsGeoError] = useState<boolean>(false);
@@ -114,20 +114,20 @@ export default function Map() {
     setTransition,
   };
 
-  // //////    GET Current Location Shows/Geo/spotifyToken - First Render
+  // //////    GET Current Location Shows - First Render
   useEffect(() => {
-    //                      changed from (shows) to (shows.data)
-    if (geolocation.loaded && Object.keys(shows.data).length === 0) {
+    if (
+      geolocation.loaded &&
+      hasValidCoords(geolocation.coords.lat, geolocation.coords.lng) &&
+      Object.keys(shows.data).length === 0
+    ) {
       //////    GET - /api/shows - rev geocode current coords then get shows
       getShows({
         userData,
         geolocation,
         callbacks: { setShows, setCurrCity, setUserData },
       });
-      //////    POST - api/spotifyauth - retrieve spotifyToken in API
-      getSpotifyToken();
     }
-    // removed userData and shows from // }, [...]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geolocation]);
 
@@ -149,15 +149,16 @@ export default function Map() {
   //////    GET - api/spotifysample - artist ID then get preview data when arist change
   useEffect(() => {
     if (artist)
-      getSpotifySample(
+      getArtistPreview(
         artist,
         setAudioLink,
         setIsPlaying,
-        setSpotifyUrl,
-        setNowPlaying
+        setNowPlaying,
+        setItunesUrl
       );
     if (!artist) {
       setAudioLink("");
+      setItunesUrl("");
     }
   }, [artist]);
 
@@ -174,6 +175,7 @@ export default function Map() {
       setIsMarkerClicked(true);
       handleSetArtist(headliner, shows, setArtist);
       setLastClickedMarker(headliner);
+      setSpotifyUrl(show.performers?.[0]?.spotifyUrl || "");
       if (headliner !== lastClickedMarker) {
         handleSetNewAudio(setNewAudio, audioLink);
       }
@@ -239,6 +241,7 @@ export default function Map() {
         handleDateRangeShows={handleDateRangeShows}
         setIsPlaying={setIsPlaying}
         setIsAutoplay={setIsAutoplay}
+        itunesUrl={itunesUrl}
       />
     </div>
   );

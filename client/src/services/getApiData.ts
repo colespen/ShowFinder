@@ -1,5 +1,5 @@
 import axios from "axios";
-import { cityFilter } from "../helpers/utils";
+import { cityFilter, hasValidCoords } from "../helpers/utils";
 import {
   GetShowsArgs,
   SetShowCityUserDataArgs,
@@ -11,51 +11,51 @@ import {
 } from "../datatypes/apiDataArgs";
 import { Coords } from "../datatypes/locationData";
 import { UserDataState } from "../datatypes/userData";
-import { matchArtistSetAudioPlaying } from "../helpers/spotifyUtils";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8001/";
 
-/**
- * helper - set state in setShows, setCurrCity and setUserData
- */
 const setShowCityUserData = (args: SetShowCityUserDataArgs) => {
   const { data, callbacks } = args;
   const { setShows, setCurrCity, setUserData } = callbacks;
-  setShows(data);
-  setCurrCity(data.currentAddress.address.city);
-  setUserData((prev) => ({ ...prev, currentAddress: data.currentAddress }));
+  setShows({
+    data: data.data || [],
+    currentAddress: data.currentAddress || {},
+    page: data.page,
+  });
+  setCurrCity(data.currentAddress?.address?.city || "");
+  if (data.currentAddress) {
+    setUserData((prev) => ({ ...prev, currentAddress: data.currentAddress }));
+  }
 };
 
-/**
- * helper - set new coords in setUserData, and set state in setShows, setCurrCity
- */
 const setNewShowCityUserData = (args: SetNewShowCityUserDataArgs) => {
   const { data, callbacks, cityQuery } = args;
   const { setShows, setCurrCity, setUserData } = callbacks;
-  setShows(data);
+  setShows({
+    data: data.data || [],
+    currentAddress: data.currentAddress || {},
+    page: data.page,
+  });
   if (cityQuery !== undefined) setCurrCity(cityFilter(cityQuery));
-  setUserData((prev) => ({
-    ...prev,
-    lat: data.latLng[0].lat,
-    lng: data.latLng[0].lon,
-  }));
+  if (data.latLng?.[0]) {
+    setUserData((prev) => ({
+      ...prev,
+      lat: data.latLng[0].lat,
+      lng: data.latLng[0].lon,
+    }));
+  }
 };
 
-////////////////////////////////////////////////////////////////////
-//////    Calls to Server for Geo and Shows API
-//////////////////////////////////////////////////////////////////
-
-/**
- * GET - /api/shows & setShowCityUserData
- */
 const fetchShows = (
   params: UserDataState & (Coords | undefined),
   callbacks: ShowCallbackArgs
 ) => {
+  if (!hasValidCoords(params.lat, params.lng)) {
+    return;
+  }
   axios
     .get("/api/shows", { params })
     .then((res) => {
-      // console.log(res.data);
       setShowCityUserData({
         data: res.data,
         callbacks,
@@ -64,9 +64,6 @@ const fetchShows = (
     .catch((err) => console.log(err.message));
 };
 
-/**
- * GET - /api/newshows & setShowCityUserData
- */
 const fetchNewShows = (
   userData: UserDataState,
   cityQuery: string,
@@ -84,68 +81,54 @@ const fetchNewShows = (
     .catch((err) => console.log(err.message));
 };
 
-/**
- * POST - api/spotifyauth - retrieve spotifyToken in API
- */
-const getSpotifyToken = () => {
-  axios
-    .post("/api/spotifyauth")
-    .then((response) => {})
-    .catch((err) => console.log(err.message));
-};
-
-/**
- * GET - api/spotifysample - get artist ID
- * then get preview data w spotifyToken
- */
-const getSpotifySample = (
+const getArtistPreview = (
   artist: string,
   setAudioLink: (state: string) => void,
   setIsPlaying: (state: boolean) => void,
-  setSpotifyUrl: (state: string) => void,
-  setNowPlaying: (state: string) => void
+  setNowPlaying: (state: string) => void,
+  setItunesUrl: (state: string) => void
 ) => {
-  console.log("IN GET SPOTIFY SAMPLE");
   axios
-    .get("/api/spotifysample", { params: { artist } })
+    .get("/api/preview", { params: { artist } })
     .then((response) => {
-      const tracks = response.data.tracks;
-      matchArtistSetAudioPlaying({
-        tracks,
-        artist,
-        setAudioLink,
-        setIsPlaying,
-        setSpotifyUrl,
-        setNowPlaying,
-      });
+      const previewUrl = response.data?.previewUrl || "";
+      setAudioLink(previewUrl);
+      setNowPlaying(response.data?.trackName || "");
+      setItunesUrl(response.data?.itunesUrl || "");
+      if (!previewUrl) {
+        setIsPlaying(false);
+      }
     })
-    .catch((err) => console.log(err.message));
+    .catch((err) => {
+      console.log(err.message);
+      setAudioLink("");
+      setItunesUrl("");
+      setIsPlaying(false);
+    });
 };
 
-///////////////////////////////////////////////////////
-
-/**
- * Get reverse geocode current coords then get shows
- */
 const getShows = (args: GetShowsArgs) => {
   const { userData, geolocation, callbacks } = args;
   const { setShows, setCurrCity, setUserData } = callbacks;
-  //
+  const coords = geolocation.coords;
+  if (!hasValidCoords(coords.lat, coords.lng)) {
+    return;
+  }
   fetchShows(
     {
       ...userData,
-      ...geolocation.coords,
+      ...coords,
     },
     { setShows, setCurrCity, setUserData }
   );
 };
 
-/**
- * Get current location rev geo then shows - onClick
- */
 const getCurrLocationShows = (args: GetCurrLocationShowsArgs) => {
   const { userData, geolocation, callbacks } = args;
   const { setShows, setCurrCity, setTransition, setUserData } = callbacks;
+  if (!hasValidCoords(geolocation.coords.lat, geolocation.coords.lng)) {
+    return;
+  }
   setCurrCity("");
   setTransition({ opacity: 1, type: "location" });
   setUserData((prev) => ({
@@ -163,9 +146,6 @@ const getCurrLocationShows = (args: GetCurrLocationShowsArgs) => {
   }
 };
 
-/**
- * Get forward geo then new shows
- */
 const getNewCityShows = (args: GetNewCityShowsArgs) => {
   const { userData, callbacks } = args;
   const { setShows, setCurrCity, setTransition, setUserData, setCityQuery } =
@@ -175,7 +155,6 @@ const getNewCityShows = (args: GetNewCityShowsArgs) => {
     setCurrCity("");
     setCityQuery(userData.newCity);
     setTransition({ opacity: 1, type: "shows" });
-    //
     fetchNewShows({ ...userData }, userData.newCity, {
       setShows,
       setCurrCity,
@@ -184,9 +163,6 @@ const getNewCityShows = (args: GetNewCityShowsArgs) => {
   }
 };
 
-/**
- * Get date range reverse geo shows
- */
 const getNewDateRangeShows = (args: GetNewDateRangeShowsArgs) => {
   const { userData, currCity, cityQuery, callbacks } = args;
   const {
@@ -212,7 +188,6 @@ const getNewDateRangeShows = (args: GetNewDateRangeShowsArgs) => {
       setCityQuery(userData.newCity);
     } else {
       if (userData.newCity) setCityQuery(userData.newCity);
-      //
       fetchNewShows({ ...userData }, cityQuery, {
         setShows,
         setCurrCity,
@@ -227,6 +202,5 @@ export {
   getNewCityShows,
   getCurrLocationShows,
   getNewDateRangeShows,
-  getSpotifyToken,
-  getSpotifySample,
+  getArtistPreview,
 };

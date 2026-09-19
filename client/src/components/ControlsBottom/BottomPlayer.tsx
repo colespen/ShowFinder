@@ -14,6 +14,7 @@ const BottomPlayer = (props: BottomPlayerProps) => {
     isAutoPlay,
     setIsAutoplay,
     setIsPlaying,
+    itunesUrl,
   } = props;
 
   const [volChange, setVolChange] = useState(0);
@@ -48,11 +49,11 @@ const BottomPlayer = (props: BottomPlayerProps) => {
             ref={audioRef}
             autoPlay={isAutoPlay}
             preload="metadata"
+            src={audioLink || undefined}
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             onEnded={() => setIsPlaying(false)}
           >
-            <source src={audioLink} type="audio/mpeg" />
             <code>audio</code> not supported
           </audio>
 
@@ -110,6 +111,18 @@ const BottomPlayer = (props: BottomPlayerProps) => {
                   ></img>
                 )}
               </button>
+              {itunesUrl && audioLink && (
+                <a
+                  className="media-buttons"
+                  id="btn-bottom-scale"
+                  href={itunesUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Listen on Apple Music"
+                >
+                  iTunes
+                </a>
+              )}
             </>
           </div>
         </div>
