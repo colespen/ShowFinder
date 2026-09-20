@@ -84,6 +84,22 @@ app.get("/", (_req, res) => {
   res.json({ message: "ShowFinder API is running", status: "healthy" });
 });
 
+/**
+ * Searches using a location-qualified city first (accurate), then retries the
+ * bare city if that yields nothing (some places, e.g. Sydney, only match the
+ * plain name). Avoids losing coverage to over-specific queries.
+ */
+async function searchShowsForCity(qualifiedName, bareName, dateRange) {
+  const qualified = await searchMusicEvents({
+    cityName: qualifiedName,
+    dateRange,
+  });
+  if (qualified.data.length || !bareName || bareName === qualifiedName) {
+    return qualified;
+  }
+  return searchMusicEvents({ cityName: bareName, dateRange });
+}
+
 app.get("/api/shows", async (req, res) => {
   try {
     const lat = req.query.lat;
@@ -95,11 +111,13 @@ app.get("/api/shows", async (req, res) => {
     }
 
     const currentAddress = await reverseGeocode(lat, lng);
-    const cityName = filterCurrentAddress(currentAddress);
-    const { data, page } = await searchMusicEvents({
+    const bareCity = currentAddress?.address?.city || "";
+    const cityName = filterCurrentAddress(currentAddress) || bareCity;
+    const { data, page } = await searchShowsForCity(
       cityName,
-      dateRange: req.query.dateRange,
-    });
+      bareCity,
+      req.query.dateRange,
+    );
 
     res.json({ data, currentAddress, page });
   } catch (error) {
@@ -129,14 +147,14 @@ app.get("/api/newshows", async (req, res) => {
       });
     }
 
-    // Use the geocoded "City, ST" so ambiguous names don't resolve elsewhere.
-    const resolvedCity =
-      filterCurrentAddress(normalizeCurrentAddress(latLng[0])) || newCity;
-
-    const { data, page } = await searchMusicEvents({
-      cityName: resolvedCity,
-      dateRange: req.query.dateRange,
-    });
+    // Use the geocoded "City, ST"/"City, Country" so ambiguous names don't
+    // resolve elsewhere; fall back to the typed city if that finds nothing.
+    const resolvedCity = filterCurrentAddress(normalizeCurrentAddress(latLng[0]));
+    const { data, page } = await searchShowsForCity(
+      resolvedCity || newCity,
+      newCity,
+      req.query.dateRange,
+    );
 
     res.json({ data, latLng, page });
   } catch (error) {
