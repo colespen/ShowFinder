@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: showfinder-server
+    runtime: node
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: IQ_TOKEN
+        sync: false
+      - key: RAPID_KEY
+        sync: false
+      - key: TICKETMASTER_KEY
+        sync: false
+      - key: CLIENT_ID
+        sync: false
+      - key: CLIENT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://www.showfinder.ninja

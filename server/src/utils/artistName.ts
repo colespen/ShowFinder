@@ -6,7 +6,7 @@
 
 // Latin letters NFD cannot decompose, so a provider using the ASCII spelling
 // ("Altin Gun") still matches one using the native form.
-const TRANSLITERATE = {
+const TRANSLITERATE: Record<string, string> = {
   "ı": "i", "ł": "l", "ø": "o", "đ": "d", "ð": "d",
   "þ": "th", "æ": "ae", "œ": "oe", "ß": "ss", "ħ": "h", "ŧ": "t",
 };
@@ -16,11 +16,11 @@ const TRANSLITERATE = {
  * Diacritics are folded first, or "Sébastien Tellier" would lose the "é" to the
  * punctuation strip and stop matching the provider that spells it without one.
  */
-function normalizeArtist(name) {
-  return String(name || "")
+export function normalizeArtist(name: string | undefined): string {
+  return String(name ?? "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[ıłøđðþæœßħŧ]/g, (char) => TRANSLITERATE[char] || char)
+    .replace(/[ıłøđðþæœßħŧ]/g, (char) => TRANSLITERATE[char] ?? char)
     .toLowerCase()
     .replace(/\bthe\b/g, " ")
     .replace(/[^a-z0-9]+/g, " ")
@@ -37,14 +37,12 @@ function normalizeArtist(name) {
  * Accepted trade-off: two genuinely different acts where one name is a subset
  * of the other ("Jet" and "Jet Black") collapse onto whichever the preferred
  * list names. That ran about 1 case in 35 across Toronto, Austin and New York,
- * and the cost is one missing name on an otherwise correct event - cheaper than
- * showing the same act twice.
+ * and the cost is one missing name on an otherwise correct event.
  */
-function isSameAct(a, b) {
+export function isSameAct(a: string, b: string): boolean {
   if (!a || !b) return false;
   if (a === b) return true;
   const [shorter, longer] = a.length <= b.length ? [a, b] : [b, a];
   return ` ${longer} `.includes(` ${shorter} `);
 }
 
-module.exports = { normalizeArtist, isSameAct };
