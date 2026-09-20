@@ -41,6 +41,12 @@ start time, or artist plus date, whichever agrees first
 (`server/src/utils/mergeShows.js`). Ticketmaster is optional: without its key the
 API still returns RapidAPI results.
 
+When the two sources spell one act differently, the alternate spelling is kept on
+the performer as an `alias`. The server resolves artists against Spotify itself
+(`server/src/services/spotify.js`) and uses those aliases, because a plain artist
+name resolves where a ticketing tour title does not; an act it cannot identify
+confidently gets no link rather than a link to the wrong artist.
+
 Server setup requires `IQ_TOKEN` and `RAPID_KEY`, plus (for audio previews)
 `CLIENT_ID` / `CLIENT_SECRET` — see `server/.env.example`. After deploying,
 `GET /api/health` reports which keys are configured (booleans only, never values)
