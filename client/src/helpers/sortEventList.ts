@@ -2,14 +2,9 @@ import { ShowData } from "../datatypes/showData";
 import { UserDataState } from "../datatypes/userData";
 import { hasVenueCoords } from "./utils";
 
-/**
- * Sort shows by distance from the user (Haversine, km).
- *
- * Applied once in Map.tsx so markers and drawer rows share one order. Shows
- * without venue coords sort last (they are listed but have no marker).
- *
- * Returns the input unchanged when user coords are unknown.
- */
+/** Sorts shows by distance from the user (Haversine, km). Applied once in
+ * Map.tsx so markers and drawer rows share one order; coord-less shows sort last
+ * (listed, but with no marker). Returns the input when user coords are unknown. */
 function sortByProximity(shows: ShowData[], userData: UserDataState) {
   if (!Array.isArray(shows) || shows.length === 0) {
     return shows;
@@ -38,7 +33,6 @@ function sortByProximity(shows: ShowData[], userData: UserDataState) {
   return shows.slice().sort((a, b) => {
     const aHas = hasVenueCoords(a);
     const bHas = hasVenueCoords(b);
-    // Coord-less shows keep relative order, after located ones.
     if (!aHas && !bHas) return 0;
     if (!aHas) return 1;
     if (!bHas) return -1;

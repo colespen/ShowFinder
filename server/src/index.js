@@ -38,10 +38,7 @@ function sendError(res, error, fallbackStatus = 500) {
   });
 }
 
-/**
- * LocationIQ rate-limits per second (429) on bursts. Retry briefly rather than
- * surfacing a 500. Non-429 errors and 404s (no match) propagate immediately.
- */
+/** Retries LocationIQ's per-second 429s; other errors and 404s propagate. */
 async function getWithRateLimitRetry(url, retries = 3) {
   for (let attempt = 0; ; attempt += 1) {
     try {
@@ -88,8 +85,7 @@ async function forwardGeocode(city) {
     );
     return citySort;
   } catch (error) {
-    // LocationIQ returns 404 when nothing matches the city query;
-    // treat that as "no results" rather than a server error.
+    // LocationIQ 404s when nothing matches; treat as no results, not an error.
     if (error.response?.status === 404) {
       return [];
     }
@@ -101,8 +97,8 @@ app.get("/", (_req, res) => {
   res.json({ message: "ShowFinder API is running", status: "healthy" });
 });
 
-// Reports which upstreams are configured, so a deploy can be verified without
-// inferring it from a failing request. Never returns key values.
+// Reports which upstreams are configured (booleans only, never values), so a
+// deploy can be verified in one request.
 app.get("/api/health", (_req, res) => {
   const configured = {
     locationiq: Boolean(process.env.IQ_TOKEN),
@@ -123,11 +119,9 @@ app.get("/api/health", (_req, res) => {
 });
 
 /**
- * Returns the first candidate name that yields shows, widening progressively
- * ("London, United Kingdom" -> "Westminster" -> "London" -> "England"). The
- * upstream rejects some qualified names outright with "Invalid location", and
- * some borough-level names resolve to the wrong city entirely, so widening is
- * what keeps coverage without losing accuracy where a narrow name works.
+ * Tries each name in order and returns the first that yields shows. The
+ * upstream rejects some qualified names ("London, United Kingdom" -> error)
+ * and mis-resolves borough names ("City of Westminster" -> Sydney).
  */
 async function searchShowsForCity(candidateNames, dateRange) {
   const tried = [];
@@ -172,9 +166,8 @@ app.get("/api/shows", async (req, res) => {
     const currentAddress = await reverseGeocode(lat, lng);
     const address = currentAddress?.address || {};
     // Order matters: the first non-empty result wins, and a borough-qualified
-    // name can return geographically wrong shows rather than failing. LocationIQ
-    // reports central London as "City of Westminster", which the upstream maps
-    // to Sydney, so the resolvable "Westminster" is tried before it.
+    // name returns wrong shows rather than failing ("City of Westminster" ->
+    // Sydney), so the prefix-stripped "Westminster" is tried first.
     const { data, page, locationName } = await searchShowsForCity(
       [
         withoutAdminPrefix(address.city),
@@ -185,7 +178,6 @@ app.get("/api/shows", async (req, res) => {
       req.query.dateRange,
     );
 
-    // Title should reflect the name actually searched, not the raw borough.
     const displayAddress = {
       ...currentAddress,
       address: {
@@ -222,17 +214,14 @@ app.get("/api/newshows", async (req, res) => {
       });
     }
 
-    // Widen from "City, Country"/"City, ST" to the bare city to the typed city,
-    // so an unresolvable qualified name still yields results.
+    // Widen from "City, Country"/"City, ST" to the bare/typed city.
     const address = normalizeCurrentAddress(latLng[0]).address || {};
     const { data, page, locationName } = await searchShowsForCity(
       [filterCurrentAddress({ address }), address.city, address.state, newCity],
       req.query.dateRange,
     );
 
-    // Heading shows the resolved name when the qualified query widened to it.
     const displayAddress = { address: { ...address, city: bareName(locationName) || address.city || newCity } };
-
     res.json({ data, latLng: latLng, page, currentAddress: displayAddress });
   } catch (error) {
     sendError(res, error);

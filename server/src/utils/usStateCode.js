@@ -1,11 +1,6 @@
-/**
- * US state name -> 2-letter code.
- *
- * RapidAPI's /location geocoder needs this to disambiguate US cities:
- * "Portland" and "Portland, US" both resolve to Nashville shows, while
- * "Portland, OR" is correct. Non-US locations use the country name instead
- * (see currAddressFilter).
- */
+/** US state name -> 2-letter code, needed to disambiguate US cities: "Portland"
+ * and "Portland, US" both resolve to Nashville, while "Portland, OR" is correct.
+ * Non-US locations use the country name instead (see currAddressFilter). */
 const US_STATES = {
   alabama: "AL",
   alaska: "AK",

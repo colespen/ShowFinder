@@ -26,11 +26,8 @@ function todayYmd() {
   return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 }
 
-/**
- * Max selectable search window. In a dense city (e.g. NYC) a 7-day window
- * already saturates the fetch budget, so a wider range returns no extra shows
- * and only makes a worse-scoped UI.
- */
+/** Max selectable window. A 7-day window already saturates the fetch budget in
+ * a dense city, so wider ranges return no extra shows. */
 const MAX_WINDOW_DAYS = 14;
 
 function parseYmd(dateStr) {
@@ -44,11 +41,8 @@ function parseYmd(dateStr) {
   return new Date(year, month - 1, day);
 }
 
-/**
- * Resolves the requested date window, clamped to MAX_WINDOW_DAYS from its
- * start (or from today when no start is given). Mirrors the calendar's own
- * limit so a wide/absent range can never trigger unbounded pagination.
- */
+/** Clamps the requested window to MAX_WINDOW_DAYS from its start, mirroring the
+ * calendar's own limit so a wide or absent range cannot cause extra fetches. */
 function parseDateRange(dateRange = {}, maxWindowDays = MAX_WINDOW_DAYS) {
   const today = todayYmd();
   const minDate = dateRange.minDate || today;

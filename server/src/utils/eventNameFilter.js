@@ -1,10 +1,6 @@
-/**
- * Extracts the leading event name from a Songkick description, e.g.
- * "Isaiah Rashad and Alemeda at Emo's Austin at 2026-..." -> "Isaiah Rashad and Alemeda".
- *
- * Used only by ./dedupe.js (currently unwired). Splits on the first "at",
- * so names containing "at" as a substring truncate early.
- */
+/** Leading event name from a Songkick description
+ * ("X and Y at Venue at 2026-..." -> "X and Y"). Used only by ./dedupe.js;
+ * splits on the first "at", so names containing "at" truncate early. */
 const eventNameFilter = (description) => {
   if (description) {
     const indexOfAt = description.indexOf("at");

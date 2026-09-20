@@ -12,8 +12,8 @@ const EventListItems = ({
   setCenter,
 }: EventListItemsProps) => {
   const openPopupFromList = (show: ShowData) => {
-    // Rows without coords have no marker; they stay listed for their ticket
-    // and venue links but cannot be focused on the map.
+    // Coord-less rows have no marker; they stay listed for their ticket and
+    // venue links but cannot be focused on the map.
     if (!hasVenueCoords(show)) return;
     const showLatLng = {
       lat: Number(show.venue.latitude),

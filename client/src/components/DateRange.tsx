@@ -4,7 +4,7 @@ import { handleDateSelect } from "../helpers/eventHandlers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-//////    Max selectable window span, mirroring the server's clamp
+//////    Max window span, mirroring the server's clamp
 const MAX_WINDOW_DAYS = 14;
 
 const ymd = (date: Date) =>
@@ -50,9 +50,8 @@ export default function DateRange({ setUserData }: DateRangeProps) {
     };
     let next: [Date | null, Date | null] = e;
 
-    // Clamp the span to MAX_WINDOW_DAYS. The calendar also narrows its
-    // selectable bounds as you pick, but this guarantees the limit no matter
-    // how the clicks land (e.g. picking the later date first).
+    // Clamp the span. The calendar also narrows its bounds as you pick, but
+    // this covers click orders the bounds cannot (e.g. later date first).
     if (e[0] && e[1]) {
       const lo = e[0] <= e[1] ? e[0] : e[1];
       const hi = e[0] <= e[1] ? e[1] : e[0];
@@ -71,8 +70,8 @@ export default function DateRange({ setUserData }: DateRangeProps) {
     handleDateSelect(dateRange, setUserData);
   };
 
-  // Bounds follow the selection so any date stays reachable while the window
-  // can never exceed MAX_WINDOW_DAYS from the chosen start.
+  // Bounds follow the selection so any date stays reachable while the span
+  // cannot exceed MAX_WINDOW_DAYS.
   const pickerMinDate = endDate ? addDays(endDate, -MAX_WINDOW_DAYS) : undefined;
   const pickerMaxDate = startDate ? addDays(startDate, MAX_WINDOW_DAYS) : undefined;
 

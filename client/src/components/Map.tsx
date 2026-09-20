@@ -51,8 +51,7 @@ export default function Map() {
   );
   const isFirstRender = useRef<boolean>(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  // Keyed by show id, not array position, so skipped (coord-less) shows in the
-  // drawer cannot desync which marker a row opens.
+  // Keyed by show id, not index (see ShowMarkers/sortByProximity).
   const markerRefs = useRef<Record<string, any>>({});
   const [center, setCenter] = useState<{ lat: number; lng: number }>(
     centerStateInitial
@@ -60,10 +59,7 @@ export default function Map() {
 
   const geolocation = useGeoLocation();
 
-  // Sort once here so markers and drawer rows share one order. Rows without
-  // venue coords stay listed (they still expose ticket/venue links); they are
-  // simply skipped when rendering markers, which is why marker refs are keyed
-  // by show id rather than array position.
+  // Sorted once here so markers and drawer rows share one order.
   const proximityShows = useMemo(() => {
     return sortByProximity(shows.data, userData);
     // eslint-disable-next-line react-hooks/exhaustive-deps

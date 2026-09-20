@@ -3,20 +3,19 @@ const { parseDateRange } = require("../utils/location");
 const { mapRapidEvents } = require("../mappers/rapidShowMapper");
 
 const HOST = "concerts-artists-events-tracker.p.rapidapi.com";
-// Hard ceilings on upstream usage per search: at most MAX_PAGES requests and
-// MAX_EVENTS shows. A 14-day window in a dense city fills this budget (~250
-// shows), so the ceiling is a deliberate quota/coverage tradeoff.
+// Hard ceilings per search: at most MAX_PAGES requests / MAX_EVENTS shows. A
+// 14-day window in a dense city fills this budget, so it is a deliberate
+// quota/coverage tradeoff.
 const MAX_EVENTS = 400;
 const MAX_PAGES = 5;
 const PAGE_DELAY_MS = 200;
-// RapidAPI caps /location at 50 results per page.
-const PAGE_SIZE = 50;
+const PAGE_SIZE = 50; // upstream caps /location at 50 per page
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// RapidAPI needs unpadded YYYY-M-D (2026-9-20), not the padded form.
+// RapidAPI wants unpadded YYYY-M-D (2026-9-20), not the padded form.
 function toRapidDate(dateStr) {
   const parts = String(dateStr || "")
     .split("-")
@@ -53,9 +52,8 @@ async function fetchLocationPage({ apiKey, name, minDate, maxDate, page }) {
   }
 
   if (response.data?.error) {
-    // The upstream returns this (HTTP 200) when a qualified name is not
-    // resolvable, e.g. "London, United Kingdom". Marked so callers can fall
-    // back to a broader name instead of retrying the same one.
+    // Returned with HTTP 200 when a name is unresolvable, e.g.
+    // "London, United Kingdom". Flagged so callers widen instead of retrying.
     const err = new Error(response.data.error);
     err.upstreamInvalidLocation = /invalid location/i.test(response.data.error);
     throw err;
@@ -64,9 +62,9 @@ async function fetchLocationPage({ apiKey, name, minDate, maxDate, page }) {
   return Array.isArray(response.data?.data) ? response.data.data : [];
 }
 
-// Administrative prefixes that turn a real place name into a borough/district
-// the upstream geocoder cannot resolve (e.g. LocationIQ reports central London
-// as "City of Westminster", which resolves to Sydney shows).
+// Administrative prefixes that turn a place name into a borough the upstream
+// cannot resolve (LocationIQ reports central London as "City of Westminster",
+// which maps to Sydney shows).
 const ADMIN_PREFIX = /^(city of|royal borough of|london borough of|borough of|county of|metropolitan borough of)\s+/i;
 
 function withoutAdminPrefix(name) {
@@ -74,10 +72,8 @@ function withoutAdminPrefix(name) {
   return stripped && stripped !== name ? stripped : "";
 }
 
-/**
- * Retries transient upstream failures. "Invalid location" is deterministic, so
- * it is surfaced immediately for the caller to widen the query instead.
- */
+/** Retries transient failures; "Invalid location" is deterministic, so it is
+ * surfaced immediately for the caller to widen the query. */
 async function fetchLocationPageWithRetry(args, retries = 4) {
   let lastErr;
   for (let attempt = 0; attempt < retries; attempt += 1) {

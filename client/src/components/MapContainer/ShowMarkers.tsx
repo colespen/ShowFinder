@@ -13,9 +13,8 @@ const ShowMarkers = (props: ShowMarkersProps) => {
       {(shows.data || []).map((show) => {
         if (!hasVenueCoords(show)) return null;
 
-        // Keyed by show id rather than array position: shows without venue
-        // coords are skipped here but still listed in the drawer, so positional
-        // refs would drift and open the wrong marker.
+        // Keyed by show id, not index: coord-less shows are skipped here but
+        // still listed in the drawer, so positional refs would drift.
         return (
           <Marker
             key={show.id}
