@@ -1,14 +1,25 @@
 /**
- * Merges show lists from independent sources (Songkick-style aggregator and
- * Ticketmaster Discovery) into one de-duplicated list.
+ * Merges show lists from independent sources (the location aggregator and
+ * Ticketmaster Discovery) into one de-duplicated, app-shaped list.
  *
- * The two sources share no event id, so events are matched on artist + date.
- * That pairing is deliberately conservative: an artist playing twice on one day
- * is rare, and a venue term would split legitimate matches because the upstream
- * names venues differently ("H-E-B Center at Cedar Park" vs "H-E-B Center").
+ * Cross-provider dedupe is entity resolution: the feeds share no event id, and
+ * they describe one gig inconsistently. The aggregator says "The Charlatans",
+ * Ticketmaster says "The Charlatans UK"; when Discovery lists no attractions it
+ * falls back to the event title as the performer. So identity is rebuilt from
+ * structural facts, and a show matches if EITHER tier agrees:
+ *
+ *   1. venue + local day + start time  - survives artist-name drift
+ *   2. artist + local day              - survives venue-name drift
+ *
+ * Two tiers rather than one field, because either alone loses matches: venue
+ * alone splits "H-E-B Center at Cedar Park" from "H-E-B Center", artist alone
+ * misses the name variants above. Matching on either is a superset of both.
+ *
+ * A missed match shows one gig twice; a wrong match silently hides it, so tiers
+ * stay exact - no fuzzy scoring - and anything unkeyed is kept, never dropped.
  */
 
-/** Lowercases and strips punctuation/the/a so name formats can be compared. */
+/** Lowercases and strips punctuation/articles so name formats can be compared. */
 function normalizeArtist(name) {
   return String(name || "")
     .toLowerCase()
@@ -23,77 +34,128 @@ function dayOf(value) {
   return String(value || "").slice(0, 10);
 }
 
-function primaryArtist(show) {
-  const performer = show?.performers?.[0];
-  return normalizeArtist(performer?.name);
+/** Local wall-clock time, or "" when the provider knows only the date. */
+function timeOf(value) {
+  const match = /T(\d{2}:\d{2})/.exec(String(value || ""));
+  return match ? match[1] : "";
 }
 
-function eventKey(show) {
-  const artist = primaryArtist(show);
+/**
+ * Strongest key: same room, same day, same minute. A shared start minute is
+ * near-unique between two providers, whereas venue *names* drift. Returns ""
+ * when any part is unknown, so a missing time never matches on this tier.
+ */
+function venueKey(show) {
+  const venue = normalizeArtist(show?.venue?.name);
+  const day = dayOf(show?.startDate);
+  const time = timeOf(show?.startDate);
+  return venue && day && time ? `${venue}|${day}|${time}` : "";
+}
+
+/** Fallback key: same headliner, same day. */
+function artistKey(show) {
+  const artist = normalizeArtist(show?.performers?.[0]?.name);
   const day = dayOf(show?.startDate);
   return artist && day ? `${artist}|${day}` : "";
 }
 
 /**
- * Higher wins when both sources hold the same event. Ticketmaster is preferred
- * because it supplies venue coordinates, ticket links and Spotify artist ids
- * that the aggregator omits.
+ * Unions the bills so the fuller line-up survives, keeping whichever copy of a
+ * name carries the richer links (Discovery supplies Spotify ids the aggregator
+ * omits entirely).
  */
-function richness(show) {
-  let score = 0;
-  if (show?.venue?.latitude !== null && show?.venue?.latitude !== undefined) {
-    score += 4;
+function mergePerformers(preferred, other) {
+  const byName = new Map();
+  for (const performer of [...(preferred || []), ...(other || [])]) {
+    const name = normalizeArtist(performer?.name);
+    if (!name) continue;
+    const seen = byName.get(name);
+    if (!seen || (!seen.spotifyArtistId && performer.spotifyArtistId)) {
+      byName.set(name, performer);
+    }
   }
-  if (show?.ticketUrl) score += 2;
-  if (show?.image) score += 1;
-  if (show?.performers?.some((performer) => performer.spotifyArtistId)) {
-    score += 2;
-  }
-  return score;
+  return [...byName.values()];
 }
 
 /**
- * `sources` are merged in order of preference: on a collision the richer entry
- * wins, with ties going to the earlier source.
+ * Field-level merge, preferred source winning each field: the providers are
+ * strong in different places (Ticketmaster has coordinates and ticket links,
+ * the aggregator a fuller line-up), so swapping whole records loses data.
+ */
+function mergeShow(preferred, other) {
+  const spare = other?.venue || {};
+  return {
+    ...other,
+    ...preferred,
+    id: preferred?.id || other?.id || "",
+    name: preferred?.name || other?.name || "",
+    startDate: preferred?.startDate || other?.startDate || "",
+    image: preferred?.image || other?.image || "",
+    ticketUrl: preferred?.ticketUrl || other?.ticketUrl || "",
+    venue: {
+      ...spare,
+      ...(preferred?.venue || {}),
+      // ?? not ||, so a legitimate 0 coordinate is not read as missing.
+      latitude: preferred?.venue?.latitude ?? spare.latitude ?? null,
+      longitude: preferred?.venue?.longitude ?? spare.longitude ?? null,
+    },
+    performers: mergePerformers(preferred?.performers, other?.performers),
+  };
+}
+
+/**
+ * `sources` are merged in order of preference: earlier sources win each field.
+ * Indexes hold canonical slots, so a re-merge can overwrite in place.
  */
 function mergeShows(...sources) {
-  const byKey = new Map();
-  const unkeyed = [];
+  const records = [];
+  const byVenue = new Map();
+  const byArtist = new Map();
   let duplicates = 0;
+
+  const claim = (show, venue, artist) => {
+    const index = records.push(show) - 1;
+    if (venue && !byVenue.has(venue)) byVenue.set(venue, index);
+    if (artist && !byArtist.has(artist)) byArtist.set(artist, index);
+  };
 
   for (const source of sources) {
     for (const show of source || []) {
       if (!show) continue;
-      const key = eventKey(show);
-      if (!key) {
-        // No usable artist/date pair: keep it rather than silently dropping.
-        unkeyed.push(show);
-        continue;
-      }
 
-      const existing = byKey.get(key);
-      if (!existing) {
-        byKey.set(key, show);
+      const venue = venueKey(show);
+      const artist = artistKey(show);
+
+      // Strongest signal first; either tier is enough to call it a match.
+      let match;
+      if (venue) match = byVenue.get(venue);
+      if (match === undefined && artist) match = byArtist.get(artist);
+
+      if (match === undefined) {
+        claim(show, venue, artist);
         continue;
       }
 
       duplicates += 1;
-      if (richness(show) > richness(existing)) {
-        byKey.set(key, show);
-      }
+      records[match] = mergeShow(records[match], show);
+      // A merge can supply a key the first copy lacked; index it too.
+      if (venue && !byVenue.has(venue)) byVenue.set(venue, match);
+      if (artist && !byArtist.has(artist)) byArtist.set(artist, match);
     }
   }
 
-  // Prefer each entry's own coordinates so unplotable shows sort last.
-  const merged = [...byKey.values(), ...unkeyed];
-  merged.sort((a, b) => {
+  // Located shows first so unplotable ones sort last; the id tiebreak keeps the
+  // order stable when two shows share a venue and start time.
+  records.sort((a, b) => {
     const aLocated = a?.venue?.latitude !== null && a?.venue?.latitude !== undefined;
     const bLocated = b?.venue?.latitude !== null && b?.venue?.latitude !== undefined;
     if (aLocated !== bLocated) return aLocated ? -1 : 1;
-    return String(a?.startDate || "").localeCompare(String(b?.startDate || ""));
+    const byDate = String(a?.startDate || "").localeCompare(String(b?.startDate || ""));
+    if (byDate !== 0) return byDate;
+    return String(a?.id || "").localeCompare(String(b?.id || ""));
   });
 
-  return { data: merged, duplicates };
+  return { data: records, duplicates };
 }
 
-module.exports = { mergeShows, eventKey, normalizeArtist };
+module.exports = { mergeShows, venueKey, artistKey, normalizeArtist };
