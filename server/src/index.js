@@ -11,6 +11,7 @@ const {
   searchMusicEvents: searchTicketmasterEvents,
 } = require("./services/ticketmaster");
 const { mergeShows } = require("./utils/mergeShows");
+const spotify = require("./services/spotify");
 const { normalizeCurrentAddress, hasValidCoords } = require("./utils/location");
 const filterCurrentAddress = require("./utils/currAddressFilter");
 
@@ -27,9 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 8001;
 const iqToken = process.env.IQ_TOKEN;
-const client_id = process.env.CLIENT_ID;
-const client_secret = process.env.CLIENT_SECRET;
-let spotifyToken = null;
 
 function sendError(res, error, fallbackStatus = 500) {
   const upstream = error.response?.status;
@@ -278,100 +276,37 @@ app.get("/api/newshows", async (req, res) => {
   }
 });
 
-app.post("/api/spotifyauth", (req, res) => {
-  const base64ID = Buffer.from(client_id + ":" + client_secret).toString(
-    "base64",
-  );
-  const config = {
-    headers: {
-      Authorization: "Basic " + base64ID,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  };
-  const data = "grant_type=client_credentials";
-
-  axios
-    .post("https://accounts.spotify.com/api/token", data, config)
-    .then((response) => {
-      spotifyToken = response.data.access_token;
-      res.sendStatus(200);
-    })
-    .catch((error) => {
-      res.status(500).send("Error: " + error.message);
-      console.error("Error: ", error.message);
-    });
+// Kept so existing clients can warm the token on load; the server now refreshes
+// it on its own, so this is no longer required for previews to work.
+app.post("/api/spotifyauth", async (_req, res) => {
+  try {
+    await spotify.getToken();
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Spotify auth error:", error.message);
+    res.status(500).send("Error: " + error.message);
+  }
 });
 
+/**
+ * Resolves the headliner to a Spotify artist and returns its top tracks.
+ * `aliases` carries the other provider's spelling of the same act (pipe
+ * separated), which is what rescues names like a Ticketmaster tour title.
+ */
 app.get("/api/spotifysample", async (req, res) => {
   try {
-    const searchParams = new URLSearchParams({
-      q: req.query.artist,
-      type: "artist",
-      format: "json",
-    });
-
-    const searchResponse = await axios.get(
-      `https://api.spotify.com/v1/search?${searchParams.toString()}`,
-      { headers: { Authorization: "Bearer " + spotifyToken } },
+    const aliases = String(req.query.aliases || "")
+      .split("|")
+      .map((alias) => alias.trim())
+      .filter(Boolean);
+    const { artist, tracks } = await spotify.findArtistPreview(
+      req.query.artist,
+      aliases,
     );
-
-    const artistsItems = searchResponse.data.artists.items;
-    if (!artistsItems?.length || !Array.isArray(artistsItems)) {
-      return res.send({ tracks: [] });
-    }
-
-    const topTracksParams = new URLSearchParams({
-      market: "US",
-      format: "json",
-    });
-
-    const artistId = artistsItems[0].id;
-    const topTracksResponse = await axios.get(
-      `https://api.spotify.com/v1/artists/${artistId}/top-tracks?${topTracksParams.toString()}`,
-      { headers: { Authorization: "Bearer " + spotifyToken } },
-    );
-
-    const tracks = topTracksResponse.data.tracks;
-    if (!tracks?.length) {
-      return res.send({ tracks: [] });
-    }
-
-    // process first three tracks - get preview URLs
-    // need this hack now that preview_url is null with latest Spotify api changes
-    const MAX_TRACKS = 3;
-    const slicedTracks = tracks.slice(0, MAX_TRACKS);
-
-    for (let i = 0; i < slicedTracks.length; i++) {
-      const trackId = slicedTracks[i].id;
-      try {
-        const embedResponse = await axios.get(
-          `https://open.spotify.com/embed/track/${trackId}`,
-          { headers: { "Content-Type": "application/json" } },
-        );
-
-        const regex =
-          /<script id="__NEXT_DATA__" type="application\/json">(.+?)<\/script>/s;
-        const match = embedResponse.data.match(regex);
-
-        if (match) {
-          const jsonData = JSON.parse(match[1]);
-          if (jsonData?.props?.pageProps?.state?.data?.entity?.audioPreview) {
-            slicedTracks[i].preview_url =
-              jsonData.props.pageProps.state.data.entity.audioPreview.url;
-          }
-        }
-      } catch (embedError) {
-        console.error(
-          `Error fetching embed data for track ${i + 1}:`,
-          embedError.message,
-        );
-      }
-    }
-
-    return res.send({ tracks: slicedTracks });
+    res.json({ artist, tracks });
   } catch (error) {
     console.error("Spotify API Error:", error.message);
-    return res.status(500).send("Error: " + error.message);
+    res.status(500).send("Error: " + error.message);
   }
 });
 

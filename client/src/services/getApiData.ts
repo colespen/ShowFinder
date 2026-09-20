@@ -11,7 +11,7 @@ import {
 } from "../datatypes/apiDataArgs";
 import { Coords } from "../datatypes/locationData";
 import { UserDataState } from "../datatypes/userData";
-import { matchArtistSetAudioPlaying } from "../helpers/spotifyUtils";
+import { applySpotifyResult } from "../helpers/spotifyUtils";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8001/";
 
@@ -91,18 +91,22 @@ const getSpotifyToken = () => {
 
 const getSpotifySample = (
   artist: string,
+  aliases: string[],
   setAudioLink: (state: string) => void,
   setIsPlaying: (state: boolean) => void,
   setSpotifyUrl: (state: string) => void,
   setNowPlaying: (state: string) => void
 ) => {
   axios
-    .get("/api/spotifysample", { params: { artist } })
+    .get("/api/spotifysample", {
+      // The server resolves the artist; aliases are the other event source's
+      // spelling of the same act, which resolves where a tour title does not.
+      params: { artist, aliases: aliases.join("|") },
+    })
     .then((response) => {
-      const tracks = response.data.tracks;
-      matchArtistSetAudioPlaying({
-        tracks,
-        artist,
+      applySpotifyResult({
+        artist: response.data.artist,
+        tracks: response.data.tracks,
         setAudioLink,
         setIsPlaying,
         setSpotifyUrl,

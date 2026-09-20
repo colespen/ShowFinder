@@ -1,95 +1,44 @@
-interface matchArtistSetAudioPlayingArgs {
+export interface SpotifyArtist {
+  id: string;
+  name: string;
+  spotifyUrl: string;
+}
+
+interface ApplySpotifyResultArgs {
+  artist: SpotifyArtist | null;
   tracks: any[];
-  artist: string;
   setAudioLink: (state: string) => void;
   setIsPlaying: (state: boolean) => void;
   setSpotifyUrl: (state: string) => void;
   setNowPlaying: (state: string) => void;
 }
 
-interface SpotifyTracksParams {
-  name: string;
-  [key: string]: any;
-}
-
-const matchArtistSetAudioPlaying = ({
-  tracks,
+/**
+ * Applies the server's Spotify resolution to the player.
+ *
+ * The server resolves the artist from the headliner plus any aliases the other
+ * event source supplied, so there is no name matching left to do here: an act it
+ * could not identify confidently simply has no link, which beats linking to
+ * whichever artist the client guessed from a partial name.
+ */
+const applySpotifyResult = ({
   artist,
+  tracks,
   setAudioLink,
   setIsPlaying,
   setSpotifyUrl,
   setNowPlaying,
-}: matchArtistSetAudioPlayingArgs) => {
-  if (tracks.length === 0) {
-    setAudioLink("");
-    setSpotifyUrl("");
-    throw new Error("No tracks found");
-  }
-  let foundPreview = false;
-  let foundUrl = false;
-  // take first preview_url and external_url that isn't null then exit
-  for (let i = 0; i < tracks.length; i++) {
-    let matchIndex = 0;
-    const isArtistFound = tracks[i].artists.some(
-      (artistEl: SpotifyTracksParams, index: number) => {
-        const stripSpotArtist = stripDiacriticalMarks(artistEl.name);
-        const stripRapidArist = stripDiacriticalMarks(artist);
-        // Either name may be the longer one: Spotify usually holds the canonical
-        // name ("The Charlatans") while the event source appends a qualifier
-        // ("The Charlatans UK") or a tour title, so containment is checked both
-        // ways. One-way only matched when the event source was the shorter form.
-        if (
-          stripSpotArtist.toUpperCase().includes(stripRapidArist.toUpperCase()) ||
-          stripRapidArist.toUpperCase().includes(stripSpotArtist.toUpperCase())
-        ) {
-          matchIndex = index;
-          return true;
-        } else {
-          return false;
-        }
-      },
-    );
+}: ApplySpotifyResultArgs) => {
+  setSpotifyUrl(artist?.spotifyUrl || "");
 
-    if (!foundPreview && tracks[i].preview_url && isArtistFound) {
-      setAudioLink(tracks[i].preview_url);
-      setNowPlaying(tracks[i].name);
-      // setIsPlaying(false);
-      foundPreview = true;
-    }
-    if (
-      !foundUrl &&
-      matchIndex !== -1 &&
-      tracks[i].artists[matchIndex].external_urls.spotify &&
-      isArtistFound
-    ) {
-      setSpotifyUrl(tracks[i].artists[matchIndex].external_urls.spotify);
-      foundUrl = true;
-    }
-    if (foundPreview && foundUrl) {
-      break;
-    }
-  }
-
-  if (!foundPreview) {
+  const playable = (tracks || []).find((track) => track?.preview_url);
+  if (!playable) {
     setAudioLink("");
-    setIsPlaying(false); // TODO : this doesnt work to use play/pause if no audio preview found
+    setIsPlaying(false);
+    return;
   }
-  if (!foundUrl) {
-    setSpotifyUrl("");
-  }
-  return;
+  setAudioLink(playable.preview_url);
+  setNowPlaying(playable.name);
 };
 
-export { matchArtistSetAudioPlaying };
-
-const stripDiacriticalMarks = (str: string) => {
-  return str
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace("&", "And");
-  //   .replace(/[\u0300-\u036f]/g, "")
-  //   .replace(/[\u1AB0-\u1AFF]/g, "")
-  //   .replace(/[\u1DC0-\u1DFF]/g, "")
-  //   .replace(/[\u20D0-\u20FF]/g, "")
-  //   .replace(/[\uFE20-\uFE2F]/g, "");
-};
+export { applySpotifyResult };

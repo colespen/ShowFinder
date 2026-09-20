@@ -21,29 +21,7 @@
  * act can play an early and a late set in the same room on the same night.
  */
 
-// Latin letters NFD cannot decompose, so a provider using the ASCII spelling
-// ("Altin Gun") still matches one using the native form.
-const TRANSLITERATE = {
-  "ı": "i", "ł": "l", "ø": "o", "đ": "d", "ð": "d",
-  "þ": "th", "æ": "ae", "œ": "oe", "ß": "ss", "ħ": "h", "ŧ": "t",
-};
-
-/**
- * Lowercases and strips punctuation/articles so name formats can be compared.
- * Diacritics are folded first, or "Sébastien Tellier" would lose the "é" to the
- * punctuation strip and stop matching the provider that spells it without one.
- */
-function normalizeArtist(name) {
-  return String(name || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[ıłøđðþæœßħŧ]/g, (char) => TRANSLITERATE[char] || char)
-    .toLowerCase()
-    .replace(/\bthe\b/g, " ")
-    .replace(/[^a-z0-9]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+const { normalizeArtist, isSameAct } = require("./artistName");
 
 /** Local calendar day, from either "YYYY-MM-DD" or a full ISO datetime. */
 function dayOf(value) {
@@ -75,25 +53,6 @@ function artistKey(show) {
   return artist && day ? `${artist}|${day}` : "";
 }
 
-/**
- * True when both names refer to one act: either form contains the other as a
- * whole-word run. Catches "The Charlatans"/"The Charlatans UK" and frontman vs
- * band ("Ben Harper"/"Ben Harper & The Innocent Criminals"), which exact
- * comparison misses.
- *
- * Accepted trade-off: two genuinely different acts where one name is a subset
- * of the other ("Jet" and "Jet Black") collapse to whichever the preferred bill
- * names. That ran about 1 case in 35 across Toronto, Austin and New York, and
- * the cost is one missing name on an otherwise correct event - cheaper than
- * showing the same act twice.
- */
-function isSameAct(a, b) {
-  if (!a || !b) return false;
-  if (a === b) return true;
-  const [shorter, longer] = a.length <= b.length ? [a, b] : [b, a];
-  return ` ${longer} `.includes(` ${shorter} `);
-}
-
 /** How far apart two start times may be and still describe one show. */
 const ARTIST_TIER_WINDOW_MINUTES = 120;
 
@@ -122,6 +81,11 @@ function isSameShow(a, b) {
  * only contributes acts that bill does not already name. A blind concat would
  * list one act twice whenever the providers format it differently, and the
  * preferred (ticketing) source is the one that spells line-ups out in full.
+ *
+ * When both sources do name one act, the alternate spelling is kept as an alias.
+ * Ticketmaster often uses a tour title ("MATRAKK (Free Before Midnight)") where
+ * the aggregator uses the plain artist name ("Matrakk"), and Spotify resolves the
+ * plain name far more reliably, so the alias is what makes that lookup work.
  */
 function mergePerformers(preferred, other) {
   const kept = (preferred || []).filter((performer) => normalizeArtist(performer?.name));
@@ -135,14 +99,19 @@ function mergePerformers(preferred, other) {
       kept.push(performer);
       continue;
     }
-    // Same act under another name: borrow its links if the kept copy lacks them.
-    if (!kept[index].spotifyArtistId && performer.spotifyArtistId) {
-      kept[index] = {
-        ...kept[index],
-        spotifyArtistId: performer.spotifyArtistId,
-        spotifyUrl: performer.spotifyUrl,
-      };
+
+    const entry = kept[index];
+    const aliases = [...(entry.aliases || [])];
+    if (normalizeArtist(entry.name) !== name && !aliases.includes(performer.name)) {
+      aliases.push(performer.name);
     }
+    // Same act under another name: borrow its links if the kept copy lacks them.
+    kept[index] = {
+      ...entry,
+      spotifyArtistId: entry.spotifyArtistId || performer.spotifyArtistId || "",
+      spotifyUrl: entry.spotifyUrl || performer.spotifyUrl || "",
+      ...(aliases.length ? { aliases } : {}),
+    };
   }
 
   return kept;

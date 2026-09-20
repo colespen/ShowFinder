@@ -37,6 +37,8 @@ export default function Map() {
   const [artist, setArtist] = useState<string>("");
   const [audioLink, setAudioLink] = useState<string>("");
   const [spotifyUrl, setSpotifyUrl] = useState<string>("");
+  // The headliner's other spellings, passed to the server's Spotify lookup.
+  const [artistAliases, setArtistAliases] = useState<string[]>([]);
   const [newAudio, setNewAudio] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isAutoPlay, setIsAutoplay] = useState<boolean>(true);
@@ -160,6 +162,7 @@ export default function Map() {
     if (artist)
       getSpotifySample(
         artist,
+        artistAliases,
         setAudioLink,
         setIsPlaying,
         setSpotifyUrl,
@@ -182,6 +185,7 @@ export default function Map() {
       const headliner = setArtistNameFilter(show);
       setIsMarkerClicked(true);
       handleSetArtist(headliner, shows, setArtist);
+      setArtistAliases(show.performers?.[0]?.aliases || []);
       setLastClickedMarker(headliner);
       if (headliner !== lastClickedMarker) {
         handleSetNewAudio(setNewAudio, audioLink);
