@@ -14,7 +14,6 @@ const BottomPlayer = (props: BottomPlayerProps) => {
     isAutoPlay,
     setIsAutoplay,
     setIsPlaying,
-    itunesUrl,
   } = props;
 
   const [volChange, setVolChange] = useState(0);
@@ -111,18 +110,6 @@ const BottomPlayer = (props: BottomPlayerProps) => {
                   ></img>
                 )}
               </button>
-              {itunesUrl && audioLink && (
-                <a
-                  className="media-buttons"
-                  id="btn-bottom-scale"
-                  href={itunesUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Listen on Apple Music"
-                >
-                  iTunes
-                </a>
-              )}
             </>
           </div>
         </div>

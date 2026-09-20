@@ -7,7 +7,8 @@ import ControlsBottom from "./ControlsBottom/ControlsBottom";
 import DrawerLeft from "./DrawerLeft/DrawerLeft";
 import {
   getShows,
-  getArtistPreview,
+  getSpotifyToken,
+  getSpotifySample,
   getNewCityShows,
   getCurrLocationShows,
   getNewDateRangeShows,
@@ -40,7 +41,6 @@ export default function Map() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isAutoPlay, setIsAutoplay] = useState<boolean>(true);
   const [nowPlaying, setNowPlaying] = useState<string>("");
-  const [itunesUrl, setItunesUrl] = useState<string>("");
   const [isMarkerClicked, setIsMarkerClicked] = useState<boolean>(false);
   // this isGeoError to render text in title upon geo error
   // const [isGeoError, setIsGeoError] = useState<boolean>(false);
@@ -114,7 +114,7 @@ export default function Map() {
     setTransition,
   };
 
-  // //////    GET Current Location Shows - First Render
+  // //////    GET Current Location Shows/Geo/spotifyToken - First Render
   useEffect(() => {
     if (
       geolocation.loaded &&
@@ -127,6 +127,8 @@ export default function Map() {
         geolocation,
         callbacks: { setShows, setCurrCity, setUserData },
       });
+      //////    POST - api/spotifyauth - retrieve spotifyToken in API
+      getSpotifyToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geolocation]);
@@ -149,16 +151,15 @@ export default function Map() {
   //////    GET - api/spotifysample - artist ID then get preview data when arist change
   useEffect(() => {
     if (artist)
-      getArtistPreview(
+      getSpotifySample(
         artist,
         setAudioLink,
         setIsPlaying,
-        setNowPlaying,
-        setItunesUrl
+        setSpotifyUrl,
+        setNowPlaying
       );
     if (!artist) {
       setAudioLink("");
-      setItunesUrl("");
     }
   }, [artist]);
 
@@ -175,7 +176,6 @@ export default function Map() {
       setIsMarkerClicked(true);
       handleSetArtist(headliner, shows, setArtist);
       setLastClickedMarker(headliner);
-      setSpotifyUrl(show.performers?.[0]?.spotifyUrl || "");
       if (headliner !== lastClickedMarker) {
         handleSetNewAudio(setNewAudio, audioLink);
       }
@@ -241,7 +241,6 @@ export default function Map() {
         handleDateRangeShows={handleDateRangeShows}
         setIsPlaying={setIsPlaying}
         setIsAutoplay={setIsAutoplay}
-        itunesUrl={itunesUrl}
       />
     </div>
   );

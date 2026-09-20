@@ -11,6 +11,7 @@ import {
 } from "../datatypes/apiDataArgs";
 import { Coords } from "../datatypes/locationData";
 import { UserDataState } from "../datatypes/userData";
+import { matchArtistSetAudioPlaying } from "../helpers/spotifyUtils";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8001/";
 
@@ -81,30 +82,34 @@ const fetchNewShows = (
     .catch((err) => console.log(err.message));
 };
 
-const getArtistPreview = (
+const getSpotifyToken = () => {
+  axios
+    .post("/api/spotifyauth")
+    .then((response) => {})
+    .catch((err) => console.log(err.message));
+};
+
+const getSpotifySample = (
   artist: string,
   setAudioLink: (state: string) => void,
   setIsPlaying: (state: boolean) => void,
-  setNowPlaying: (state: string) => void,
-  setItunesUrl: (state: string) => void
+  setSpotifyUrl: (state: string) => void,
+  setNowPlaying: (state: string) => void
 ) => {
   axios
-    .get("/api/preview", { params: { artist } })
+    .get("/api/spotifysample", { params: { artist } })
     .then((response) => {
-      const previewUrl = response.data?.previewUrl || "";
-      setAudioLink(previewUrl);
-      setNowPlaying(response.data?.trackName || "");
-      setItunesUrl(response.data?.itunesUrl || "");
-      if (!previewUrl) {
-        setIsPlaying(false);
-      }
+      const tracks = response.data.tracks;
+      matchArtistSetAudioPlaying({
+        tracks,
+        artist,
+        setAudioLink,
+        setIsPlaying,
+        setSpotifyUrl,
+        setNowPlaying,
+      });
     })
-    .catch((err) => {
-      console.log(err.message);
-      setAudioLink("");
-      setItunesUrl("");
-      setIsPlaying(false);
-    });
+    .catch((err) => console.log(err.message));
 };
 
 const getShows = (args: GetShowsArgs) => {
@@ -202,5 +207,6 @@ export {
   getNewCityShows,
   getCurrLocationShows,
   getNewDateRangeShows,
-  getArtistPreview,
+  getSpotifyToken,
+  getSpotifySample,
 };

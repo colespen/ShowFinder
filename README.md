@@ -29,7 +29,7 @@ https://www.showfinder.ninja/
 ### utilizes free APIs!
 
 - LocationIQ: forward and reverse geocoding
-- Ticketmaster Discovery: music events by geo radius
+- RapidAPI: artists events tracker by location
 - iTunes Search API: 30-second audio previews
   <br>
 

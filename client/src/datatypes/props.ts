@@ -81,14 +81,12 @@ export interface ControlsBottomProps extends BottomProps {
   setIsAutoplay: Dispatch<SetStateAction<boolean>>;
   setUserData: Dispatch<SetStateAction<UserDataState>>;
   handleDateRangeShows: () => void;
-  itunesUrl?: string;
 }
 
 export interface BottomPlayerProps extends BottomProps {
   isMarkerClicked: boolean;
   isAutoPlay: boolean;
   setIsAutoplay: Dispatch<SetStateAction<boolean>>;
-  itunesUrl?: string;
 }
 
 export type BottomProps = {

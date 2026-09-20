@@ -33,38 +33,6 @@ function parseDateRange(dateRange = {}) {
   return { minDate, maxDate };
 }
 
-function padDatePart(value) {
-  return String(value).padStart(2, "0");
-}
-
-function toIsoBound(dateStr, endOfDay) {
-  const parts = String(dateStr || "")
-    .split("-")
-    .map((part) => Number(part));
-  if (parts.length < 3 || parts.some((part) => !Number.isFinite(part))) {
-    return toIsoBound(todayYmd(), endOfDay);
-  }
-  const [year, month, day] = parts;
-  const hh = endOfDay ? "23" : "00";
-  const mm = endOfDay ? "59" : "00";
-  const ss = endOfDay ? "59" : "00";
-  return `${year}-${padDatePart(month)}-${padDatePart(day)}T${hh}:${mm}:${ss}Z`;
-}
-
-function toLocalBound(dateStr, endOfDay) {
-  const parts = String(dateStr || "")
-    .split("-")
-    .map((part) => Number(part));
-  if (parts.length < 3 || parts.some((part) => !Number.isFinite(part))) {
-    return toLocalBound(todayYmd(), endOfDay);
-  }
-  const [year, month, day] = parts;
-  const hh = endOfDay ? "23" : "00";
-  const mm = endOfDay ? "59" : "00";
-  const ss = endOfDay ? "59" : "00";
-  return `${year}-${padDatePart(month)}-${padDatePart(day)}T${hh}:${mm}:${ss}`;
-}
-
 function hasValidCoords(lat, lng) {
   const latitude = Number(lat);
   const longitude = Number(lng);
@@ -83,7 +51,5 @@ module.exports = {
   settlementName,
   normalizeCurrentAddress,
   parseDateRange,
-  toIsoBound,
-  toLocalBound,
   hasValidCoords,
 };

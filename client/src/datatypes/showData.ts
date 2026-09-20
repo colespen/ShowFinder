@@ -1,6 +1,5 @@
 export type Performer = {
   name: string;
-  ticketmasterId?: string;
   spotifyArtistId?: string;
   spotifyUrl?: string;
   website?: string;
