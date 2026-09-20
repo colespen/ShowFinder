@@ -4,20 +4,22 @@ import { handleDateSelect } from "../helpers/eventHandlers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-//////    Max selectable window, mirroring the server's clamp
+//////    Max selectable window span, mirroring the server's clamp
 const MAX_WINDOW_DAYS = 14;
 
 const ymd = (date: Date) =>
   `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
-//////    Assign Current Date and maxDate Default
-const today = new Date();
-const minDate = ymd(today);
-const maxDate = minDate;
+const addDays = (date: Date, days: number) => {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+};
 
-//////    Latest selectable end date
-const maxSelectableDate = new Date(today);
-maxSelectableDate.setDate(maxSelectableDate.getDate() + MAX_WINDOW_DAYS);
+//////    Assign Current Date and maxDate Default
+const currDate = new Date();
+const minDate = ymd(currDate);
+const maxDate = minDate;
 
 export default function DateRange({ setUserData }: DateRangeProps) {
   const [range, setRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -46,23 +48,33 @@ export default function DateRange({ setUserData }: DateRangeProps) {
       maxDate: "",
       minDate: "",
     };
-    setRange(e);
+    let next: [Date | null, Date | null] = e;
 
-    if (e[0] && e[1])
-      e.forEach((date, i) => {
-        const yyyy1 = date.toString().split(" ")[3];
-        const mmStr1 = date.toString().split(" ")[1];
-        const mm1 = new Date(Date.parse(mmStr1 + "1,2023")).getMonth() + 1;
-        const dd1 = date.toString().split(" ")[2];
-        if (i === 0) {
-          dateRange.minDate = `${yyyy1}-${mm1}-${dd1}`;
-        }
-        if (i === 1) {
-          dateRange.maxDate = `${yyyy1}-${mm1}-${dd1}`;
-        }
+    // Clamp the span to MAX_WINDOW_DAYS. The calendar also narrows its
+    // selectable bounds as you pick, but this guarantees the limit no matter
+    // how the clicks land (e.g. picking the later date first).
+    if (e[0] && e[1]) {
+      const lo = e[0] <= e[1] ? e[0] : e[1];
+      const hi = e[0] <= e[1] ? e[1] : e[0];
+      const limit = addDays(lo, MAX_WINDOW_DAYS);
+      if (hi > limit) next = [lo, limit];
+    }
+
+    setRange(next);
+
+    if (next[0] && next[1])
+      next.forEach((date, i) => {
+        if (!date) return;
+        if (i === 0) dateRange.minDate = ymd(date);
+        if (i === 1) dateRange.maxDate = ymd(date);
       });
     handleDateSelect(dateRange, setUserData);
   };
+
+  // Bounds follow the selection so any date stays reachable while the window
+  // can never exceed MAX_WINDOW_DAYS from the chosen start.
+  const pickerMinDate = endDate ? addDays(endDate, -MAX_WINDOW_DAYS) : undefined;
+  const pickerMaxDate = startDate ? addDays(startDate, MAX_WINDOW_DAYS) : undefined;
 
   const DateButtonInput = forwardRef<HTMLButtonElement, DateButtonInputProps>(
     ({ value, onClick }, ref) => (
@@ -78,8 +90,8 @@ export default function DateRange({ setUserData }: DateRangeProps) {
       selectsRange={true}
       startDate={startDate}
       endDate={endDate}
-      minDate={today}
-      maxDate={maxSelectableDate}
+      minDate={pickerMinDate}
+      maxDate={pickerMaxDate}
       onChange={handleDateChange}
       customInput={<DateButtonInput />}
     />
