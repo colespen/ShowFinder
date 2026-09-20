@@ -1,15 +1,9 @@
 const { usStateCode } = require("./usStateCode");
 
-/**
- * Build the city query for RapidAPI's /location geocoder.
- *
- * A bare city name is ambiguous and can resolve to the wrong place
- * ("Portland" -> Nashville shows, "Berlin" -> Philadelphia shows). Qualifiers
- * are required, and their accepted forms differ by country:
- *   US: "Austin, TX"     (state code; "Austin, United States" returns nothing)
- *   other: "Berlin, Germany" / "Toronto, Canada"  (country name)
- * Falls back to the bare city when no qualifier is available.
- */
+/** Builds the city query for RapidAPI's /location geocoder. Qualifier form
+ * differs by country: US needs the state code ("Austin, TX" works, "Austin,
+ * United States" returns nothing), others need the country name. Falls back to
+ * the bare city when no qualifier is available. */
 const filterCurrentAddress = (currentAddress) => {
   const address = currentAddress?.address || {};
   const city = address.city || "";

@@ -6,7 +6,7 @@ const axios = require("axios");
 
 dotenv.config();
 
-const { searchMusicEvents } = require("./services/rapidapi");
+const { searchMusicEvents, withoutAdminPrefix } = require("./services/rapidapi");
 const { normalizeCurrentAddress, hasValidCoords } = require("./utils/location");
 const filterCurrentAddress = require("./utils/currAddressFilter");
 
@@ -38,10 +38,7 @@ function sendError(res, error, fallbackStatus = 500) {
   });
 }
 
-/**
- * LocationIQ rate-limits per second (429) on bursts. Retry briefly rather than
- * surfacing a 500. Non-429 errors and 404s (no match) propagate immediately.
- */
+/** Retries LocationIQ's per-second 429s; other errors and 404s propagate. */
 async function getWithRateLimitRetry(url, retries = 3) {
   for (let attempt = 0; ; attempt += 1) {
     try {
@@ -88,8 +85,7 @@ async function forwardGeocode(city) {
     );
     return citySort;
   } catch (error) {
-    // LocationIQ returns 404 when nothing matches the city query;
-    // treat that as "no results" rather than a server error.
+    // LocationIQ 404s when nothing matches; treat as no results, not an error.
     if (error.response?.status === 404) {
       return [];
     }
@@ -101,8 +97,8 @@ app.get("/", (_req, res) => {
   res.json({ message: "ShowFinder API is running", status: "healthy" });
 });
 
-// Reports which upstreams are configured, so a deploy can be verified without
-// inferring it from a failing request. Never returns key values.
+// Reports which upstreams are configured (booleans only, never values), so a
+// deploy can be verified in one request.
 app.get("/api/health", (_req, res) => {
   const configured = {
     locationiq: Boolean(process.env.IQ_TOKEN),
@@ -123,19 +119,38 @@ app.get("/api/health", (_req, res) => {
 });
 
 /**
- * Searches using a location-qualified city first (accurate), then retries the
- * bare city if that yields nothing (some places, e.g. Sydney, only match the
- * plain name). Avoids losing coverage to over-specific queries.
+ * Tries each name in order and returns the first that yields shows. The
+ * upstream rejects some qualified names ("London, United Kingdom" -> error)
+ * and mis-resolves borough names ("City of Westminster" -> Sydney).
  */
-async function searchShowsForCity(qualifiedName, bareName, dateRange) {
-  const qualified = await searchMusicEvents({
-    cityName: qualifiedName,
-    dateRange,
-  });
-  if (qualified.data.length || !bareName || bareName === qualifiedName) {
-    return qualified;
+async function searchShowsForCity(candidateNames, dateRange) {
+  const tried = [];
+  let lastError = null;
+
+  for (const name of candidateNames) {
+    if (!name || tried.includes(name)) continue;
+    tried.push(name);
+    try {
+      const result = await searchMusicEvents({ cityName: name, dateRange });
+      if (result.data.length) return { ...result, locationName: name };
+    } catch (error) {
+      lastError = error;
+    }
   }
-  return searchMusicEvents({ cityName: bareName, dateRange });
+
+  if (lastError && !lastError.upstreamInvalidLocation) throw lastError;
+  const empty = { data: [], page: { number: 0, size: 50, totalElements: 0, totalPages: 0, fetched: 0 } };
+  try {
+    const result = await searchMusicEvents({ cityName: tried[0], dateRange });
+    return { ...result, locationName: tried[0] };
+  } catch (error) {
+    return { ...empty, locationName: null };
+  }
+}
+
+/** Strips a trailing region qualifier, e.g. "Westminster, United Kingdom". */
+function bareName(name) {
+  return String(name || "").split(",")[0].trim();
 }
 
 app.get("/api/shows", async (req, res) => {
@@ -149,15 +164,29 @@ app.get("/api/shows", async (req, res) => {
     }
 
     const currentAddress = await reverseGeocode(lat, lng);
-    const bareCity = currentAddress?.address?.city || "";
-    const cityName = filterCurrentAddress(currentAddress) || bareCity;
-    const { data, page } = await searchShowsForCity(
-      cityName,
-      bareCity,
+    const address = currentAddress?.address || {};
+    // Order matters: the first non-empty result wins, and a borough-qualified
+    // name returns wrong shows rather than failing ("City of Westminster" ->
+    // Sydney), so the prefix-stripped "Westminster" is tried first.
+    const { data, page, locationName } = await searchShowsForCity(
+      [
+        withoutAdminPrefix(address.city),
+        filterCurrentAddress(currentAddress),
+        address.city,
+        address.state,
+      ],
       req.query.dateRange,
     );
 
-    res.json({ data, currentAddress, page });
+    const displayAddress = {
+      ...currentAddress,
+      address: {
+        ...address,
+        city: bareName(locationName) || address.city || "",
+      },
+    };
+
+    res.json({ data, currentAddress: displayAddress, page });
   } catch (error) {
     sendError(res, error);
   }
@@ -185,16 +214,15 @@ app.get("/api/newshows", async (req, res) => {
       });
     }
 
-    // Use the geocoded "City, ST"/"City, Country" so ambiguous names don't
-    // resolve elsewhere; fall back to the typed city if that finds nothing.
-    const resolvedCity = filterCurrentAddress(normalizeCurrentAddress(latLng[0]));
-    const { data, page } = await searchShowsForCity(
-      resolvedCity || newCity,
-      newCity,
+    // Widen from "City, Country"/"City, ST" to the bare/typed city.
+    const address = normalizeCurrentAddress(latLng[0]).address || {};
+    const { data, page, locationName } = await searchShowsForCity(
+      [filterCurrentAddress({ address }), address.city, address.state, newCity],
       req.query.dateRange,
     );
 
-    res.json({ data, latLng, page });
+    const displayAddress = { address: { ...address, city: bareName(locationName) || address.city || newCity } };
+    res.json({ data, latLng: latLng, page, currentAddress: displayAddress });
   } catch (error) {
     sendError(res, error);
   }

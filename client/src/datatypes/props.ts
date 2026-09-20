@@ -56,7 +56,6 @@ export interface ShowMarkersProps {
 }
 
 export interface PopUpProps extends MarkerPlayerProps {
-  index: number;
   show: ShowData;
   spotifyUrl: string;
 }
@@ -136,7 +135,7 @@ export interface EventListItemsProps {
 }
 export interface EventListItemProps {
   sortedShows: ShowData[];
-  openPopupFromList: (show: ShowData, index: number) => void;
+  openPopupFromList: (show: ShowData) => void;
 }
 
 export interface ButtonWrapperProps {

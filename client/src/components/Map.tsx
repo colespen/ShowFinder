@@ -22,7 +22,6 @@ import {
 } from "../datatypes/initialState";
 import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
 import "./styles.scss";
-import { Marker } from "leaflet";
 import { setArtistNameFilter, hasValidCoords } from "../helpers/utils";
 import { sortByProximity } from "../helpers/sortEventList";
 import { useChromeIOSAdjustment } from "../hooks/useChromeIOSAdjustment";
@@ -52,14 +51,15 @@ export default function Map() {
   );
   const isFirstRender = useRef<boolean>(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const markerRefs = useRef<Marker[]>([]);
+  // Keyed by show id, not index (see ShowMarkers/sortByProximity).
+  const markerRefs = useRef<Record<string, any>>({});
   const [center, setCenter] = useState<{ lat: number; lng: number }>(
     centerStateInitial
   );
 
   const geolocation = useGeoLocation();
 
-  // Sort once here so markers and drawer rows share one index-aligned order.
+  // Sorted once here so markers and drawer rows share one order.
   const proximityShows = useMemo(() => {
     return sortByProximity(shows.data, userData);
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -29,7 +29,7 @@ const EventListItem = ({
         key={show.id || `${venueName}-${index}`}
         className="show-list-item"
         style={isShowGeoStyles}
-        onClick={() => openPopupFromList(show, index)}
+        onClick={() => openPopupFromList(show)}
       >
         <li className="artist-name">{artistName}</li>
         <ul className="show-list-description">
