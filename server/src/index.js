@@ -60,6 +60,7 @@ async function forwardGeocode(city) {
     key: iqToken,
     city,
     format: "json",
+    addressdetails: "1",
   });
   try {
     const response = await axios.get(
@@ -128,8 +129,13 @@ app.get("/api/newshows", async (req, res) => {
       });
     }
 
+    // Disambiguate using the geocoded result ("Portland, OR") so ambiguous
+    // city names don't resolve to the wrong city in RapidAPI's geocoder.
+    const resolvedCity =
+      filterCurrentAddress(normalizeCurrentAddress(latLng[0])) || newCity;
+
     const { data, page } = await searchMusicEvents({
-      cityName: newCity,
+      cityName: resolvedCity,
       dateRange: req.query.dateRange,
     });
 
