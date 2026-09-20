@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { normalizeArtist, isSameAct } = require("../utils/artistName");
+const { normalizeArtist } = require("../utils/artistName");
 
 /**
  * Resolves an artist name to a Spotify artist, server-side.
@@ -90,10 +90,17 @@ async function searchArtists(term, bearer) {
 /**
  * Picks the candidate that is the act we asked for, or null.
  *
- * Ranked by confidence: an exact name match, then a candidate named *inside* our
- * term (a tour title like "MATRAKK (Free Before Midnight)" contains "Matrakk"),
- * then our term inside the candidate. Within a rank the earliest mention wins,
- * because bills and tour titles list the headliner first.
+ * Only two things count as a match: the name matching outright, or the candidate
+ * opening the term. A hit found *later* inside the term is rejected, because that
+ * is how a tribute act resolved to the real band ("Who Made Who / AC/DC Tribute"
+ * -> AC/DC), how "Higgi at the Elmo - A Live Recording Event" resolved to an
+ * unrelated artist called Elmo, and how a misspelt act resolved to whichever
+ * popular name shared a word with it.
+ *
+ * Headliners come first in these names and the merge supplies an alias for
+ * anything else, so requiring the opening position loses no measured coverage
+ * while removing the wrong-artist links. Between two matching prefixes the longer
+ * one wins, since it is the more specific act.
  */
 function pickArtist(candidates, term) {
   const wanted = normalizeArtist(term);
@@ -102,13 +109,16 @@ function pickArtist(candidates, term) {
   let best = null;
   for (const candidate of candidates) {
     const name = normalizeArtist(candidate?.name);
-    if (!name || !isSameAct(name, wanted)) continue;
+    if (!name) continue;
 
-    const rank = name === wanted ? 0 : ` ${wanted} `.includes(` ${name} `) ? 1 : 2;
-    const at = ` ${wanted} `.indexOf(` ${name} `);
-    if (!best || rank < best.rank || (rank === best.rank && at < best.at)) {
-      best = { candidate, rank, at };
-    }
+    const rank = name === wanted ? 0 : wanted.startsWith(`${name} `) ? 1 : null;
+    if (rank === null) continue;
+
+    const better =
+      !best ||
+      rank < best.rank ||
+      (rank === best.rank && name.length > best.name.length);
+    if (better) best = { candidate, rank, name };
   }
 
   if (!best) return null;
