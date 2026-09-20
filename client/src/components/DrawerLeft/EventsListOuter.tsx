@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import EventListItems from "./EventListItems";
-import { sortByProximity } from "../../helpers/sortEventList";
 import { EventListProps } from "../../datatypes/props";
 import { ShowData } from "../../datatypes/showData";
 import "./DrawerLeft.scss";
@@ -11,37 +10,18 @@ const EventsList = ({
   markerPlayback,
   setCenter,
   startAnimation,
-  userData,
-  geolocation,
 }: EventListProps) => {
   const [sortedShows, setSortedShows] = useState<ShowData[]>([]);
-  const [indexMap, setIndexMap] = useState<number[]>([]);
 
   const contentsTransitionStyles = startAnimation ? { opacity: "100%" } : {};
 
   useEffect(() => {
-    // let sortedShows = [];
-    // Check if the first decimal place of latitude and longitude matches
-    if (
-      userData.lat &&
-      userData.lng &&
-      geolocation.coords.lat.toFixed(1) === Number(userData.lat).toFixed(1) &&
-      geolocation.coords.lng.toFixed(1) === Number(userData.lng).toFixed(1)
-    ) {
-      const {
-        // sortedShowsData,
-        indexMap,
-      }: any = sortByProximity(shows.data, userData);
-      // sortedShows = sortedShowsData;
-      // setSortedShows(sortedShows); // TODO: FIX SORT SO REFS INDEX LINE UP
-      setSortedShows(shows.data);
-      setIndexMap(indexMap);
-    } else {
-      const defaultMap = shows.data.map((_, i) => i);
-      setSortedShows(shows.data);
-      setIndexMap(defaultMap);
-    }
-  }, [geolocation.coords.lat, geolocation.coords.lng, shows.data, userData]);
+    // Proximity sorting is intentionally not applied to the rendered list:
+    // reordering the rows without remapping markerRefs would desync which
+    // marker a row opens (see sortByProximity's indexMap). Rows stay in the
+    // order returned by the server, which the markers match 1:1.
+    setSortedShows(shows.data);
+  }, [shows.data]);
 
   const handleTouchMove = (e: React.TouchEvent) => {
     e.stopPropagation();
@@ -55,7 +35,6 @@ const EventsList = ({
           markerPlayback={markerPlayback}
           markerRefs={markerRefs}
           setCenter={setCenter}
-          indexMap={indexMap}
         />
       </ul>
     </div>

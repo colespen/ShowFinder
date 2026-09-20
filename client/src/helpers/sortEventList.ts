@@ -3,7 +3,13 @@ import { UserDataState } from "../datatypes/userData";
 import { hasVenueCoords } from "./utils";
 
 /**
- * returns sorted shows by geographical proximity to user
+ * Returns shows sorted by geographical proximity to the user, plus an
+ * `indexMap` translating each sorted position back to its original index.
+ *
+ * NOTE: this is currently unwired. The drawer renders shows in the order the
+ * server returned them so that `markerRefs.current[index]` stays aligned with
+ * each row (rows and markers must share an index to open the right popup).
+ * Applying this sort requires remapping those refs through `indexMap` first.
  */
 function sortByProximity(shows: ShowData[], userData: UserDataState) {
   if (shows.length === 0 || !shows) {
