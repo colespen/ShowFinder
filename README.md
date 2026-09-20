@@ -23,6 +23,7 @@ https://www.showfinder.ninja/
 - React Leaflet
 - Node.js
 - Express
+- TypeScript (server, strict) + ESM
 
 ## APIs:
 

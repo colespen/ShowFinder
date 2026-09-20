@@ -1,7 +1,7 @@
 /** US state name -> 2-letter code, needed to disambiguate US cities: "Portland"
  * and "Portland, US" both resolve to Nashville, while "Portland, OR" is correct.
  * Non-US locations use the country name instead (see currAddressFilter). */
-const US_STATES = {
+const US_STATES: Record<string, string> = {
   alabama: "AL",
   alaska: "AK",
   arizona: "AZ",
@@ -56,9 +56,7 @@ const US_STATES = {
 };
 
 /** 2-letter US state code from LocationIQ's full `state` name, or "". */
-function usStateCode(state) {
+export function usStateCode(state?: string): string {
   if (!state) return "";
-  return US_STATES[String(state).trim().toLowerCase()] || "";
+  return US_STATES[state.trim().toLowerCase()] ?? "";
 }
-
-module.exports = { usStateCode };

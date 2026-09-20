@@ -36,3 +36,6 @@ _new_server
 CLAUDE.md
 # MCP config
 .mcp.json
+
+# TypeScript build output
+dist/

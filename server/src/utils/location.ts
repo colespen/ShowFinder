@@ -1,4 +1,7 @@
-function settlementName(address = {}) {
+import type { CurrentAddress } from "../types/api.ts";
+import type { DateRange } from "../types/show.ts";
+
+export function settlementName(address: Record<string, string> = {}): string {
   return (
     address.city ||
     address.town ||
@@ -12,8 +15,11 @@ function settlementName(address = {}) {
   );
 }
 
-function normalizeCurrentAddress(currentAddress = {}) {
-  const address = { ...(currentAddress.address || {}) };
+/** LocationIQ lists a settlement under whichever key fits, so fold it onto `city`. */
+export function normalizeCurrentAddress(
+  currentAddress: CurrentAddress = {},
+): CurrentAddress {
+  const address = { ...(currentAddress.address ?? {}) };
   const city = settlementName(address);
   if (city) {
     address.city = city;
@@ -21,17 +27,17 @@ function normalizeCurrentAddress(currentAddress = {}) {
   return { ...currentAddress, address };
 }
 
-function todayYmd() {
+export function todayYmd(): string {
   const now = new Date();
   return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 }
 
 /** Max selectable window. A 7-day window already saturates the fetch budget in
  * a dense city, so wider ranges return no extra shows. */
-const MAX_WINDOW_DAYS = 14;
+export const MAX_WINDOW_DAYS = 14;
 
-function parseYmd(dateStr) {
-  const parts = String(dateStr || "")
+function parseYmd(dateStr: string | undefined): Date | null {
+  const parts = String(dateStr ?? "")
     .split("-")
     .map((part) => Number(part));
   if (parts.length < 3 || parts.some((part) => !Number.isFinite(part))) {
@@ -43,7 +49,10 @@ function parseYmd(dateStr) {
 
 /** Clamps the requested window to MAX_WINDOW_DAYS from its start, mirroring the
  * calendar's own limit so a wide or absent range cannot cause extra fetches. */
-function parseDateRange(dateRange = {}, maxWindowDays = MAX_WINDOW_DAYS) {
+export function parseDateRange(
+  dateRange: DateRange = {},
+  maxWindowDays = MAX_WINDOW_DAYS,
+): Required<DateRange> {
   const today = todayYmd();
   const minDate = dateRange.minDate || today;
   const requestedMax = dateRange.maxDate || minDate;
@@ -51,11 +60,9 @@ function parseDateRange(dateRange = {}, maxWindowDays = MAX_WINDOW_DAYS) {
   const start = parseYmd(minDate);
   const requestedEnd = parseYmd(requestedMax);
   if (!start || !requestedEnd) {
-    // Unparseable input: fall back to today rather than forwarding bad values.
     return { minDate: today, maxDate: today };
   }
 
-  // Guard against an inverted range before clamping.
   const from = requestedEnd < start ? requestedEnd : start;
   const to = requestedEnd < start ? start : requestedEnd;
 
@@ -68,7 +75,7 @@ function parseDateRange(dateRange = {}, maxWindowDays = MAX_WINDOW_DAYS) {
   return { minDate: minDateOut, maxDate };
 }
 
-function hasValidCoords(lat, lng) {
+export function hasValidCoords(lat: unknown, lng: unknown): boolean {
   const latitude = Number(lat);
   const longitude = Number(lng);
   return (
@@ -82,10 +89,3 @@ function hasValidCoords(lat, lng) {
   );
 }
 
-module.exports = {
-  settlementName,
-  normalizeCurrentAddress,
-  parseDateRange,
-  hasValidCoords,
-  MAX_WINDOW_DAYS,
-};
