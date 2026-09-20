@@ -3,8 +3,10 @@ const { parseDateRange } = require("../utils/location");
 const { mapRapidEvents } = require("../mappers/rapidShowMapper");
 
 const HOST = "concerts-artists-events-tracker.p.rapidapi.com";
+// Hard ceilings on upstream usage per search: at most MAX_PAGES requests and
+// MAX_EVENTS shows, regardless of how wide a date range is requested.
 const MAX_EVENTS = 400;
-const MAX_PAGES = 8;
+const MAX_PAGES = 5;
 const PAGE_DELAY_MS = 200;
 // RapidAPI caps /location at 50 results per page.
 const PAGE_SIZE = 50;

@@ -26,11 +26,48 @@ function todayYmd() {
   return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 }
 
-function parseDateRange(dateRange = {}) {
+/** Max selectable search window, keeping upstream API usage bounded. */
+const MAX_WINDOW_DAYS = 60;
+
+function parseYmd(dateStr) {
+  const parts = String(dateStr || "")
+    .split("-")
+    .map((part) => Number(part));
+  if (parts.length < 3 || parts.some((part) => !Number.isFinite(part))) {
+    return null;
+  }
+  const [year, month, day] = parts;
+  return new Date(year, month - 1, day);
+}
+
+/**
+ * Resolves the requested date window, clamped to MAX_WINDOW_DAYS from its
+ * start (or from today when no start is given). Mirrors the calendar's own
+ * limit so a wide/absent range can never trigger unbounded pagination.
+ */
+function parseDateRange(dateRange = {}, maxWindowDays = MAX_WINDOW_DAYS) {
   const today = todayYmd();
   const minDate = dateRange.minDate || today;
-  const maxDate = dateRange.maxDate || minDate || today;
-  return { minDate, maxDate };
+  const requestedMax = dateRange.maxDate || minDate;
+
+  const start = parseYmd(minDate);
+  const requestedEnd = parseYmd(requestedMax);
+  if (!start || !requestedEnd) {
+    // Unparseable input: fall back to today rather than forwarding bad values.
+    return { minDate: today, maxDate: today };
+  }
+
+  // Guard against an inverted range before clamping.
+  const from = requestedEnd < start ? requestedEnd : start;
+  const to = requestedEnd < start ? start : requestedEnd;
+
+  const limit = new Date(from);
+  limit.setDate(limit.getDate() + maxWindowDays);
+
+  const end = to > limit ? limit : to;
+  const maxDate = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`;
+  const minDateOut = `${from.getFullYear()}-${from.getMonth() + 1}-${from.getDate()}`;
+  return { minDate: minDateOut, maxDate };
 }
 
 function hasValidCoords(lat, lng) {
@@ -52,4 +89,5 @@ module.exports = {
   normalizeCurrentAddress,
   parseDateRange,
   hasValidCoords,
+  MAX_WINDOW_DAYS,
 };

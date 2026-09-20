@@ -13,7 +13,7 @@ https://www.showfinder.ninja/
 
 - Current shows dates with link to venues, artists and tickets
 - Audio preview of artist top track
-- Specify any city and date range
+- Specify any city and date range (up to a 60-day window)
 - Event-list drawer for easy lookup
 - Fully responsive
 
