@@ -6,7 +6,7 @@ const axios = require("axios");
 
 dotenv.config();
 
-const { searchMusicEvents } = require("./services/rapidapi");
+const { searchMusicEvents, withoutAdminPrefix } = require("./services/rapidapi");
 const { normalizeCurrentAddress, hasValidCoords } = require("./utils/location");
 const filterCurrentAddress = require("./utils/currAddressFilter");
 
@@ -123,19 +123,40 @@ app.get("/api/health", (_req, res) => {
 });
 
 /**
- * Searches using a location-qualified city first (accurate), then retries the
- * bare city if that yields nothing (some places, e.g. Sydney, only match the
- * plain name). Avoids losing coverage to over-specific queries.
+ * Returns the first candidate name that yields shows, widening progressively
+ * ("London, United Kingdom" -> "Westminster" -> "London" -> "England"). The
+ * upstream rejects some qualified names outright with "Invalid location", and
+ * some borough-level names resolve to the wrong city entirely, so widening is
+ * what keeps coverage without losing accuracy where a narrow name works.
  */
-async function searchShowsForCity(qualifiedName, bareName, dateRange) {
-  const qualified = await searchMusicEvents({
-    cityName: qualifiedName,
-    dateRange,
-  });
-  if (qualified.data.length || !bareName || bareName === qualifiedName) {
-    return qualified;
+async function searchShowsForCity(candidateNames, dateRange) {
+  const tried = [];
+  let lastError = null;
+
+  for (const name of candidateNames) {
+    if (!name || tried.includes(name)) continue;
+    tried.push(name);
+    try {
+      const result = await searchMusicEvents({ cityName: name, dateRange });
+      if (result.data.length) return { ...result, locationName: name };
+    } catch (error) {
+      lastError = error;
+    }
   }
-  return searchMusicEvents({ cityName: bareName, dateRange });
+
+  if (lastError && !lastError.upstreamInvalidLocation) throw lastError;
+  const empty = { data: [], page: { number: 0, size: 50, totalElements: 0, totalPages: 0, fetched: 0 } };
+  try {
+    const result = await searchMusicEvents({ cityName: tried[0], dateRange });
+    return { ...result, locationName: tried[0] };
+  } catch (error) {
+    return { ...empty, locationName: null };
+  }
+}
+
+/** Strips a trailing region qualifier, e.g. "Westminster, United Kingdom". */
+function bareName(name) {
+  return String(name || "").split(",")[0].trim();
 }
 
 app.get("/api/shows", async (req, res) => {
@@ -149,15 +170,31 @@ app.get("/api/shows", async (req, res) => {
     }
 
     const currentAddress = await reverseGeocode(lat, lng);
-    const bareCity = currentAddress?.address?.city || "";
-    const cityName = filterCurrentAddress(currentAddress) || bareCity;
-    const { data, page } = await searchShowsForCity(
-      cityName,
-      bareCity,
+    const address = currentAddress?.address || {};
+    // Order matters: the first non-empty result wins, and a borough-qualified
+    // name can return geographically wrong shows rather than failing. LocationIQ
+    // reports central London as "City of Westminster", which the upstream maps
+    // to Sydney, so the resolvable "Westminster" is tried before it.
+    const { data, page, locationName } = await searchShowsForCity(
+      [
+        withoutAdminPrefix(address.city),
+        filterCurrentAddress(currentAddress),
+        address.city,
+        address.state,
+      ],
       req.query.dateRange,
     );
 
-    res.json({ data, currentAddress, page });
+    // Title should reflect the name actually searched, not the raw borough.
+    const displayAddress = {
+      ...currentAddress,
+      address: {
+        ...address,
+        city: bareName(locationName) || address.city || "",
+      },
+    };
+
+    res.json({ data, currentAddress: displayAddress, page });
   } catch (error) {
     sendError(res, error);
   }
@@ -185,16 +222,18 @@ app.get("/api/newshows", async (req, res) => {
       });
     }
 
-    // Use the geocoded "City, ST"/"City, Country" so ambiguous names don't
-    // resolve elsewhere; fall back to the typed city if that finds nothing.
-    const resolvedCity = filterCurrentAddress(normalizeCurrentAddress(latLng[0]));
-    const { data, page } = await searchShowsForCity(
-      resolvedCity || newCity,
-      newCity,
+    // Widen from "City, Country"/"City, ST" to the bare city to the typed city,
+    // so an unresolvable qualified name still yields results.
+    const address = normalizeCurrentAddress(latLng[0]).address || {};
+    const { data, page, locationName } = await searchShowsForCity(
+      [filterCurrentAddress({ address }), address.city, address.state, newCity],
       req.query.dateRange,
     );
 
-    res.json({ data, latLng, page });
+    // Heading shows the resolved name when the qualified query widened to it.
+    const displayAddress = { address: { ...address, city: bareName(locationName) || address.city || newCity } };
+
+    res.json({ data, latLng: latLng, page, currentAddress: displayAddress });
   } catch (error) {
     sendError(res, error);
   }

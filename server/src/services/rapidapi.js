@@ -53,14 +53,30 @@ async function fetchLocationPage({ apiKey, name, minDate, maxDate, page }) {
   }
 
   if (response.data?.error) {
-    throw new Error(response.data.error);
+    // The upstream returns this (HTTP 200) when a qualified name is not
+    // resolvable, e.g. "London, United Kingdom". Marked so callers can fall
+    // back to a broader name instead of retrying the same one.
+    const err = new Error(response.data.error);
+    err.upstreamInvalidLocation = /invalid location/i.test(response.data.error);
+    throw err;
   }
 
   return Array.isArray(response.data?.data) ? response.data.data : [];
 }
 
+// Administrative prefixes that turn a real place name into a borough/district
+// the upstream geocoder cannot resolve (e.g. LocationIQ reports central London
+// as "City of Westminster", which resolves to Sydney shows).
+const ADMIN_PREFIX = /^(city of|royal borough of|london borough of|borough of|county of|metropolitan borough of)\s+/i;
+
+function withoutAdminPrefix(name) {
+  const stripped = String(name || "").replace(ADMIN_PREFIX, "").trim();
+  return stripped && stripped !== name ? stripped : "";
+}
+
 /**
- * Retries transient upstream errors ("Invalid location" for a valid city).
+ * Retries transient upstream failures. "Invalid location" is deterministic, so
+ * it is surfaced immediately for the caller to widen the query instead.
  */
 async function fetchLocationPageWithRetry(args, retries = 4) {
   let lastErr;
@@ -68,6 +84,7 @@ async function fetchLocationPageWithRetry(args, retries = 4) {
     try {
       return await fetchLocationPage(args);
     } catch (err) {
+      if (err.upstreamInvalidLocation) throw err;
       lastErr = err;
       await sleep(500);
     }
@@ -125,4 +142,4 @@ async function searchMusicEvents({ cityName, dateRange }) {
   };
 }
 
-module.exports = { searchMusicEvents };
+module.exports = { searchMusicEvents, withoutAdminPrefix };
