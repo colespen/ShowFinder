@@ -38,6 +38,23 @@ function sendError(res, error, fallbackStatus = 500) {
   });
 }
 
+/**
+ * LocationIQ rate-limits per second (429) on bursts. Retry briefly rather than
+ * surfacing a 500. Non-429 errors and 404s (no match) propagate immediately.
+ */
+async function getWithRateLimitRetry(url, retries = 3) {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await axios.get(url);
+    } catch (error) {
+      const status = error.response?.status;
+      const retryable = status === 429 && attempt < retries;
+      if (!retryable) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 600 * (attempt + 1)));
+    }
+  }
+}
+
 async function reverseGeocode(lat, lng) {
   const params = new URLSearchParams({
     key: iqToken,
@@ -49,7 +66,7 @@ async function reverseGeocode(lat, lng) {
     normalizeaddress: "1",
     addressdetails: "1",
   });
-  const response = await axios.get(
+  const response = await getWithRateLimitRetry(
     `https://us1.locationiq.com/v1/reverse?${params.toString()}`,
   );
   return normalizeCurrentAddress(response.data);
@@ -63,7 +80,7 @@ async function forwardGeocode(city) {
     addressdetails: "1",
   });
   try {
-    const response = await axios.get(
+    const response = await getWithRateLimitRetry(
       `https://us1.locationiq.com/v1/search?${params.toString()}`,
     );
     const citySort = [...(response.data || [])].sort(
