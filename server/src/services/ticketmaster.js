@@ -7,18 +7,40 @@ const PAGE_SIZE = 200;
 const MAX_PAGES = 3;
 const DEFAULT_RADIUS_MILES = 50;
 
+function pad(value) {
+  return String(value).padStart(2, "0");
+}
+
+/** "2026-9-2" -> "2026-09-02", so day strings can be compared directly. */
+function toYmd(ymd) {
+  const [year, month, day] = String(ymd || "")
+    .split("-")
+    .map((part) => Number(part));
+  if (![year, month, day].every(Number.isFinite)) return "";
+  return `${year}-${pad(month)}-${pad(day)}`;
+}
+
 /**
  * Discovery accepts only `YYYY-MM-DDTHH:mm:ssZ` and 400s on the millisecond
  * form `toISOString()` produces, so the fraction is dropped here.
  */
 function toDiscoveryDateTime(ymd, endOfDay) {
-  const [year, month, day] = String(ymd || "")
-    .split("-")
-    .map((part) => Number(part));
-  if (![year, month, day].every(Number.isFinite)) return "";
-  const pad = (value) => String(value).padStart(2, "0");
+  const day = toYmd(ymd);
+  if (!day) return "";
   const time = endOfDay ? "23:59:59" : "00:00:00";
-  return `${year}-${pad(month)}-${pad(day)}T${time}Z`;
+  return `${day}T${time}Z`;
+}
+
+/**
+ * Discovery sometimes ignores its own startDateTime/endDateTime filter and
+ * returns past-dated, offsale events (Toronto "today" came back with three
+ * Aug 23 classes and two Sep 19 parties), so the window is re-applied here.
+ * Undated events are kept rather than guessed at, matching mergeShows.
+ */
+function inDateWindow(startDate, minDate, maxDate) {
+  const day = String(startDate || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return true;
+  return day >= minDate && day <= maxDate;
 }
 
 function toCoord(value) {
@@ -160,6 +182,8 @@ async function searchMusicEvents({ lat, lng, dateRange, radius }) {
   }
 
   const { minDate, maxDate } = parseDateRange(dateRange);
+  const windowStart = toYmd(minDate);
+  const windowEnd = toYmd(maxDate);
   const radiusMiles = Number(radius) > 0 ? Number(radius) : DEFAULT_RADIUS_MILES;
 
   const rawEvents = [];
@@ -188,7 +212,9 @@ async function searchMusicEvents({ lat, lng, dateRange, radius }) {
     page += 1;
   }
 
-  const data = mapTicketmasterEvents(rawEvents);
+  const data = mapTicketmasterEvents(rawEvents).filter((show) =>
+    inDateWindow(show.startDate, windowStart, windowEnd),
+  );
   return {
     data,
     page: {
