@@ -3,6 +3,8 @@ export type Performer = {
   spotifyArtistId?: string;
   spotifyUrl?: string;
   website?: string;
+  /** The other event source's spelling of this act, used to resolve Spotify. */
+  aliases?: string[];
 };
 
 export interface Venue {

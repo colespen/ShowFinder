@@ -37,6 +37,10 @@ export default function Map() {
   const [artist, setArtist] = useState<string>("");
   const [audioLink, setAudioLink] = useState<string>("");
   const [spotifyUrl, setSpotifyUrl] = useState<string>("");
+  // The headliner's other spellings, for the server's Spotify lookup. A ref, not
+  // state: it is only read when the artist changes, so it never needs to drive a
+  // re-render or be an effect dependency.
+  const artistAliasesRef = useRef<string[]>([]);
   const [newAudio, setNewAudio] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isAutoPlay, setIsAutoplay] = useState<boolean>(true);
@@ -160,6 +164,7 @@ export default function Map() {
     if (artist)
       getSpotifySample(
         artist,
+        artistAliasesRef.current,
         setAudioLink,
         setIsPlaying,
         setSpotifyUrl,
@@ -182,6 +187,8 @@ export default function Map() {
       const headliner = setArtistNameFilter(show);
       setIsMarkerClicked(true);
       handleSetArtist(headliner, shows, setArtist);
+      // Set before setArtist so the effect below reads the matching aliases.
+      artistAliasesRef.current = show.performers?.[0]?.aliases || [];
       setLastClickedMarker(headliner);
       if (headliner !== lastClickedMarker) {
         handleSetNewAudio(setNewAudio, audioLink);

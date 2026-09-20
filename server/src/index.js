@@ -7,6 +7,11 @@ const axios = require("axios");
 dotenv.config();
 
 const { searchMusicEvents, withoutAdminPrefix } = require("./services/rapidapi");
+const {
+  searchMusicEvents: searchTicketmasterEvents,
+} = require("./services/ticketmaster");
+const { mergeShows } = require("./utils/mergeShows");
+const spotify = require("./services/spotify");
 const { normalizeCurrentAddress, hasValidCoords } = require("./utils/location");
 const filterCurrentAddress = require("./utils/currAddressFilter");
 
@@ -23,9 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 8001;
 const iqToken = process.env.IQ_TOKEN;
-const client_id = process.env.CLIENT_ID;
-const client_secret = process.env.CLIENT_SECRET;
-let spotifyToken = null;
 
 function sendError(res, error, fallbackStatus = 500) {
   const upstream = error.response?.status;
@@ -104,26 +106,59 @@ app.get("/api/health", (_req, res) => {
     locationiq: Boolean(process.env.IQ_TOKEN),
     rapidapi: Boolean(process.env.RAPID_KEY),
     spotify: Boolean(process.env.CLIENT_ID && process.env.CLIENT_SECRET),
+    ticketmaster: Boolean(process.env.TICKETMASTER_KEY),
   };
   const ready = configured.locationiq && configured.rapidapi;
 
   res.status(ready ? 200 : 503).json({
     status: ready ? "healthy" : "misconfigured",
-    // Spotify only affects audio previews, so it does not block readiness.
+    // Spotify and Ticketmaster only enrich results, so neither blocks readiness.
     ready,
     configured,
     missing: Object.entries(configured)
-      .filter(([, ok]) => !ok)
+      .filter(([name, ok]) => !ok && name !== "spotify" && name !== "ticketmaster")
       .map(([name]) => name),
   });
 });
+
+/**
+ * Fetches from both sources in parallel and merges the results.
+ *
+ * Ticketmaster is listed first so on a collision the merge prefers it: it
+ * supplies venue coordinates, ticket links and Spotify artist ids the
+ * aggregator omits. It is optional — a missing key or failure degrades to
+ * aggregator-only results rather than failing the request.
+ */
+async function fetchAndMerge({ cityName, lat, lng, dateRange }) {
+  const [aggregator, ticketmaster] = await Promise.allSettled([
+    searchMusicEvents({ cityName, dateRange }),
+    Number.isFinite(Number(lat)) && Number.isFinite(Number(lng))
+      ? searchTicketmasterEvents({ lat, lng, dateRange })
+      : Promise.resolve({ data: [], page: null }),
+  ]);
+
+  if (aggregator.status === "rejected") throw aggregator.reason;
+
+  const tmData =
+    ticketmaster.status === "fulfilled" ? ticketmaster.value.data : [];
+  if (ticketmaster.status === "rejected") {
+    console.warn("Ticketmaster skipped:", ticketmaster.reason?.message);
+  }
+
+  const { data, duplicates } = mergeShows(tmData, aggregator.value.data);
+  return {
+    data,
+    page: aggregator.value.page,
+    ticketmaster: { shows: tmData.length, duplicates },
+  };
+}
 
 /**
  * Tries each name in order and returns the first that yields shows. The
  * upstream rejects some qualified names ("London, United Kingdom" -> error)
  * and mis-resolves borough names ("City of Westminster" -> Sydney).
  */
-async function searchShowsForCity(candidateNames, dateRange) {
+async function searchShowsForCity(candidateNames, dateRange, coords = {}) {
   const tried = [];
   let lastError = null;
 
@@ -131,7 +166,12 @@ async function searchShowsForCity(candidateNames, dateRange) {
     if (!name || tried.includes(name)) continue;
     tried.push(name);
     try {
-      const result = await searchMusicEvents({ cityName: name, dateRange });
+      const result = await fetchAndMerge({
+        cityName: name,
+        lat: coords.lat,
+        lng: coords.lng,
+        dateRange,
+      });
       if (result.data.length) return { ...result, locationName: name };
     } catch (error) {
       lastError = error;
@@ -141,7 +181,12 @@ async function searchShowsForCity(candidateNames, dateRange) {
   if (lastError && !lastError.upstreamInvalidLocation) throw lastError;
   const empty = { data: [], page: { number: 0, size: 50, totalElements: 0, totalPages: 0, fetched: 0 } };
   try {
-    const result = await searchMusicEvents({ cityName: tried[0], dateRange });
+    const result = await fetchAndMerge({
+      cityName: tried[0],
+      lat: coords.lat,
+      lng: coords.lng,
+      dateRange,
+    });
     return { ...result, locationName: tried[0] };
   } catch (error) {
     return { ...empty, locationName: null };
@@ -176,6 +221,7 @@ app.get("/api/shows", async (req, res) => {
         address.state,
       ],
       req.query.dateRange,
+      { lat, lng },
     );
 
     const displayAddress = {
@@ -216,9 +262,11 @@ app.get("/api/newshows", async (req, res) => {
 
     // Widen from "City, Country"/"City, ST" to the bare/typed city.
     const address = normalizeCurrentAddress(latLng[0]).address || {};
+    const first = latLng[0] || {};
     const { data, page, locationName } = await searchShowsForCity(
       [filterCurrentAddress({ address }), address.city, address.state, newCity],
       req.query.dateRange,
+      { lat: first.lat, lng: first.lon },
     );
 
     const displayAddress = { address: { ...address, city: bareName(locationName) || address.city || newCity } };
@@ -228,100 +276,37 @@ app.get("/api/newshows", async (req, res) => {
   }
 });
 
-app.post("/api/spotifyauth", (req, res) => {
-  const base64ID = Buffer.from(client_id + ":" + client_secret).toString(
-    "base64",
-  );
-  const config = {
-    headers: {
-      Authorization: "Basic " + base64ID,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  };
-  const data = "grant_type=client_credentials";
-
-  axios
-    .post("https://accounts.spotify.com/api/token", data, config)
-    .then((response) => {
-      spotifyToken = response.data.access_token;
-      res.sendStatus(200);
-    })
-    .catch((error) => {
-      res.status(500).send("Error: " + error.message);
-      console.error("Error: ", error.message);
-    });
+// Kept so existing clients can warm the token on load; the server now refreshes
+// it on its own, so this is no longer required for previews to work.
+app.post("/api/spotifyauth", async (_req, res) => {
+  try {
+    await spotify.getToken();
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Spotify auth error:", error.message);
+    res.status(500).send("Error: " + error.message);
+  }
 });
 
+/**
+ * Resolves the headliner to a Spotify artist and returns its top tracks.
+ * `aliases` carries the other provider's spelling of the same act (pipe
+ * separated), which is what rescues names like a Ticketmaster tour title.
+ */
 app.get("/api/spotifysample", async (req, res) => {
   try {
-    const searchParams = new URLSearchParams({
-      q: req.query.artist,
-      type: "artist",
-      format: "json",
-    });
-
-    const searchResponse = await axios.get(
-      `https://api.spotify.com/v1/search?${searchParams.toString()}`,
-      { headers: { Authorization: "Bearer " + spotifyToken } },
+    const aliases = String(req.query.aliases || "")
+      .split("|")
+      .map((alias) => alias.trim())
+      .filter(Boolean);
+    const { artist, tracks } = await spotify.findArtistPreview(
+      req.query.artist,
+      aliases,
     );
-
-    const artistsItems = searchResponse.data.artists.items;
-    if (!artistsItems?.length || !Array.isArray(artistsItems)) {
-      return res.send({ tracks: [] });
-    }
-
-    const topTracksParams = new URLSearchParams({
-      market: "US",
-      format: "json",
-    });
-
-    const artistId = artistsItems[0].id;
-    const topTracksResponse = await axios.get(
-      `https://api.spotify.com/v1/artists/${artistId}/top-tracks?${topTracksParams.toString()}`,
-      { headers: { Authorization: "Bearer " + spotifyToken } },
-    );
-
-    const tracks = topTracksResponse.data.tracks;
-    if (!tracks?.length) {
-      return res.send({ tracks: [] });
-    }
-
-    // process first three tracks - get preview URLs
-    // need this hack now that preview_url is null with latest Spotify api changes
-    const MAX_TRACKS = 3;
-    const slicedTracks = tracks.slice(0, MAX_TRACKS);
-
-    for (let i = 0; i < slicedTracks.length; i++) {
-      const trackId = slicedTracks[i].id;
-      try {
-        const embedResponse = await axios.get(
-          `https://open.spotify.com/embed/track/${trackId}`,
-          { headers: { "Content-Type": "application/json" } },
-        );
-
-        const regex =
-          /<script id="__NEXT_DATA__" type="application\/json">(.+?)<\/script>/s;
-        const match = embedResponse.data.match(regex);
-
-        if (match) {
-          const jsonData = JSON.parse(match[1]);
-          if (jsonData?.props?.pageProps?.state?.data?.entity?.audioPreview) {
-            slicedTracks[i].preview_url =
-              jsonData.props.pageProps.state.data.entity.audioPreview.url;
-          }
-        }
-      } catch (embedError) {
-        console.error(
-          `Error fetching embed data for track ${i + 1}:`,
-          embedError.message,
-        );
-      }
-    }
-
-    return res.send({ tracks: slicedTracks });
+    res.json({ artist, tracks });
   } catch (error) {
     console.error("Spotify API Error:", error.message);
-    return res.status(500).send("Error: " + error.message);
+    res.status(500).send("Error: " + error.message);
   }
 });
 
