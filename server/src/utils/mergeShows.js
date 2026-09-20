@@ -17,6 +17,8 @@
  *
  * A missed match shows one gig twice; a wrong match silently hides it, so tiers
  * stay exact - no fuzzy scoring - and anything unkeyed is kept, never dropped.
+ * The artist tier is the weaker one, so it demands agreeing start times too: one
+ * act can play an early and a late set in the same room on the same night.
  */
 
 // Latin letters NFD cannot decompose, so a provider using the ASCII spelling
@@ -90,6 +92,29 @@ function isSameAct(a, b) {
   if (a === b) return true;
   const [shorter, longer] = a.length <= b.length ? [a, b] : [b, a];
   return ` ${longer} `.includes(` ${shorter} `);
+}
+
+/** How far apart two start times may be and still describe one show. */
+const ARTIST_TIER_WINDOW_MINUTES = 120;
+
+function toMinutes(time) {
+  return Number(time.slice(0, 2)) * 60 + Number(time.slice(3));
+}
+
+/**
+ * The artist+day key is the weaker tier, so a match also needs the start times to
+ * agree within a window. Matching venue names are deliberately NOT enough: one
+ * act can play two sets in the same room on one night (Blue Note runs 8pm and
+ * 10:30pm), so venue equality would still collapse two real shows into one row.
+ * Hiding a real event is worse than showing one twice.
+ */
+function isSameShow(a, b) {
+  const timeA = timeOf(a?.startDate);
+  const timeB = timeOf(b?.startDate);
+  if (!timeA || !timeB) return true; // nothing on hand to contradict the match
+  return (
+    Math.abs(toMinutes(timeA) - toMinutes(timeB)) <= ARTIST_TIER_WINDOW_MINUTES
+  );
 }
 
 /**
@@ -172,10 +197,16 @@ function mergeShows(...sources) {
       const venue = venueKey(show);
       const artist = artistKey(show);
 
-      // Strongest signal first; either tier is enough to call it a match.
+      // Strongest signal first; either tier is enough to call it a match, but
+      // the artist tier must also survive isSameShow's consistency check.
       let match;
       if (venue) match = byVenue.get(venue);
-      if (match === undefined && artist) match = byArtist.get(artist);
+      if (match === undefined && artist) {
+        const candidate = byArtist.get(artist);
+        if (candidate !== undefined && isSameShow(records[candidate], show)) {
+          match = candidate;
+        }
+      }
 
       if (match === undefined) {
         claim(show, venue, artist);
