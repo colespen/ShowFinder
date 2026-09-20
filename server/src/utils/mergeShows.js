@@ -88,9 +88,12 @@ function isSameShow(a, b) {
  * plain name far more reliably, so the alias is what makes that lookup work.
  */
 function mergePerformers(preferred, other) {
-  const kept = (preferred || []).filter((performer) => normalizeArtist(performer?.name));
+  // Guarded rather than assumed: one malformed record should not fail the request.
+  const preferredList = Array.isArray(preferred) ? preferred : [];
+  const otherList = Array.isArray(other) ? other : [];
+  const kept = preferredList.filter((performer) => normalizeArtist(performer?.name));
 
-  for (const performer of other || []) {
+  for (const performer of otherList) {
     const name = normalizeArtist(performer?.name);
     if (!name) continue;
 

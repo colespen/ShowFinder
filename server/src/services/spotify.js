@@ -36,7 +36,7 @@ let tokenExpiresAt = 0;
 const artistCache = new Map();
 const tracksCache = new Map();
 
-function cacheGet(cache, key, ttl) {
+function cacheGet(cache, key) {
   const hit = cache.get(key);
   if (!hit) return undefined;
   if (hit.expiresAt < Date.now()) {
@@ -214,5 +214,5 @@ async function findArtistPreview(name, aliases = []) {
   return { artist, tracks: await topTracks(artist.id) };
 }
 
-module.exports = { findArtistPreview, resolveArtist, pickArtist, getToken };
+module.exports = { findArtistPreview, pickArtist, getToken };
 

@@ -47,4 +47,4 @@ function isSameAct(a, b) {
   return ` ${longer} `.includes(` ${shorter} `);
 }
 
-module.exports = { normalizeArtist, isSameAct, TRANSLITERATE };
+module.exports = { normalizeArtist, isSameAct };
