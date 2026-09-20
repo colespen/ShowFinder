@@ -23,7 +23,7 @@ import {
 import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
 import "./styles.scss";
 import { Marker } from "leaflet";
-import { setArtistNameFilter, hasValidCoords } from "../helpers/utils";
+import { setArtistNameFilter, hasValidCoords, hasVenueCoords } from "../helpers/utils";
 import { sortByProximity } from "../helpers/sortEventList";
 import { useChromeIOSAdjustment } from "../hooks/useChromeIOSAdjustment";
 
@@ -60,8 +60,11 @@ export default function Map() {
   const geolocation = useGeoLocation();
 
   // Sort once here so markers and drawer rows share one index-aligned order.
+  // Shows without venue coords are dropped: they cannot be plotted or opened,
+  // and keeping them would shift markerRefs out of step with the rows
+  // (a row opens its popup via markerRefs.current[index]).
   const proximityShows = useMemo(() => {
-    return sortByProximity(shows.data, userData);
+    return sortByProximity(shows.data, userData).filter(hasVenueCoords);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shows.data, userData.lat, userData.lng]);
 
