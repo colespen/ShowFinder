@@ -1,0 +1,128 @@
+name: CI
+
+# Every push to a pull request. Documentation-only changes are skipped: no task
+# here reads them, and a README tweak should not spin up a browser suite.
+on:
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - "api_samples/**"
+      - ".claude/**"
+      - "LICENSE"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  server:
+    name: "Server: typecheck, tests, production build"
+    runs-on: ubuntu-latest
+    # Render builds with NODE_ENV=production, which makes npm omit devDependencies
+    # unless told otherwise - and tsc plus every @types package live there. Running
+    # this job in production mode, installing with --include=dev, is what mirrors
+    # the deploy: the first production build failed exactly here (TS7016/TS2591)
+    # and nothing before the deploy would have caught it.
+    env:
+      NODE_ENV: production
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24.x"
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install
+        run: npm ci --include=dev
+        working-directory: server
+
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: server
+
+      - name: Test
+        run: npm test
+        working-directory: server
+
+      - name: Build
+        run: npm run build
+        working-directory: server
+
+      - name: Smoke the built entrypoint
+        run: |
+          test -f dist/index.js
+          PORT=8111 npm start &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8111/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "the built server never answered on 8111" >&2
+          exit 1
+        working-directory: server
+
+  e2e:
+    name: Browser end to end
+    runs-on: ubuntu-latest
+    needs: server
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24.x"
+          cache: npm
+          cache-dependency-path: |
+            server/package-lock.json
+            client/package-lock.json
+            e2e/package-lock.json
+
+      # playwright.config.ts starts both of these itself, on 3000 and 8001.
+      - name: Install the API
+        run: npm ci
+        working-directory: server
+
+      - name: Install the client
+        run: npm ci
+        working-directory: client
+
+      - name: Install the suite
+        run: npm ci
+        working-directory: e2e
+
+      - name: Cache Chromium
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('e2e/package-lock.json') }}
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+        working-directory: e2e
+
+      - name: Typecheck the suite
+        run: npm run typecheck
+        working-directory: e2e
+
+      - name: Run the suite
+        run: npm test
+        working-directory: e2e
+
+      - name: Upload traces and the report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            e2e/playwright-report
+            e2e/test-results
+          if-no-files-found: ignore
+          retention-days: 7
