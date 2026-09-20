@@ -34,6 +34,11 @@ https://www.showfinder.ninja/
 - tried: PredictHQ, Songkick, Zyla, Ticketmaster Discovery
   <br>
 
+Server setup requires `IQ_TOKEN`, `RAPID_KEY`, and (for audio previews)
+`CLIENT_ID` / `CLIENT_SECRET` — see `server/.env.example`. After deploying,
+`GET /api/health` reports which are configured (booleans only, never values)
+and returns 503 if any required key is missing.
+
 ### Developed & Designed by Spencer Cole
 
 ![grabbing_location](docs/1_grabbing_location.png)

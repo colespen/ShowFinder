@@ -101,6 +101,27 @@ app.get("/", (_req, res) => {
   res.json({ message: "ShowFinder API is running", status: "healthy" });
 });
 
+// Reports which upstreams are configured, so a deploy can be verified without
+// inferring it from a failing request. Never returns key values.
+app.get("/api/health", (_req, res) => {
+  const configured = {
+    locationiq: Boolean(process.env.IQ_TOKEN),
+    rapidapi: Boolean(process.env.RAPID_KEY),
+    spotify: Boolean(process.env.CLIENT_ID && process.env.CLIENT_SECRET),
+  };
+  const ready = configured.locationiq && configured.rapidapi;
+
+  res.status(ready ? 200 : 503).json({
+    status: ready ? "healthy" : "misconfigured",
+    // Spotify only affects audio previews, so it does not block readiness.
+    ready,
+    configured,
+    missing: Object.entries(configured)
+      .filter(([, ok]) => !ok)
+      .map(([name]) => name),
+  });
+});
+
 /**
  * Searches using a location-qualified city first (accurate), then retries the
  * bare city if that yields nothing (some places, e.g. Sydney, only match the
