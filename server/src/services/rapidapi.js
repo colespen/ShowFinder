@@ -90,6 +90,7 @@ async function searchMusicEvents({ cityName, dateRange }) {
 
   const rawEvents = [];
   let page = 1;
+  let requests = 0;
 
   while (rawEvents.length < MAX_EVENTS && page <= MAX_PAGES) {
     const events = await fetchLocationPageWithRetry({
@@ -99,6 +100,7 @@ async function searchMusicEvents({ cityName, dateRange }) {
       maxDate: maxDateParam,
       page,
     });
+    requests += 1;
 
     if (!events.length) break;
     rawEvents.push(...events);
@@ -115,7 +117,8 @@ async function searchMusicEvents({ cityName, dateRange }) {
       number: 0,
       size: PAGE_SIZE,
       totalElements: data.length,
-      totalPages: page,
+      // Upstream requests actually made, capped at MAX_PAGES.
+      totalPages: requests,
       fetched: data.length,
     },
   };
