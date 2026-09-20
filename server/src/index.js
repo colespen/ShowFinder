@@ -7,6 +7,10 @@ const axios = require("axios");
 dotenv.config();
 
 const { searchMusicEvents, withoutAdminPrefix } = require("./services/rapidapi");
+const {
+  searchMusicEvents: searchTicketmasterEvents,
+} = require("./services/ticketmaster");
+const { mergeShows } = require("./utils/mergeShows");
 const { normalizeCurrentAddress, hasValidCoords } = require("./utils/location");
 const filterCurrentAddress = require("./utils/currAddressFilter");
 
@@ -104,26 +108,59 @@ app.get("/api/health", (_req, res) => {
     locationiq: Boolean(process.env.IQ_TOKEN),
     rapidapi: Boolean(process.env.RAPID_KEY),
     spotify: Boolean(process.env.CLIENT_ID && process.env.CLIENT_SECRET),
+    ticketmaster: Boolean(process.env.TICKETMASTER_KEY),
   };
   const ready = configured.locationiq && configured.rapidapi;
 
   res.status(ready ? 200 : 503).json({
     status: ready ? "healthy" : "misconfigured",
-    // Spotify only affects audio previews, so it does not block readiness.
+    // Spotify and Ticketmaster only enrich results, so neither blocks readiness.
     ready,
     configured,
     missing: Object.entries(configured)
-      .filter(([, ok]) => !ok)
+      .filter(([name, ok]) => !ok && name !== "spotify" && name !== "ticketmaster")
       .map(([name]) => name),
   });
 });
+
+/**
+ * Fetches from both sources in parallel and merges the results.
+ *
+ * Ticketmaster is listed first so on a collision the merge prefers it: it
+ * supplies venue coordinates, ticket links and Spotify artist ids the
+ * aggregator omits. It is optional — a missing key or failure degrades to
+ * aggregator-only results rather than failing the request.
+ */
+async function fetchAndMerge({ cityName, lat, lng, dateRange }) {
+  const [aggregator, ticketmaster] = await Promise.allSettled([
+    searchMusicEvents({ cityName, dateRange }),
+    Number.isFinite(Number(lat)) && Number.isFinite(Number(lng))
+      ? searchTicketmasterEvents({ lat, lng, dateRange })
+      : Promise.resolve({ data: [], page: null }),
+  ]);
+
+  if (aggregator.status === "rejected") throw aggregator.reason;
+
+  const tmData =
+    ticketmaster.status === "fulfilled" ? ticketmaster.value.data : [];
+  if (ticketmaster.status === "rejected") {
+    console.warn("Ticketmaster skipped:", ticketmaster.reason?.message);
+  }
+
+  const { data, duplicates } = mergeShows(tmData, aggregator.value.data);
+  return {
+    data,
+    page: aggregator.value.page,
+    ticketmaster: { shows: tmData.length, duplicates },
+  };
+}
 
 /**
  * Tries each name in order and returns the first that yields shows. The
  * upstream rejects some qualified names ("London, United Kingdom" -> error)
  * and mis-resolves borough names ("City of Westminster" -> Sydney).
  */
-async function searchShowsForCity(candidateNames, dateRange) {
+async function searchShowsForCity(candidateNames, dateRange, coords = {}) {
   const tried = [];
   let lastError = null;
 
@@ -131,7 +168,12 @@ async function searchShowsForCity(candidateNames, dateRange) {
     if (!name || tried.includes(name)) continue;
     tried.push(name);
     try {
-      const result = await searchMusicEvents({ cityName: name, dateRange });
+      const result = await fetchAndMerge({
+        cityName: name,
+        lat: coords.lat,
+        lng: coords.lng,
+        dateRange,
+      });
       if (result.data.length) return { ...result, locationName: name };
     } catch (error) {
       lastError = error;
@@ -141,7 +183,12 @@ async function searchShowsForCity(candidateNames, dateRange) {
   if (lastError && !lastError.upstreamInvalidLocation) throw lastError;
   const empty = { data: [], page: { number: 0, size: 50, totalElements: 0, totalPages: 0, fetched: 0 } };
   try {
-    const result = await searchMusicEvents({ cityName: tried[0], dateRange });
+    const result = await fetchAndMerge({
+      cityName: tried[0],
+      lat: coords.lat,
+      lng: coords.lng,
+      dateRange,
+    });
     return { ...result, locationName: tried[0] };
   } catch (error) {
     return { ...empty, locationName: null };
@@ -176,6 +223,7 @@ app.get("/api/shows", async (req, res) => {
         address.state,
       ],
       req.query.dateRange,
+      { lat, lng },
     );
 
     const displayAddress = {
@@ -216,9 +264,11 @@ app.get("/api/newshows", async (req, res) => {
 
     // Widen from "City, Country"/"City, ST" to the bare/typed city.
     const address = normalizeCurrentAddress(latLng[0]).address || {};
+    const first = latLng[0] || {};
     const { data, page, locationName } = await searchShowsForCity(
       [filterCurrentAddress({ address }), address.city, address.state, newCity],
       req.query.dateRange,
+      { lat: first.lat, lng: first.lon },
     );
 
     const displayAddress = { address: { ...address, city: bareName(locationName) || address.city || newCity } };
