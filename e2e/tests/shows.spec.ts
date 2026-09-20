@@ -10,6 +10,41 @@ const plotted = torontoShows.data.filter((show) => show.venue.latitude !== null)
 const unplotted = torontoShows.data.filter((show) => show.venue.latitude === null);
 const headliner = (show: (typeof torontoShows.data)[number]) => show.performers[0].name;
 
+/** A narrower answer for the same city, for the date-range flow. */
+const narrowed = { ...torontoShows, data: torontoShows.data.slice(0, 2) };
+const narrowedPlotted = narrowed.data.filter((show) => show.venue.latitude !== null);
+
+const selectableDays = (page: Page) =>
+  page.locator(
+    ".react-datepicker__day:not(.react-datepicker__day--disabled):not(.react-datepicker__day--outside-month)",
+  );
+
+const paramsOf = (url: string) => new URL(url).searchParams;
+
+/**
+ * Picking days only fills in state; the GO button beside the calendar is what
+ * asks the server, which is why the date tests drive both.
+ */
+const requestPickedRange = (page: Page) => page.locator("#go-button-top").click();
+
+/**
+ * The server writes dates as YYYY-M-D, so compare them as calendar days rather
+ * than through Date parsing. The first request of a session always carries
+ * today..today, which is how the range tests tell it from one after a pick.
+ */
+function rangeGapInDays(params: URLSearchParams): number | null {
+  const min = params.get("dateRange[minDate]");
+  const max = params.get("dateRange[maxDate]");
+  if (!min || !max) return null;
+
+  const [minYear, minMonth, minDay] = min.split("-").map(Number);
+  const [maxYear, maxMonth, maxDay] = max.split("-").map(Number);
+
+  return Math.round(
+    (Date.UTC(maxYear, maxMonth - 1, maxDay) - Date.UTC(minYear, minMonth - 1, minDay)) / 86_400_000,
+  );
+}
+
 /**
  * The drawer sits translated off-screen until toggled, and an off-screen element
  * still counts as visible to Playwright, so assert its position rather than its
@@ -126,17 +161,66 @@ test("sends the chosen date range as nested query params", async ({ page }) => {
   await page.goto("/");
 
   await page.locator(".date-button-input").first().click();
-  const days = page.locator(
-    ".react-datepicker__day:not(.react-datepicker__day--disabled):not(.react-datepicker__day--outside-month)",
-  );
-  await days.nth(0).click();
-  await days.nth(2).click();
+  await selectableDays(page).nth(0).click();
+  await selectableDays(page).nth(2).click();
+  await requestPickedRange(page);
 
-  await expect.poll(() => requests.filter((url) => url.includes("dateRange")).length).toBeGreaterThan(0);
+  // The range the picker produced, rather than the today..today the first load
+  // sends: whatever is picked has to be what the server is asked for.
+  await expect
+    .poll(() => rangeGapInDays(paramsOf(requests[requests.length - 1])))
+    .toBe(2);
 
   // The server reads these with Express's extended query parser; the simple
-  // parser drops them and every search silently widens back to today.
-  const ranged = decodeURIComponent(requests.find((url) => url.includes("dateRange")) as string);
+  // parser leaves them flat and every search silently widens back to today.
+  const ranged = decodeURIComponent(requests[requests.length - 1]);
   expect(ranged).toContain("dateRange[minDate]=");
   expect(ranged).toContain("dateRange[maxDate]=");
 });
+
+test("narrowing the date range replaces the results", async ({ page }) => {
+  // Keyed on the range widening, since the unpicked default is today..today.
+  await page.route("**/api/shows**", (route) =>
+    json(route, rangeGapInDays(paramsOf(route.request().url())) === 0 ? torontoShows : narrowed),
+  );
+  await page.goto("/");
+  await expect(page.locator(".leaflet-marker-icon")).toHaveCount(plotted.length);
+
+  await page.locator(".date-button-input").first().click();
+  await selectableDays(page).nth(0).click();
+  await selectableDays(page).nth(2).click();
+  await requestPickedRange(page);
+
+  // Both the map and the list have to follow the new answer, rather than keep
+  // showing the wider set the first request returned.
+  await expect(page.locator(".leaflet-marker-icon")).toHaveCount(narrowedPlotted.length);
+  await openDrawer(page);
+  await expect(page.locator(".show-list-item")).toHaveCount(narrowed.data.length);
+});
+
+test("limits a picked range to the fourteen-day window", async ({ page }) => {
+  const gaps: (number | null)[] = [];
+  await page.route("**/api/shows**", (route) => {
+    gaps.push(rangeGapInDays(paramsOf(route.request().url())));
+    return json(route, torontoShows);
+  });
+  await page.goto("/");
+  await page.locator(".date-button-input").first().click();
+
+  // The window is the calendar's own bound: the first pick narrows the selectable
+  // days to that day plus fourteen, so the last one cannot reach past it. Only one
+  // month renders, and react-datepicker restarts the range if the second pick is
+  // the earlier date, so the reachable order is first-day then last-day.
+  const days = selectableDays(page);
+  await days.first().click();
+  const firstDay = Number(await days.first().textContent());
+  const lastDay = Number(await days.last().textContent());
+  await days.last().click();
+  await requestPickedRange(page);
+
+  // The calendar allowed a fourteen-day span and that is what gets sent.
+  const span = lastDay - firstDay;
+  expect(span).toBe(14);
+  await expect.poll(() => gaps[gaps.length - 1]).toBe(span);
+});
+
