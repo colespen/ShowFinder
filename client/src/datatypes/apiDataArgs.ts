@@ -1,6 +1,6 @@
 import { SetStateAction, Dispatch } from "react";
 import { UserDataState } from "./userData";
-import { CurrentAddress, ShowData, ShowDataState } from "./showData";
+import { CurrentAddress, ShowData, ShowDataState, ShowPage } from "./showData";
 import { GeoLocationState } from "./locationData";
 
 export type ShowCallbackArgs = {
@@ -19,16 +19,16 @@ export interface SetShowCityUserDataArgs {
   data: {
     currentAddress: CurrentAddress;
     data: ShowData[];
-    page: number;
+    page: ShowPage | number;
   };
   callbacks: ShowCallbackArgs;
 }
 
 export interface SetNewShowCityUserDataArgs {
   data: {
-    currentAddress: CurrentAddress;
+    currentAddress?: CurrentAddress;
     data: ShowData[];
-    page: number;
+    page: ShowPage | number;
     latLng: [
       {
         lat: number;

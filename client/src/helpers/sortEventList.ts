@@ -1,61 +1,52 @@
 import { ShowData } from "../datatypes/showData";
 import { UserDataState } from "../datatypes/userData";
+import { hasVenueCoords } from "./utils";
 
 /**
- * returns sorted shows by geographical proximity to user
+ * Sort shows by distance from the user (Haversine, km).
+ *
+ * Applied once in Map.tsx so markers and drawer rows share one order: a row
+ * opens its popup via markerRefs.current[index], so the two lists must stay
+ * index-aligned. Shows without venue coords sort last.
+ *
+ * Returns the input unchanged when user coords are unknown.
  */
 function sortByProximity(shows: ShowData[], userData: UserDataState) {
-  if (shows.length === 0 || !shows) {
+  if (!Array.isArray(shows) || shows.length === 0) {
     return shows;
   }
+
   const userLat = Number(userData.lat);
   const userLng = Number(userData.lng);
-
-  if (!userLat || !userLng) {
-    // if user coords unavailable, return original  shows
+  if (!Number.isFinite(userLat) || !Number.isFinite(userLng)) {
     return shows;
   }
 
-  // calculate distance between two sets of coordinates using the Haversine formula
-  function getDistance(
-    uLat: number,
-    uLng: number,
-    evLat: number,
-    evLng: number,
-  ) {
-    const R = 6371; // radius of the earth in km
-    const dLat = ((evLat - uLat) * Math.PI) / 180;
-    const dLng = ((evLng - uLng) * Math.PI) / 180;
+  const getDistance = (evLat: number, evLng: number) => {
+    const R = 6371;
+    const dLat = ((evLat - userLat) * Math.PI) / 180;
+    const dLng = ((evLng - userLng) * Math.PI) / 180;
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos((uLat * Math.PI) / 180) *
+      Math.cos((userLat * Math.PI) / 180) *
         Math.cos((evLat * Math.PI) / 180) *
         Math.sin(dLng / 2) *
         Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // distance in km
-    return d;
-  }
+    return R * c;
+  };
 
-  // sort list of shows b distance to user's coordinates
-  const sortedShowsData = shows.slice().sort((a, b) => {
-    const aLat = a.location.geo?.latitude;
-    const aLng = a.location.geo?.longitude;
-    const bLat = b.location.geo?.latitude;
-    const bLng = b.location.geo?.longitude;
-    if (!aLat || !aLng || !bLat || !bLng) {
-      return 0;
-    }
-    const distanceA = getDistance(userLat, userLng, aLat, aLng);
-    const distanceB = getDistance(userLat, userLng, bLat, bLng);
+  return shows.slice().sort((a, b) => {
+    const aHas = hasVenueCoords(a);
+    const bHas = hasVenueCoords(b);
+    // Coord-less shows keep relative order, after located ones.
+    if (!aHas && !bHas) return 0;
+    if (!aHas) return 1;
+    if (!bHas) return -1;
+    const distanceA = getDistance(Number(a.venue.latitude), Number(a.venue.longitude));
+    const distanceB = getDistance(Number(b.venue.latitude), Number(b.venue.longitude));
     return distanceA - distanceB;
   });
-
-  const indexMap = shows.map((_, index) => {
-    return sortedShowsData.findIndex((show) => show === shows[index]);
-  });
-
-  return { sortedShowsData, indexMap };
 }
 
 export { sortByProximity };

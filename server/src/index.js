@@ -3,147 +3,205 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const cors = require("cors");
 const axios = require("axios");
-// const path = require("path");
-
-const app = express();
-
-var corsOptions = {
-  origin: process.env.CORS_ORIGIN || "http://localhost:3000",
-  optionsSuccessStatus: 200,
-};
-////   (cors w no config accepts all origins/headers)
-app.use(cors(corsOptions));
 
 dotenv.config();
 
+const { searchMusicEvents } = require("./services/rapidapi");
+const { normalizeCurrentAddress, hasValidCoords } = require("./utils/location");
+const filterCurrentAddress = require("./utils/currAddressFilter");
+
+const app = express();
+
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/////   serve static build files: dev ******
-// app.use(express.static(path.resolve(__dirname, "../../client/build")));
-
-const dedupe = require("./utils/dedupe");
-const filterCurrentAddress = require("./utils/currAddressFilter");
-
-let port = process.env.PORT || 8001;
+const port = process.env.PORT || 8001;
 const iqToken = process.env.IQ_TOKEN;
-const rapidKey = process.env.RAPID_KEY;
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 let spotifyToken = null;
 
-//////////////////////////////////////////////////////////
-////    Root route for health check
-////////////////////////////////////////////////////////
+function sendError(res, error, fallbackStatus = 500) {
+  const upstream = error.response?.status;
+  const message = error.message || "Unknown error";
+  const url = error.config?.url || "";
+  console.error("Error:", message, upstream ? `(upstream ${upstream})` : "", url);
+  res.status(fallbackStatus).json({
+    error: message,
+    upstreamStatus: upstream || null,
+  });
+}
 
-app.get("/", (req, res) => {
+/**
+ * LocationIQ rate-limits per second (429) on bursts. Retry briefly rather than
+ * surfacing a 500. Non-429 errors and 404s (no match) propagate immediately.
+ */
+async function getWithRateLimitRetry(url, retries = 3) {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await axios.get(url);
+    } catch (error) {
+      const status = error.response?.status;
+      const retryable = status === 429 && attempt < retries;
+      if (!retryable) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 600 * (attempt + 1)));
+    }
+  }
+}
+
+async function reverseGeocode(lat, lng) {
+  const params = new URLSearchParams({
+    key: iqToken,
+    lat,
+    lon: lng,
+    format: "json",
+    zoom: "10",
+    normalizecity: "1",
+    normalizeaddress: "1",
+    addressdetails: "1",
+  });
+  const response = await getWithRateLimitRetry(
+    `https://us1.locationiq.com/v1/reverse?${params.toString()}`,
+  );
+  return normalizeCurrentAddress(response.data);
+}
+
+async function forwardGeocode(city) {
+  const params = new URLSearchParams({
+    key: iqToken,
+    city,
+    format: "json",
+    addressdetails: "1",
+  });
+  try {
+    const response = await getWithRateLimitRetry(
+      `https://us1.locationiq.com/v1/search?${params.toString()}`,
+    );
+    const citySort = [...(response.data || [])].sort(
+      (a, b) => parseFloat(b.importance) - parseFloat(a.importance),
+    );
+    return citySort;
+  } catch (error) {
+    // LocationIQ returns 404 when nothing matches the city query;
+    // treat that as "no results" rather than a server error.
+    if (error.response?.status === 404) {
+      return [];
+    }
+    throw error;
+  }
+}
+
+app.get("/", (_req, res) => {
   res.json({ message: "ShowFinder API is running", status: "healthy" });
 });
 
-//////////////////////////////////////////////////////////
-////    GET - Shows
-////////////////////////////////////////////////////////
+// Reports which upstreams are configured, so a deploy can be verified without
+// inferring it from a failing request. Never returns key values.
+app.get("/api/health", (_req, res) => {
+  const configured = {
+    locationiq: Boolean(process.env.IQ_TOKEN),
+    rapidapi: Boolean(process.env.RAPID_KEY),
+    spotify: Boolean(process.env.CLIENT_ID && process.env.CLIENT_SECRET),
+  };
+  const ready = configured.locationiq && configured.rapidapi;
 
-app.get("/api/shows", (req, res) => {
-  const params = new URLSearchParams({
-    key: iqToken,
-    lat: req.query.lat,
-    lon: req.query.lng,
-    format: "json",
+  res.status(ready ? 200 : 503).json({
+    status: ready ? "healthy" : "misconfigured",
+    // Spotify only affects audio previews, so it does not block readiness.
+    ready,
+    configured,
+    missing: Object.entries(configured)
+      .filter(([, ok]) => !ok)
+      .map(([name]) => name),
   });
-  axios
-    .get(`https://us1.locationiq.com/v1/reverse?${params.toString()}`)
-    .then((response) => {
-      const currentAddress = response.data;
-
-      // TODO: fix bug, of no matches for rapid api data then nothign return.
-      const filteredAddress = filterCurrentAddress(currentAddress);
-
-      const params = new URLSearchParams({
-        name: filteredAddress,
-        ...req.query.dateRange,
-      });
-      console.log({ params });
-      return axios
-        .get(
-          "https://concerts-artists-events-tracker.p.rapidapi.com/location?" +
-            params.toString(),
-          {
-            headers: {
-              "X-RapidAPI-Key": rapidKey,
-              "X-RapidAPI-Host":
-                "concerts-artists-events-tracker.p.rapidapi.com",
-            },
-          },
-        )
-        .then((response) => ({ ...response.data, currentAddress }));
-    })
-    .then((data) => {
-      // console.log("api/shows - data: ", data);
-      res.send(data);
-    })
-    .catch((error) => {
-      res.status(500).send("Error: " + error.message);
-      console.error("Error: ", error.message);
-    });
 });
 
-//////////////////////////////////////////////////////////
-////    GET - New Shows
-////////////////////////////////////////////////////////
-
-app.get("/api/newshows", (req, res) => {
-  const params = new URLSearchParams({
-    key: iqToken,
-    city: req.query.newCity,
-    format: "json",
+/**
+ * Searches using a location-qualified city first (accurate), then retries the
+ * bare city if that yields nothing (some places, e.g. Sydney, only match the
+ * plain name). Avoids losing coverage to over-specific queries.
+ */
+async function searchShowsForCity(qualifiedName, bareName, dateRange) {
+  const qualified = await searchMusicEvents({
+    cityName: qualifiedName,
+    dateRange,
   });
-  axios
-    .get(`https://us1.locationiq.com/v1/search?${params.toString()}`)
-    .then((response) => {
-      // TODO: abstract citySort
-      const citySort = response.data.sort(
-        (a, b) => parseFloat(b.importance) - parseFloat(a.importance),
-      );
-      const latLng = citySort;
+  if (qualified.data.length || !bareName || bareName === qualifiedName) {
+    return qualified;
+  }
+  return searchMusicEvents({ cityName: bareName, dateRange });
+}
 
-      const params = new URLSearchParams({
-        name: req.query.newCity,
-        ...req.query.dateRange,
+app.get("/api/shows", async (req, res) => {
+  try {
+    const lat = req.query.lat;
+    const lng = req.query.lng;
+    if (!hasValidCoords(lat, lng)) {
+      return res.status(400).json({
+        error: "Valid lat and lng are required (got 0,0 or missing GPS)",
       });
-      return axios
-        .get(
-          "https://concerts-artists-events-tracker.p.rapidapi.com/location?" +
-            params.toString(),
-          {
-            headers: {
-              "X-RapidAPI-Key": rapidKey,
-              "X-RapidAPI-Host":
-                "concerts-artists-events-tracker.p.rapidapi.com",
-            },
-          },
-        )
-        .then((response) => {
-          const deduped = dedupe(response);
-          return { data: [...deduped], latLng };
-        });
-    })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((error) => {
-      res.status(500).send("Error: " + error.message);
-      console.error("Error: ", error.message);
-    });
+    }
+
+    const currentAddress = await reverseGeocode(lat, lng);
+    const bareCity = currentAddress?.address?.city || "";
+    const cityName = filterCurrentAddress(currentAddress) || bareCity;
+    const { data, page } = await searchShowsForCity(
+      cityName,
+      bareCity,
+      req.query.dateRange,
+    );
+
+    res.json({ data, currentAddress, page });
+  } catch (error) {
+    sendError(res, error);
+  }
 });
 
-//////////////////////////////////////////////////////////
-////    POST - Auth Request
-////////////////////////////////////////////////////////
+app.get("/api/newshows", async (req, res) => {
+  try {
+    const newCity = req.query.newCity;
+    if (!newCity) {
+      return res.status(400).json({ error: "newCity is required" });
+    }
+
+    const latLng = await forwardGeocode(newCity);
+    if (!latLng.length) {
+      return res.json({
+        data: [],
+        latLng: [],
+        page: {
+          number: 0,
+          size: 50, // matches services/rapidapi PAGE_SIZE
+          totalElements: 0,
+          totalPages: 0,
+          fetched: 0,
+        },
+      });
+    }
+
+    // Use the geocoded "City, ST"/"City, Country" so ambiguous names don't
+    // resolve elsewhere; fall back to the typed city if that finds nothing.
+    const resolvedCity = filterCurrentAddress(normalizeCurrentAddress(latLng[0]));
+    const { data, page } = await searchShowsForCity(
+      resolvedCity || newCity,
+      newCity,
+      req.query.dateRange,
+    );
+
+    res.json({ data, latLng, page });
+  } catch (error) {
+    sendError(res, error);
+  }
+});
 
 app.post("/api/spotifyauth", (req, res) => {
-  const base64ID = new Buffer.from(client_id + ":" + client_secret).toString(
+  const base64ID = Buffer.from(client_id + ":" + client_secret).toString(
     "base64",
   );
   const config = {
@@ -166,13 +224,8 @@ app.post("/api/spotifyauth", (req, res) => {
     });
 });
 
-//////////////////////////////////////////////////////////
-////    Get - Artist ID -> Top Single
-////////////////////////////////////////////////////////
-
 app.get("/api/spotifysample", async (req, res) => {
   try {
-    // search for artist
     const searchParams = new URLSearchParams({
       q: req.query.artist,
       type: "artist",
@@ -189,7 +242,6 @@ app.get("/api/spotifysample", async (req, res) => {
       return res.send({ tracks: [] });
     }
 
-    // get top tracks
     const topTracksParams = new URLSearchParams({
       market: "US",
       format: "json",
@@ -231,7 +283,6 @@ app.get("/api/spotifysample", async (req, res) => {
           }
         }
       } catch (embedError) {
-        // log but continue processing other tracks
         console.error(
           `Error fetching embed data for track ${i + 1}:`,
           embedError.message,

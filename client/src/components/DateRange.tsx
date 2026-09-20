@@ -4,14 +4,20 @@ import { handleDateSelect } from "../helpers/eventHandlers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+//////    Max selectable window, mirroring the server's clamp
+const MAX_WINDOW_DAYS = 14;
+
+const ymd = (date: Date) =>
+  `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
 //////    Assign Current Date and maxDate Default
-const currDate = new Date();
-const minDate = `${currDate.getFullYear()}-${
-  currDate.getMonth() + 1
-}-${currDate.getDate()}`;
-const maxDate = `${currDate.getFullYear()}-${
-  currDate.getMonth() + 1
-}-${currDate.getDate()}`;
+const today = new Date();
+const minDate = ymd(today);
+const maxDate = minDate;
+
+//////    Latest selectable end date
+const maxSelectableDate = new Date(today);
+maxSelectableDate.setDate(maxSelectableDate.getDate() + MAX_WINDOW_DAYS);
 
 export default function DateRange({ setUserData }: DateRangeProps) {
   const [range, setRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -72,6 +78,8 @@ export default function DateRange({ setUserData }: DateRangeProps) {
       selectsRange={true}
       startDate={startDate}
       endDate={endDate}
+      minDate={today}
+      maxDate={maxSelectableDate}
       onChange={handleDateChange}
       customInput={<DateButtonInput />}
     />

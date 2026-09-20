@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import useGeoLocation, { NAVIGTOR_ERROR } from "../hooks/useGeoLocation";
 import MapContainerComponent from "./MapContainer/MapContainer";
 import Title from "./Title";
@@ -23,7 +23,8 @@ import {
 import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
 import "./styles.scss";
 import { Marker } from "leaflet";
-import { setArtistNameFilter } from "../helpers/utils";
+import { setArtistNameFilter, hasValidCoords } from "../helpers/utils";
+import { sortByProximity } from "../helpers/sortEventList";
 import { useChromeIOSAdjustment } from "../hooks/useChromeIOSAdjustment";
 
 export default function Map() {
@@ -57,6 +58,12 @@ export default function Map() {
   );
 
   const geolocation = useGeoLocation();
+
+  // Sort once here so markers and drawer rows share one index-aligned order.
+  const proximityShows = useMemo(() => {
+    return sortByProximity(shows.data, userData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shows.data, userData.lat, userData.lng]);
 
   useChromeIOSAdjustment();
 
@@ -116,8 +123,11 @@ export default function Map() {
 
   // //////    GET Current Location Shows/Geo/spotifyToken - First Render
   useEffect(() => {
-    //                      changed from (shows) to (shows.data)
-    if (geolocation.loaded && Object.keys(shows.data).length === 0) {
+    if (
+      geolocation.loaded &&
+      hasValidCoords(geolocation.coords.lat, geolocation.coords.lng) &&
+      Object.keys(shows.data).length === 0
+    ) {
       //////    GET - /api/shows - rev geocode current coords then get shows
       getShows({
         userData,
@@ -127,7 +137,6 @@ export default function Map() {
       //////    POST - api/spotifyauth - retrieve spotifyToken in API
       getSpotifyToken();
     }
-    // removed userData and shows from // }, [...]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geolocation]);
 
@@ -203,7 +212,7 @@ export default function Map() {
       <MapContainerComponent
         center={center}
         geolocation={geolocation}
-        shows={shows}
+        shows={{ ...shows, data: proximityShows }}
         audioRef={audioRef}
         spotifyUrl={spotifyUrl}
         userData={userData}
@@ -220,7 +229,7 @@ export default function Map() {
       />
       {Array.isArray(shows.data) && shows.data.length !== 0 && (
         <DrawerLeft
-          shows={shows}
+          shows={{ ...shows, data: proximityShows }}
           userData={userData}
           geolocation={geolocation}
           setCenter={setCenter}

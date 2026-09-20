@@ -1,8 +1,6 @@
 import { PlayPauseArgs, SetNewAudioArgs } from "../datatypes/events";
 import { ShowData } from "../datatypes/showData";
-/**
- * filter city name before comma for currCity
- */
+
 const cityFilter = (str: string) => {
   if (str) {
     const regex = new RegExp(/,/gm);
@@ -23,9 +21,7 @@ const cityFilter = (str: string) => {
     return "";
   }
 };
-/**
- * Only display spinner if new marker (artist) and hide initial "audio unavailable"
- */
+
 const setNewAudioDelay = ({ setNewAudio, audioLink }: SetNewAudioArgs) => {
   setNewAudio(false);
   const setStateDelay = setTimeout(() => {
@@ -48,66 +44,58 @@ const playPause = ({ audioLink, isPlaying, audioRef }: PlayPauseArgs) => {
     }
   }
 };
-/**
- * convert 24hr to 12hr from ISO 8601 string
- */
+
 const convertTo12hr = (startDate: string) => {
-  const timeString = startDate;
-  const hours24 = parseInt(timeString.slice(11, 13), 10);
+  if (!startDate || startDate.length < 13 || !startDate.includes("T")) {
+    return "";
+  }
+  const hours24 = parseInt(startDate.slice(11, 13), 10);
+  if (Number.isNaN(hours24)) return "";
   const hours12 = (hours24 % 12 || 12).toString();
-  // const minutes = timeString.slice(14, 16);
   const amPm = hours24 < 12 ? "AM" : "PM";
-  const timeString12hr = `${hours12} ${amPm}`;
-  return timeString12hr;
+  return `${hours12} ${amPm}`;
 };
-/**
- * select either filtered artist from description or performer list and filter length...
- */
+
+const getHeadliner = (show: ShowData) => {
+  return show.performers?.[0]?.name || show.name || "";
+};
+
+const hasVenueCoords = (show: ShowData) => {
+  return (
+    show.venue?.latitude !== null &&
+    show.venue?.latitude !== undefined &&
+    show.venue?.longitude !== null &&
+    show.venue?.longitude !== undefined &&
+    Number.isFinite(Number(show.venue.latitude)) &&
+    Number.isFinite(Number(show.venue.longitude))
+  );
+};
+
+const hasValidCoords = (lat?: number, lng?: number) => {
+  const latitude = Number(lat);
+  const longitude = Number(lng);
+  return (
+    Number.isFinite(latitude) &&
+    Number.isFinite(longitude) &&
+    !(latitude === 0 && longitude === 0) &&
+    latitude >= -90 &&
+    latitude <= 90 &&
+    longitude >= -180 &&
+    longitude <= 180
+  );
+};
+
 const artistNameFilter = (show: ShowData) => {
-  let headliner = "";
-  const indexOfAt = show.description.indexOf("at");
-  const headlinerFromDescription = show.description.substring(0, indexOfAt);
-
-  if (show.performer.length === 0) {
-    headliner = headlinerFromDescription;
-  } else {
-    headliner = show.performer[0].name;
-  }
-  const artistName =
-    headliner.length > 30 ? headliner.substring(0, 30) + " ..." : headliner;
-  return artistName;
+  const headliner = getHeadliner(show);
+  return headliner.length > 30 ? headliner.substring(0, 30) + " ..." : headliner;
 };
 
-/**
- * extract artist name, filter out special charaters and return
- */
 const setArtistNameFilter = (show: ShowData) => {
-  let artist = "";
-  if (show.performer.length === 0 && !show.description) {
-    return artist;
-  } else {
-    if (show.performer.length !== 0) {
-      if (show.performer[0].name.includes("(")) {
-        const indexOfParenthesisP = show.performer[0].name.indexOf("(");
-        artist = show.performer[0].name.substring(0, indexOfParenthesisP);
-      } else {
-        artist = show.performer[0].name;
-      }
-    } else {
-      const indexOfAt = show.description.indexOf("at");
-      artist = show.description.substring(0, indexOfAt);
-
-      if (show.description.includes(",")) {
-        const indexOfComma = show.description.indexOf(",");
-        artist = show.description.substring(0, indexOfComma);
-      }
-      if (show.description.includes("(")) {
-        const indexOfParenthesisD = show.description.indexOf("(");
-        artist = show.description.substring(0, indexOfParenthesisD);
-      }
-    }
-    return artist;
+  let artist = getHeadliner(show);
+  if (artist.includes("(")) {
+    artist = artist.substring(0, artist.indexOf("("));
   }
+  return artist.trim();
 };
 
 export {
@@ -117,4 +105,7 @@ export {
   convertTo12hr,
   artistNameFilter,
   setArtistNameFilter,
+  getHeadliner,
+  hasVenueCoords,
+  hasValidCoords,
 };

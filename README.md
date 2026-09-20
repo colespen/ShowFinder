@@ -13,7 +13,7 @@ https://www.showfinder.ninja/
 
 - Current shows dates with link to venues, artists and tickets
 - Audio preview of artist top track
-- Specify any city and date range
+- Specify any city and date range (up to a 14-day window)
 - Event-list drawer for easy lookup
 - Fully responsive
 
@@ -30,9 +30,14 @@ https://www.showfinder.ninja/
 
 - LocationIQ: forward and reverse geocoding
 - RapidAPI: artists events tracker by location
-- SpotifyAPI: audio samples
+- Spotify API: artist track previews and links to artist pages
 - tried: PredictHQ, Songkick, Zyla, Ticketmaster Discovery
   <br>
+
+Server setup requires `IQ_TOKEN`, `RAPID_KEY`, and (for audio previews)
+`CLIENT_ID` / `CLIENT_SECRET` — see `server/.env.example`. After deploying,
+`GET /api/health` reports which are configured (booleans only, never values)
+and returns 503 if any required key is missing.
 
 ### Developed & Designed by Spencer Cole
 

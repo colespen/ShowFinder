@@ -15,11 +15,11 @@ const PopUp = (props: PopUpProps) => {
       <MarkerPlayer {...rest} />
       <a
         id="venue-name"
-        href={show.location.sameAs}
+        href={show.venue.url || undefined}
         target="_blank"
         rel="noreferrer"
       >
-        {show.location.name}
+        {show.venue.name}
       </a>
     </Popup>
   );

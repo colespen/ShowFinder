@@ -133,7 +133,6 @@ export interface EventListItemsProps {
       lng: number;
     }>
   >;
-  indexMap: number[];
 }
 export interface EventListItemProps {
   sortedShows: ShowData[];

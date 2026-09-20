@@ -48,11 +48,11 @@ const BottomPlayer = (props: BottomPlayerProps) => {
             ref={audioRef}
             autoPlay={isAutoPlay}
             preload="metadata"
+            src={audioLink || undefined}
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             onEnded={() => setIsPlaying(false)}
           >
-            <source src={audioLink} type="audio/mpeg" />
             <code>audio</code> not supported
           </audio>
 
