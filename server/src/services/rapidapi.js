@@ -4,7 +4,8 @@ const { mapRapidEvents } = require("../mappers/rapidShowMapper");
 
 const HOST = "concerts-artists-events-tracker.p.rapidapi.com";
 // Hard ceilings on upstream usage per search: at most MAX_PAGES requests and
-// MAX_EVENTS shows, regardless of how wide a date range is requested.
+// MAX_EVENTS shows. A 14-day window in a dense city fills this budget (~250
+// shows), so the ceiling is a deliberate quota/coverage tradeoff.
 const MAX_EVENTS = 400;
 const MAX_PAGES = 5;
 const PAGE_DELAY_MS = 200;

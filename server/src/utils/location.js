@@ -26,8 +26,12 @@ function todayYmd() {
   return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 }
 
-/** Max selectable search window, keeping upstream API usage bounded. */
-const MAX_WINDOW_DAYS = 60;
+/**
+ * Max selectable search window. In a dense city (e.g. NYC) a 7-day window
+ * already saturates the fetch budget, so a wider range returns no extra shows
+ * and only makes a worse-scoped UI.
+ */
+const MAX_WINDOW_DAYS = 14;
 
 function parseYmd(dateStr) {
   const parts = String(dateStr || "")

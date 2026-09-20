@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 //////    Max selectable window, mirroring the server's clamp
-const MAX_WINDOW_DAYS = 60;
+const MAX_WINDOW_DAYS = 14;
 
 const ymd = (date: Date) =>
   `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
