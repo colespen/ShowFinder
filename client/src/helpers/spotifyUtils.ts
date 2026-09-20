@@ -34,9 +34,13 @@ const matchArtistSetAudioPlaying = ({
       (artistEl: SpotifyTracksParams, index: number) => {
         const stripSpotArtist = stripDiacriticalMarks(artistEl.name);
         const stripRapidArist = stripDiacriticalMarks(artist);
+        // Either name may be the longer one: Spotify usually holds the canonical
+        // name ("The Charlatans") while the event source appends a qualifier
+        // ("The Charlatans UK") or a tour title, so containment is checked both
+        // ways. One-way only matched when the event source was the shorter form.
         if (
-          // TODO: compare so at least two words match (not just one)
-          stripSpotArtist.toUpperCase().includes(stripRapidArist.toUpperCase())
+          stripSpotArtist.toUpperCase().includes(stripRapidArist.toUpperCase()) ||
+          stripRapidArist.toUpperCase().includes(stripSpotArtist.toUpperCase())
         ) {
           matchIndex = index;
           return true;
