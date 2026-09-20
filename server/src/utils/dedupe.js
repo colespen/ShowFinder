@@ -1,14 +1,10 @@
 /**
- * Legacy event de-duplication, retained for future use.
+ * Legacy dedupe, kept for reuse but currently unwired: the live pipeline
+ * (services/rapidapi -> mappers/rapidShowMapper) de-dupes on concert_id.
+ * Only useful if a future source exposes no unique event id.
  *
- * NOT currently wired up. The active pipeline
- * (`services/rapidapi.js` -> `mappers/rapidShowMapper.js`) de-duplicates on
- * RapidAPI's stable `concert_id`, which is more reliable than matching on
- * free-text `description`. This version remains useful if a future source
- * only exposes artist/venue text without a unique event id.
- *
- * Note: `eventNameFilter` splits on the first "at", so descriptions that
- * contain "at" inside a word can collapse two distinct events.
+ * Caveat: eventNameFilter splits on the first "at", so descriptions
+ * containing "at" inside a word can collapse distinct events.
  */
 const eventNameFilter = require("./eventNameFilter");
 

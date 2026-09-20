@@ -59,9 +59,7 @@ export default function Map() {
 
   const geolocation = useGeoLocation();
 
-  // Sort once at the source so markers AND drawer rows share the same order.
-  // Rows open their popup via markerRefs.current[index], so both lists must be
-  // index-aligned; sorting in one place only would open the wrong marker.
+  // Sort once here so markers and drawer rows share one index-aligned order.
   const proximityShows = useMemo(() => {
     return sortByProximity(shows.data, userData);
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -15,9 +15,7 @@ function mapVenue(location = {}) {
 }
 
 function mapPerformer(performer = {}) {
-  // RapidAPI's /location response does not include Spotify or artist
-  // homepage links; these fields are reserved for a future data source
-  // that provides them (e.g. Ticketmaster's externalLinks).
+  // /location returns no Spotify or homepage links for artists.
   return {
     name: performer.name || "",
     spotifyArtistId: "",

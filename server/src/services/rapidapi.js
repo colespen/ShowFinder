@@ -6,14 +6,15 @@ const HOST = "concerts-artists-events-tracker.p.rapidapi.com";
 const MAX_EVENTS = 400;
 const MAX_PAGES = 8;
 const PAGE_DELAY_MS = 200;
+// RapidAPI caps /location at 50 results per page.
+const PAGE_SIZE = 50;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// RapidAPI needs unpadded YYYY-M-D (2026-9-20), not the padded form.
 function toRapidDate(dateStr) {
-  // RapidAPI expects unpadded YYYY-M-D (e.g. 2026-9-20), matching
-  // the client's DateRange format already, but normalize defensively.
   const parts = String(dateStr || "")
     .split("-")
     .map((part) => Number(part));
@@ -56,9 +57,7 @@ async function fetchLocationPage({ apiKey, name, minDate, maxDate, page }) {
 }
 
 /**
- * fetchLocationPage occasionally returns a transient upstream error
- * ("Invalid location") even for a valid city name. Retry a few times
- * before giving up on a page.
+ * Retries transient upstream errors ("Invalid location" for a valid city).
  */
 async function fetchLocationPageWithRetry(args, retries = 4) {
   let lastErr;
@@ -102,7 +101,7 @@ async function searchMusicEvents({ cityName, dateRange }) {
     if (!events.length) break;
     rawEvents.push(...events);
 
-    if (events.length < 50) break; // short page = last page
+    if (events.length < PAGE_SIZE) break; // short page = last page
     page += 1;
     await sleep(PAGE_DELAY_MS);
   }
@@ -112,7 +111,7 @@ async function searchMusicEvents({ cityName, dateRange }) {
     data,
     page: {
       number: 0,
-      size: 50,
+      size: PAGE_SIZE,
       totalElements: data.length,
       totalPages: page,
       fetched: data.length,

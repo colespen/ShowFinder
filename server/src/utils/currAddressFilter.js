@@ -1,13 +1,12 @@
 const { regionCode } = require("./regionCode");
 
 /**
- * Build the city query string for RapidAPI's /location geocoder.
+ * Builds the city query for RapidAPI's /location geocoder.
  *
- * A bare city name is ambiguous — "Portland" resolved to Nashville shows,
- * and appending a country or full region name ("Austin, Texas") returns
- * nothing. The reliable shape is "City, ST" using a 2-letter region code,
- * which was verified against Austin, Portland, Toronto, Cedar Park, and Buda.
- * Falls back to the bare city name when no region code can be resolved.
+ * "City, ST" (2-letter region code) is the only reliable shape: a bare city
+ * resolves to the wrong place ("Portland" -> Nashville shows) and a full
+ * region/country name returns nothing ("Austin, Texas"). Falls back to the
+ * bare city when no region code is known.
  */
 const filterCurrentAddress = (currentAddress) => {
   const address = currentAddress?.address || {};

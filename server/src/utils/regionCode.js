@@ -1,9 +1,6 @@
 /**
- * LocationIQ returns full region names (e.g. "Texas", "Ontario") but the
- * RapidAPI /location geocoder only disambiguates reliably with 2-letter
- * region codes (e.g. "Austin, TX"). Passing a bare city name resolves to
- * the wrong city for ambiguous names ("Portland" returned Nashville shows),
- * and passing the full region name returns no results at all.
+ * Maps LocationIQ's full region names (e.g. "Texas") to 2-letter codes,
+ * which RapidAPI's /location geocoder requires to disambiguate a city.
  */
 const US_STATES = {
   alabama: "AL",
@@ -81,9 +78,8 @@ function lookup(table, regionName) {
 }
 
 /**
- * Resolve a 2-letter region code from LocationIQ's `state` field plus the
- * `country_code`, so city queries can be disambiguated. Returns "" when the
- * region is unknown, in which case callers should fall back to the bare city.
+ * Resolves a 2-letter region code from LocationIQ's `state` + `country_code`.
+ * Returns "" when unknown, so callers fall back to the bare city name.
  */
 function regionCode(state, countryCode) {
   const code = String(countryCode || "").toLowerCase();
