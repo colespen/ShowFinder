@@ -1,12 +1,12 @@
 import cors from "cors";
 import express from "express";
-import type { Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import axios from "axios";
 import type { AxiosResponse } from "axios";
 import morgan from "morgan";
 
 import { configuredUpstreams, env, missingRequiredUpstreams } from "./config/env.ts";
-import { withoutAdminPrefix, searchMusicEvents } from "./services/rapidapi.ts";
+import { searchMusicEvents, withoutAdminPrefix } from "./services/rapidapi.ts";
 import type { ShowSearchResult } from "./services/rapidapi.ts";
 import { searchMusicEvents as searchTicketmasterEvents } from "./services/ticketmaster.ts";
 import * as spotify from "./services/spotify.ts";
@@ -20,12 +20,9 @@ import type {
   SpotifySampleResponse,
 } from "./types/api.ts";
 import type { DateRange, Show, ShowPage } from "./types/show.ts";
-import { UpstreamLocationError } from "./utils/errors.ts";
 import { filterCurrentAddress } from "./utils/currAddressFilter.ts";
-import {
-  hasValidCoords,
-  normalizeCurrentAddress,
-} from "./utils/location.ts";
+import { UpstreamLocationError } from "./utils/errors.ts";
+import { hasValidCoords, normalizeCurrentAddress } from "./utils/location.ts";
 import { mergeShows } from "./utils/mergeShows.ts";
 
 const app = express();
@@ -48,11 +45,7 @@ function emptyPage(size: number): ShowPage {
   return { number: 0, size, totalElements: 0, totalPages: 0, fetched: 0 };
 }
 
-function sendError(
-  res: Response<ApiErrorBody>,
-  error: unknown,
-  fallbackStatus = 500,
-): void {
+function sendError(res: Response<ApiErrorBody>, error: unknown, fallbackStatus = 500): void {
   const upstream = axios.isAxiosError(error) ? error.response?.status : undefined;
   const message = error instanceof Error ? error.message : "Unknown error";
   const url = axios.isAxiosError(error) ? (error.config?.url ?? "") : "";
@@ -127,25 +120,6 @@ function parseDateRangeQuery(value: unknown): DateRange {
   };
 }
 
-app.get("/", (_req, res: Response<{ message: string; status: string }>) => {
-  res.json({ message: "ShowFinder API is running", status: "healthy" });
-});
-
-// Reports which upstreams are configured (booleans only, never values), so a
-// deploy can be verified in one request.
-app.get("/api/health", (_req, res: Response<HealthResponse>) => {
-  const configured = configuredUpstreams();
-  const missing = missingRequiredUpstreams();
-  const ready = missing.length === 0;
-
-  res.status(ready ? 200 : 503).json({
-    status: ready ? "healthy" : "misconfigured",
-    ready,
-    configured,
-    missing,
-  });
-});
-
 /**
  * Fetches from both sources in parallel and merges the results.
  *
@@ -170,11 +144,7 @@ async function fetchAndMerge({
   const [aggregator, ticketmaster] = await Promise.allSettled([
     searchMusicEvents({ cityName, dateRange }),
     hasCoords
-      ? searchTicketmasterEvents({
-          lat: Number(lat),
-          lng: Number(lng),
-          dateRange,
-        })
+      ? searchTicketmasterEvents({ lat: Number(lat), lng: Number(lng), dateRange })
       : Promise.resolve<ShowSearchResult>({ data: [], page: emptyPage(0) }),
   ]);
 
@@ -239,88 +209,94 @@ function bareName(name: string | null): string {
   return String(name ?? "").split(",")[0].trim();
 }
 
+app.get("/", (_req, res: Response<{ message: string; status: string }>) => {
+  res.json({ message: "ShowFinder API is running", status: "healthy" });
+});
+
+// Reports which upstreams are configured (booleans only, never values), so a
+// deploy can be verified in one request.
+app.get("/api/health", (_req, res: Response<HealthResponse>) => {
+  const configured = configuredUpstreams();
+  const missing = missingRequiredUpstreams();
+  const ready = missing.length === 0;
+
+  res.status(ready ? 200 : 503).json({
+    status: ready ? "healthy" : "misconfigured",
+    ready,
+    configured,
+    missing,
+  });
+});
+
 app.get("/api/shows", async (req, res: Response<ShowsResponse | ApiErrorBody>) => {
-  try {
-    const { lat, lng } = req.query;
-    if (!hasValidCoords(lat, lng)) {
-      res.status(400).json({
-        error: "Valid lat and lng are required (got 0,0 or missing GPS)",
-      });
-      return;
-    }
-
-    const currentAddress = await reverseGeocode(lat, lng);
-    const address = currentAddress.address ?? {};
-    // Order matters: the first non-empty result wins, and a borough-qualified
-    // name returns wrong shows rather than failing ("City of Westminster" ->
-    // Sydney), so the prefix-stripped "Westminster" is tried first.
-    const { data, page, locationName } = await searchShowsForCity(
-      [
-        withoutAdminPrefix(address.city),
-        filterCurrentAddress(currentAddress),
-        address.city,
-        address.state,
-      ],
-      parseDateRangeQuery(req.query.dateRange),
-      { lat, lng },
-    );
-
-    const displayAddress: CurrentAddress = {
-      ...currentAddress,
-      address: {
-        ...address,
-        city: bareName(locationName) || address.city || "",
-      },
-    };
-
-    res.json({ data, currentAddress: displayAddress, page });
-  } catch (error) {
-    sendError(res, error);
+  const { lat, lng } = req.query;
+  if (!hasValidCoords(lat, lng)) {
+    res.status(400).json({
+      error: "Valid lat and lng are required (got 0,0 or missing GPS)",
+    });
+    return;
   }
+
+  const currentAddress = await reverseGeocode(lat, lng);
+  const address = currentAddress.address ?? {};
+  // Order matters: the first non-empty result wins, and a borough-qualified name
+  // returns wrong shows rather than failing ("City of Westminster" -> Sydney),
+  // so the prefix-stripped "Westminster" is tried first.
+  const { data, page, locationName } = await searchShowsForCity(
+    [
+      withoutAdminPrefix(address.city),
+      filterCurrentAddress(currentAddress),
+      address.city,
+      address.state,
+    ],
+    parseDateRangeQuery(req.query.dateRange),
+    { lat, lng },
+  );
+
+  const displayAddress: CurrentAddress = {
+    ...currentAddress,
+    address: {
+      ...address,
+      city: bareName(locationName) || address.city || "",
+    },
+  };
+
+  res.json({ data, currentAddress: displayAddress, page });
 });
 
 app.get("/api/newshows", async (req, res: Response<NewShowsResponse | ApiErrorBody>) => {
-  try {
-    const newCity = typeof req.query.newCity === "string" ? req.query.newCity : "";
-    if (!newCity) {
-      res.status(400).json({ error: "newCity is required" });
-      return;
-    }
-
-    const latLng = await forwardGeocode(newCity);
-    if (!latLng.length) {
-      res.json({ data: [], latLng: [], page: emptyPage(50) });
-      return;
-    }
-
-    // Widen from "City, Country"/"City, ST" to the bare/typed city.
-    const address = normalizeCurrentAddress(latLng[0] as CurrentAddress).address ?? {};
-    const first = latLng[0];
-    const { data, page, locationName } = await searchShowsForCity(
-      [filterCurrentAddress({ address }), address.city, address.state, newCity],
-      parseDateRangeQuery(req.query.dateRange),
-      { lat: first.lat, lng: first.lon },
-    );
-
-    const displayAddress: CurrentAddress = {
-      address: { ...address, city: bareName(locationName) || address.city || newCity },
-    };
-    res.json({ data, latLng, page, currentAddress: displayAddress });
-  } catch (error) {
-    sendError(res, error);
+  const newCity = typeof req.query.newCity === "string" ? req.query.newCity : "";
+  if (!newCity) {
+    res.status(400).json({ error: "newCity is required" });
+    return;
   }
+
+  const latLng = await forwardGeocode(newCity);
+  if (!latLng.length) {
+    res.json({ data: [], latLng: [], page: emptyPage(50) });
+    return;
+  }
+
+  // Widen from "City, Country"/"City, ST" to the bare/typed city.
+  const address = normalizeCurrentAddress(latLng[0] as CurrentAddress).address ?? {};
+  const first = latLng[0];
+  const { data, page, locationName } = await searchShowsForCity(
+    [filterCurrentAddress({ address }), address.city, address.state, newCity],
+    parseDateRangeQuery(req.query.dateRange),
+    { lat: first.lat, lng: first.lon },
+  );
+
+  const displayAddress: CurrentAddress = {
+    address: { ...address, city: bareName(locationName) || address.city || newCity },
+  };
+  res.json({ data, latLng, page, currentAddress: displayAddress });
 });
 
-// Kept so existing clients can warm the token on load; the server now refreshes
-// it on its own, so this is no longer required for previews to work.
+// Kept so existing clients can warm the token on load; the server refreshes it on
+// its own, so this is no longer required for previews to work.
 app.post("/api/spotifyauth", async (_req, res) => {
-  try {
-    await spotify.getToken();
-    res.sendStatus(200);
-  } catch (error) {
-    console.error("Spotify auth error:", describeError(error));
-    res.status(500).send("Error: " + describeError(error));
-  }
+  await spotify.getToken();
+  res.sendStatus(200);
 });
 
 /**
@@ -330,19 +306,22 @@ app.post("/api/spotifyauth", async (_req, res) => {
  */
 app.get(
   "/api/spotifysample",
-  async (req, res: Response<SpotifySampleResponse | string>) => {
-    try {
-      const aliases = String(req.query.aliases ?? "")
-        .split("|")
-        .map((alias) => alias.trim())
-        .filter(Boolean);
-      const artistName = typeof req.query.artist === "string" ? req.query.artist : undefined;
-      const { artist, tracks } = await spotify.findArtistPreview(artistName, aliases);
-      res.json({ artist, tracks });
-    } catch (error) {
-      console.error("Spotify API Error:", describeError(error));
-      res.status(500).send("Error: " + describeError(error));
-    }
+  async (req, res: Response<SpotifySampleResponse | ApiErrorBody>) => {
+    const aliases = String(req.query.aliases ?? "")
+      .split("|")
+      .map((alias) => alias.trim())
+      .filter(Boolean);
+    const artistName = typeof req.query.artist === "string" ? req.query.artist : undefined;
+    const { artist, tracks } = await spotify.findArtistPreview(artistName, aliases);
+    res.json({ artist, tracks });
+  },
+);
+
+// Express 5 forwards a rejected promise from a route here on its own, so routes
+// carry no error handling of their own. Validation failures answer directly.
+app.use(
+  (error: unknown, _req: Request, res: Response<ApiErrorBody>, _next: NextFunction) => {
+    sendError(res, error);
   },
 );
 
