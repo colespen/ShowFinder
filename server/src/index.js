@@ -61,13 +61,22 @@ async function forwardGeocode(city) {
     city,
     format: "json",
   });
-  const response = await axios.get(
-    `https://us1.locationiq.com/v1/search?${params.toString()}`,
-  );
-  const citySort = [...(response.data || [])].sort(
-    (a, b) => parseFloat(b.importance) - parseFloat(a.importance),
-  );
-  return citySort;
+  try {
+    const response = await axios.get(
+      `https://us1.locationiq.com/v1/search?${params.toString()}`,
+    );
+    const citySort = [...(response.data || [])].sort(
+      (a, b) => parseFloat(b.importance) - parseFloat(a.importance),
+    );
+    return citySort;
+  } catch (error) {
+    // LocationIQ returns 404 when nothing matches the city query;
+    // treat that as "no results" rather than a server error.
+    if (error.response?.status === 404) {
+      return [];
+    }
+    throw error;
+  }
 }
 
 app.get("/", (_req, res) => {
@@ -111,7 +120,7 @@ app.get("/api/newshows", async (req, res) => {
         latLng: [],
         page: {
           number: 0,
-          size: 200,
+          size: 50,
           totalElements: 0,
           totalPages: 0,
           fetched: 0,

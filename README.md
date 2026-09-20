@@ -30,7 +30,7 @@ https://www.showfinder.ninja/
 
 - LocationIQ: forward and reverse geocoding
 - RapidAPI: artists events tracker by location
-- iTunes Search API: 30-second audio previews
+- Spotify API: artist track previews and links to artist pages
   <br>
 
 ### Developed & Designed by Spencer Cole

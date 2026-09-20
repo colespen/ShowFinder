@@ -1,10 +1,20 @@
-// RapidAPI's /location geocoder is unreliable when a country name/code is
-// appended (e.g. "Austin, United States of America" or "Austin, US" both
-// intermittently return zero results even though the city exists). Using
-// the bare city name is the reliable query shape, confirmed against
-// Austin, New York, London, and Toronto.
+const { regionCode } = require("./regionCode");
+
+/**
+ * Build the city query string for RapidAPI's /location geocoder.
+ *
+ * A bare city name is ambiguous — "Portland" resolved to Nashville shows,
+ * and appending a country or full region name ("Austin, Texas") returns
+ * nothing. The reliable shape is "City, ST" using a 2-letter region code,
+ * which was verified against Austin, Portland, Toronto, Cedar Park, and Buda.
+ * Falls back to the bare city name when no region code can be resolved.
+ */
 const filterCurrentAddress = (currentAddress) => {
-  return currentAddress.address.city || "";
+  const address = currentAddress?.address || {};
+  const city = address.city || "";
+  if (!city) return "";
+  const code = regionCode(address.state, address.country_code);
+  return code ? `${city}, ${code}` : city;
 };
 
 module.exports = filterCurrentAddress;
