@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import useGeoLocation, { NAVIGTOR_ERROR } from "../hooks/useGeoLocation";
 import MapContainerComponent from "./MapContainer/MapContainer";
 import Title from "./Title";
@@ -24,6 +24,7 @@ import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
 import "./styles.scss";
 import { Marker } from "leaflet";
 import { setArtistNameFilter, hasValidCoords } from "../helpers/utils";
+import { sortByProximity } from "../helpers/sortEventList";
 import { useChromeIOSAdjustment } from "../hooks/useChromeIOSAdjustment";
 
 export default function Map() {
@@ -57,6 +58,14 @@ export default function Map() {
   );
 
   const geolocation = useGeoLocation();
+
+  // Sort once at the source so markers AND drawer rows share the same order.
+  // Rows open their popup via markerRefs.current[index], so both lists must be
+  // index-aligned; sorting in one place only would open the wrong marker.
+  const proximityShows = useMemo(() => {
+    return sortByProximity(shows.data, userData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shows.data, userData.lat, userData.lng]);
 
   useChromeIOSAdjustment();
 
@@ -205,7 +214,7 @@ export default function Map() {
       <MapContainerComponent
         center={center}
         geolocation={geolocation}
-        shows={shows}
+        shows={{ ...shows, data: proximityShows }}
         audioRef={audioRef}
         spotifyUrl={spotifyUrl}
         userData={userData}
@@ -222,7 +231,7 @@ export default function Map() {
       />
       {Array.isArray(shows.data) && shows.data.length !== 0 && (
         <DrawerLeft
-          shows={shows}
+          shows={{ ...shows, data: proximityShows }}
           userData={userData}
           geolocation={geolocation}
           setCenter={setCenter}
