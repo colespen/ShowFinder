@@ -22,8 +22,7 @@ import {
 } from "../datatypes/initialState";
 import { handleSetArtist, handleSetNewAudio } from "../helpers/eventHandlers";
 import "./styles.scss";
-import { Marker } from "leaflet";
-import { setArtistNameFilter, hasValidCoords, hasVenueCoords } from "../helpers/utils";
+import { setArtistNameFilter, hasValidCoords } from "../helpers/utils";
 import { sortByProximity } from "../helpers/sortEventList";
 import { useChromeIOSAdjustment } from "../hooks/useChromeIOSAdjustment";
 
@@ -52,19 +51,21 @@ export default function Map() {
   );
   const isFirstRender = useRef<boolean>(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const markerRefs = useRef<Marker[]>([]);
+  // Keyed by show id, not array position, so skipped (coord-less) shows in the
+  // drawer cannot desync which marker a row opens.
+  const markerRefs = useRef<Record<string, any>>({});
   const [center, setCenter] = useState<{ lat: number; lng: number }>(
     centerStateInitial
   );
 
   const geolocation = useGeoLocation();
 
-  // Sort once here so markers and drawer rows share one index-aligned order.
-  // Shows without venue coords are dropped: they cannot be plotted or opened,
-  // and keeping them would shift markerRefs out of step with the rows
-  // (a row opens its popup via markerRefs.current[index]).
+  // Sort once here so markers and drawer rows share one order. Rows without
+  // venue coords stay listed (they still expose ticket/venue links); they are
+  // simply skipped when rendering markers, which is why marker refs are keyed
+  // by show id rather than array position.
   const proximityShows = useMemo(() => {
-    return sortByProximity(shows.data, userData).filter(hasVenueCoords);
+    return sortByProximity(shows.data, userData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shows.data, userData.lat, userData.lng]);
 

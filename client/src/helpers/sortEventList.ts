@@ -5,9 +5,8 @@ import { hasVenueCoords } from "./utils";
 /**
  * Sort shows by distance from the user (Haversine, km).
  *
- * Applied once in Map.tsx so markers and drawer rows share one order: a row
- * opens its popup via markerRefs.current[index], so the two lists must stay
- * index-aligned. Shows without venue coords sort last.
+ * Applied once in Map.tsx so markers and drawer rows share one order. Shows
+ * without venue coords sort last (they are listed but have no marker).
  *
  * Returns the input unchanged when user coords are unknown.
  */

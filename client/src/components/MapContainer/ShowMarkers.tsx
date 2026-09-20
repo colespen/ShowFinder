@@ -10,8 +10,13 @@ const ShowMarkers = (props: ShowMarkersProps) => {
 
   return (
     <>
-      {(shows.data || []).map((show, index) => {
-        return hasVenueCoords(show) ? (
+      {(shows.data || []).map((show) => {
+        if (!hasVenueCoords(show)) return null;
+
+        // Keyed by show id rather than array position: shows without venue
+        // coords are skipped here but still listed in the drawer, so positional
+        // refs would drift and open the wrong marker.
+        return (
           <Marker
             key={show.id}
             position={[
@@ -23,11 +28,13 @@ const ShowMarkers = (props: ShowMarkersProps) => {
                 markerPlayback(show);
               },
             }}
-            ref={(ref) => (markerRefs.current[index] = ref)}
+            ref={(ref) => {
+              if (ref) markerRefs.current[show.id] = ref;
+            }}
           >
-            <PopUp {...props} show={show} index={index} />
+            <PopUp {...props} show={show} />
           </Marker>
-        ) : null;
+        );
       })}
     </>
   );
