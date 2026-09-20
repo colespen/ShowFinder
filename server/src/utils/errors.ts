@@ -6,3 +6,8 @@
 export class UpstreamLocationError extends Error {
   readonly upstreamInvalidLocation = true;
 }
+
+/** Message from an unknown throwable, for logging. */
+export function describeError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
