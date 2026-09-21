@@ -23,11 +23,13 @@ jobs:
   server:
     name: "Server: typecheck, tests, production build"
     runs-on: ubuntu-latest
-    # Render builds with NODE_ENV=production, which makes npm omit devDependencies
-    # unless told otherwise - and tsc plus every @types package live there. Running
-    # this job in production mode, installing with --include=dev, is what mirrors
-    # the deploy: the first production build failed exactly here (TS7016/TS2591)
-    # and nothing before the deploy would have caught it.
+    # Building needs the devDependencies (tsc and every @types package) while running
+    # needs only the four runtime ones. Render builds with NODE_ENV=production, so npm
+    # assumes the runtime phase and omits devDependencies - which is how the first
+    # production build failed (TS7016/TS2591), compiling against no declarations with
+    # the image's global tsc. This job runs the same install and build as the
+    # buildCommand in render.yaml - `npm ci --include=dev` then `npm run build` - so
+    # the deploy path is exercised before the deploy.
     env:
       NODE_ENV: production
     steps:
