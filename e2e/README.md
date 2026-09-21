@@ -49,3 +49,10 @@ covers that window for requests that arrive without the calendar.
 `.github/workflows/ci.yml` runs the server suite, then this one, on every push to a
 pull request, skipping documentation-only changes. Locally the config reuses
 anything already listening on 3000 and 8001; in CI it starts both fresh.
+
+CI runs with no upstream credentials, so the log carries
+`Spotify credentials are not configured` on every page load: `POST /api/spotifyauth`
+has nothing to authenticate with, and the preview lookups behind it fall back to the
+disabled link the suite asserts. That is the unconfigured path being exercised, not a
+failure — the browser tests stub `/api/shows` with fixtures, so no test depends on an
+upstream.
