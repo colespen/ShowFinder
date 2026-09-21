@@ -3,7 +3,10 @@ services:
     name: showfinder-server
     runtime: node
     rootDir: server
-    buildCommand: npm install && npm run build
+    # No build step: Node runs the TypeScript sources directly (stable since 24.12),
+    # so nothing needs the devDependencies at build time and the platform's
+    # production-mode install is correct as-is. `npm ci` keeps it lockfile-exact.
+    buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
