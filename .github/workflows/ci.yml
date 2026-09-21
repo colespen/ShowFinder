@@ -21,17 +21,12 @@ permissions:
 
 jobs:
   server:
-    name: "Server: typecheck, tests, production build"
+    name: "Server: typecheck, tests, production start"
     runs-on: ubuntu-latest
-    # Building needs the devDependencies (tsc and every @types package) while running
-    # needs only the four runtime ones. Render builds with NODE_ENV=production, so npm
-    # assumes the runtime phase and omits devDependencies - which is how the first
-    # production build failed (TS7016/TS2591), compiling against no declarations with
-    # the image's global tsc. This job runs the same install and build as the
-    # buildCommand in render.yaml - `npm ci --include=dev` then `npm run build` - so
-    # the deploy path is exercised before the deploy.
-    env:
-      NODE_ENV: production
+    # Typechecking and the tests need the devDependencies; the deploy has only the
+    # runtime ones and runs the TypeScript sources. This job does both, so the path
+    # that failed in production (a build assuming devDependencies were present) is
+    # exercised before the deploy rather than during it.
     steps:
       - uses: actions/checkout@v7
 
@@ -42,7 +37,7 @@ jobs:
           cache-dependency-path: server/package-lock.json
 
       - name: Install
-        run: npm ci --include=dev
+        run: npm ci
         working-directory: server
 
       - name: Typecheck
@@ -53,13 +48,12 @@ jobs:
         run: npm test
         working-directory: server
 
-      - name: Build
-        run: npm run build
+      - name: Install as the deploy does
+        run: npm ci --omit=dev
         working-directory: server
 
-      - name: Smoke the built entrypoint
+      - name: Start as production does
         run: |
-          test -f dist/index.js
           PORT=8111 npm start &
           for attempt in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:8111/ > /dev/null; then
@@ -67,7 +61,7 @@ jobs:
             fi
             sleep 1
           done
-          echo "the built server never answered on 8111" >&2
+          echo "the server never answered on 8111" >&2
           exit 1
         working-directory: server
 
