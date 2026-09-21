@@ -1,0 +1,16 @@
+{
+  "name": "showfinder-e2e",
+  "private": true,
+  "description": "End-to-end tests for the ShowFinder client and API",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "typecheck": "tsc --noEmit",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^24.13.6",
+    "typescript": "^7.0.2"
+  }
+}
